@@ -168,15 +168,24 @@
   filter: blur(0.5px);
 }
 
-/* Click pulse - cursor balloons then settles */
+/* Click pulse - cursor balloons then settles, smoother */
 .aero-cursor--pulse {
-  animation: cursor-pulse 0.45s ease-out;
+  animation: cursor-pulse 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @keyframes cursor-pulse {
-  0% { width: 18px; height: 18px; }
-  40% { width: 38px; height: 38px; }
-  100% { width: 18px; height: 18px; }
+  0% {
+    width: 18px;
+    height: 18px;
+  }
+  35% {
+    width: 42px;
+    height: 42px;
+  }
+  100% {
+    width: 18px;
+    height: 18px;
+  }
 }
 
 /* Trailing dot that follows the cursor */
@@ -201,7 +210,7 @@
     0 0 14px rgba(80, 170, 230, 0.5);
 }
 
-/* Bubbles - slow physics float */
+/* Bubbles - JS-driven physics (no CSS animation) */
 .aero-bubble {
   position: fixed;
   pointer-events: none;
@@ -220,7 +229,9 @@
     inset -2px -3px 6px rgba(40, 120, 200, 0.4),
     0 0 14px rgba(120, 200, 255, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.5);
-  animation: bubble-float 5s cubic-bezier(0.25, 0.6, 0.35, 1) forwards;
+  opacity: 0;
+  transition: opacity 0.15s linear;
+  will-change: left, top, opacity;
 }
 
 .aero-bubble::before {
@@ -235,38 +246,9 @@
   filter: blur(1px);
 }
 
-@keyframes bubble-float {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.2);
-  }
-  12% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  50% {
-    transform: translate(
-        calc(-50% + var(--drift, 0px) * 0.5),
-        calc(-50% + var(--rise, -400px) * 0.5)
-      )
-      scale(calc(var(--scale-end, 1) * 0.95));
-  }
-  85% {
-    opacity: 0.85;
-  }
-  100% {
-    opacity: 0;
-    transform: translate(
-        calc(-50% + var(--drift, 0px)),
-        calc(-50% + var(--rise, -400px))
-      )
-      scale(var(--scale-end, 1));
-  }
-}
-
-/* Inversion text effect */
+/* Exclusion / inversion text effect */
 .invert-text {
-  mix-blend-mode: difference;
+  mix-blend-mode: exclusion;
   color: #ffffff;
 }
 
@@ -367,25 +349,18 @@
 
 .flip-face--back {
   transform: rotateY(180deg);
-  background: #000;
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(40, 200, 110, 0.35) 0%,
+      rgba(10, 60, 30, 0.6) 40%,
+      #000 80%
+    ),
+    #000;
+  box-shadow: inset 0 0 200px rgba(110, 255, 161, 0.25);
 }
 
-/* Matrix rain canvas backdrop */
-.matrix-bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  background: radial-gradient(
-    ellipse at center,
-    #001a08 0%,
-    #000400 70%,
-    #000 100%
-  );
-}
-
-.matrix-overlay {
+.green-glow-overlay {
   position: relative;
   z-index: 2;
   display: flex;
@@ -397,19 +372,19 @@
   color: #6effa1;
   font-family: "Audiowide", system-ui, sans-serif;
   text-shadow:
-    0 0 8px rgba(110, 255, 161, 0.9),
-    0 0 22px rgba(40, 200, 100, 0.6);
+    0 0 10px rgba(110, 255, 161, 0.95),
+    0 0 28px rgba(40, 200, 100, 0.7);
 }
 
-.matrix-overlay h2 {
-  font-size: 1.6rem;
-  letter-spacing: 0.35em;
+.green-glow-overlay h2 {
+  font-size: 1.4rem;
+  letter-spacing: 0.4em;
   text-transform: uppercase;
 }
 
-.matrix-overlay p {
-  font-size: 0.65rem;
-  letter-spacing: 0.45em;
+.green-glow-overlay p {
+  font-size: 0.6rem;
+  letter-spacing: 0.5em;
   text-transform: uppercase;
   color: rgba(110, 255, 161, 0.7);
 }

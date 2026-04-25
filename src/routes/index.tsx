@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { AeroCursor } from "@/components/AeroCursor";
-import { MatrixRain } from "@/components/MatrixRain";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -67,9 +66,16 @@ function Index() {
               className="absolute inset-0 h-full w-full object-cover"
             />
 
-            <div className="relative z-10 flex min-h-screen flex-col items-center justify-center gap-6 px-6">
+            {/* Hide foreground content once flipped */}
+            <div
+              className="relative z-10 flex min-h-screen flex-col items-center justify-center gap-5 px-6 transition-opacity duration-300"
+              style={{
+                opacity: flipped ? 0 : 1,
+                pointerEvents: flipped ? "none" : "auto",
+              }}
+            >
               <h1
-                className="invert-text text-center text-2xl leading-none tracking-[0.25em] sm:text-3xl"
+                className="invert-text text-center text-lg leading-none tracking-[0.3em] sm:text-xl"
                 style={{ fontFamily: "'Audiowide', system-ui, sans-serif" }}
               >
                 are you ready
@@ -86,10 +92,9 @@ function Index() {
           </main>
         </div>
 
-        {/* BACK - Matrix placeholder */}
+        {/* BACK - just green glow */}
         <div className="flip-face flip-face--back">
-          {flipped && <MatrixRain />}
-          <div className="matrix-overlay">
+          <div className="green-glow-overlay">
             <p>// system online</p>
             <h2>Welcome</h2>
             <p>placeholder screen</p>

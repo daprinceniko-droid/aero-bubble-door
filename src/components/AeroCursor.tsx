@@ -1,5 +1,16 @@
 import { useEffect, useRef } from "react";
 
+type Bubble = {
+  el: HTMLDivElement;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  r: number;
+  life: number;
+  maxLife: number;
+};
+
 export function AeroCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
@@ -15,6 +26,8 @@ export function AeroCursor() {
     let dotY = mouseY;
     let rafId = 0;
 
+    const bubbles: Bubble[] = [];
+
     const handleMove = (e: MouseEvent) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
@@ -22,53 +35,118 @@ export function AeroCursor() {
       cursor.style.top = `${mouseY}px`;
     };
 
-    const tick = () => {
-      // Trailing dot - smooth follow with easing
-      dotX += (mouseX - dotX) * 0.18;
-      dotY += (mouseY - dotY) * 0.18;
-      dot.style.left = `${dotX}px`;
-      dot.style.top = `${dotY}px`;
-      rafId = requestAnimationFrame(tick);
-    };
-    rafId = requestAnimationFrame(tick);
-
     const spawnBubbles = (x: number, y: number) => {
-      const count = 10 + Math.floor(Math.random() * 6);
+      const count = 8 + Math.floor(Math.random() * 5);
       for (let i = 0; i < count; i++) {
-        const bubble = document.createElement("div");
-        bubble.className = "aero-bubble";
-        const size = 6 + Math.random() * 18;
-        bubble.style.width = `${size}px`;
-        bubble.style.height = `${size}px`;
-        bubble.style.left = `${x + (Math.random() - 0.5) * 24}px`;
-        bubble.style.top = `${y + (Math.random() - 0.5) * 24}px`;
-        bubble.style.setProperty(
-          "--drift",
-          `${(Math.random() - 0.5) * 160}px`,
-        );
-        // Float to leave screen - distance is from spawn point to top
-        const rise = y + 80;
-        bubble.style.setProperty("--rise", `-${rise}px`);
-        bubble.style.setProperty(
-          "--scale-end",
-          `${0.7 + Math.random() * 0.9}`,
-        );
-        // Slow float, varied per bubble
-        bubble.style.animationDuration = `${3.5 + Math.random() * 3}s`;
-        bubble.style.animationDelay = `${Math.random() * 0.15}s`;
-        document.body.appendChild(bubble);
-        setTimeout(() => bubble.remove(), 7000);
+        const el = document.createElement("div");
+        el.className = "aero-bubble";
+        const size = 10 + Math.random() * 22;
+        el.style.width = `${size}px`;
+        el.style.height = `${size}px`;
+        document.body.appendChild(el);
+
+        const b: Bubble = {
+          el,
+          x: x + (Math.random() - 0.5) * 18,
+          y: y + (Math.random() - 0.5) * 18,
+          vx: (Math.random() - 0.5) * 0.15,
+          vy: -(0.25 + Math.random() * 0.35), // slow upward drift
+          r: size / 2,
+          life: 0,
+          maxLife: 9000 + Math.random() * 4000,
+        };
+        bubbles.push(b);
       }
     };
 
     const handleClick = (e: MouseEvent) => {
-      // Cursor pulse effect (size change)
       cursor.classList.remove("aero-cursor--pulse");
-      // force reflow to restart animation
       void cursor.offsetWidth;
       cursor.classList.add("aero-cursor--pulse");
       spawnBubbles(e.clientX, e.clientY);
     };
+
+    let lastT = performance.now();
+    const tick = (t: number) => {
+      const dt = Math.min(48, t - lastT);
+      lastT = t;
+
+      // Trailing dot
+      dotX += (mouseX - dotX) * 0.18;
+      dotY += (mouseY - dotY) * 0.18;
+      dot.style.left = `${dotX}px`;
+      dot.style.top = `${dotY}px`;
+
+      // Bubble physics: slow upward float + bubble-bubble collisions
+      for (let i = 0; i < bubbles.length; i++) {
+        const b = bubbles[i];
+        b.life += dt;
+        // gentle horizontal jitter (water current)
+        b.vx += (Math.random() - 0.5) * 0.004;
+        b.vx *= 0.995;
+        // ensure consistent slow upward velocity
+        b.vy += -0.0015 * dt; // slight upward acceleration
+        if (b.vy < -1.2) b.vy = -1.2;
+
+        b.x += b.vx * dt;
+        b.y += b.vy * dt;
+      }
+
+      // Pairwise collisions (elastic, equal mass)
+      for (let i = 0; i < bubbles.length; i++) {
+        for (let j = i + 1; j < bubbles.length; j++) {
+          const a = bubbles[i];
+          const c = bubbles[j];
+          const dx = c.x - a.x;
+          const dy = c.y - a.y;
+          const dist = Math.hypot(dx, dy);
+          const min = a.r + c.r;
+          if (dist > 0 && dist < min) {
+            const nx = dx / dist;
+            const ny = dy / dist;
+            const overlap = (min - dist) / 2;
+            a.x -= nx * overlap;
+            a.y -= ny * overlap;
+            c.x += nx * overlap;
+            c.y += ny * overlap;
+
+            // relative velocity along normal
+            const dvx = c.vx - a.vx;
+            const dvy = c.vy - a.vy;
+            const vn = dvx * nx + dvy * ny;
+            if (vn < 0) {
+              const restitution = 0.85;
+              const impulse = -(1 + restitution) * vn * 0.5;
+              a.vx -= impulse * nx;
+              a.vy -= impulse * ny;
+              c.vx += impulse * nx;
+              c.vy += impulse * ny;
+            }
+          }
+        }
+      }
+
+      // Render + cull
+      for (let i = bubbles.length - 1; i >= 0; i--) {
+        const b = bubbles[i];
+        const lifeRatio = b.life / b.maxLife;
+        // fade in fast, hold, fade out near end
+        let opacity = 1;
+        if (lifeRatio < 0.08) opacity = lifeRatio / 0.08;
+        else if (lifeRatio > 0.85) opacity = (1 - lifeRatio) / 0.15;
+        b.el.style.left = `${b.x}px`;
+        b.el.style.top = `${b.y}px`;
+        b.el.style.opacity = `${Math.max(0, Math.min(1, opacity))}`;
+
+        if (b.y + b.r < -20 || b.life > b.maxLife) {
+          b.el.remove();
+          bubbles.splice(i, 1);
+        }
+      }
+
+      rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
 
     window.addEventListener("mousemove", handleMove);
     window.addEventListener("click", handleClick);
@@ -76,6 +154,7 @@ export function AeroCursor() {
       cancelAnimationFrame(rafId);
       window.removeEventListener("mousemove", handleMove);
       window.removeEventListener("click", handleClick);
+      bubbles.forEach((b) => b.el.remove());
     };
   }, []);
 
