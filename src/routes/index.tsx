@@ -75,8 +75,12 @@ function Index() {
               }}
             >
               <h1
-                className="invert-text text-center text-lg leading-none tracking-[0.3em] sm:text-xl"
-                style={{ fontFamily: "'Audiowide', system-ui, sans-serif" }}
+                className="invert-text text-center leading-none tracking-[0.3em]"
+                style={{
+                  fontFamily: "'Audiowide', system-ui, sans-serif",
+                  color: "#50280c",
+                  fontSize: "15px",
+                }}
               >
                 are you ready
               </h1>

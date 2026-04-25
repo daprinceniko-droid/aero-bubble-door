@@ -49,11 +49,11 @@ export function AeroCursor() {
           el,
           x: x + (Math.random() - 0.5) * 18,
           y: y + (Math.random() - 0.5) * 18,
-          vx: (Math.random() - 0.5) * 0.15,
-          vy: -(0.25 + Math.random() * 0.35), // slow upward drift
+          vx: (Math.random() - 0.5) * 0.04,
+          vy: -(0.04 + Math.random() * 0.06), // very slow upward drift
           r: size / 2,
           life: 0,
-          maxLife: 9000 + Math.random() * 4000,
+          maxLife: 16000 + Math.random() * 8000,
         };
         bubbles.push(b);
       }
@@ -77,22 +77,24 @@ export function AeroCursor() {
       dot.style.left = `${dotX}px`;
       dot.style.top = `${dotY}px`;
 
-      // Bubble physics: slow upward float + bubble-bubble collisions
+      // Bubble physics: very slow upward float + bubble-bubble collisions
       for (let i = 0; i < bubbles.length; i++) {
         const b = bubbles[i];
         b.life += dt;
-        // gentle horizontal jitter (water current)
-        b.vx += (Math.random() - 0.5) * 0.004;
-        b.vx *= 0.995;
-        // ensure consistent slow upward velocity
-        b.vy += -0.0015 * dt; // slight upward acceleration
-        if (b.vy < -1.2) b.vy = -1.2;
+        // tiny horizontal jitter (water current)
+        b.vx += (Math.random() - 0.5) * 0.0008;
+        b.vx *= 0.99;
+        // very gentle upward acceleration
+        b.vy += -0.0003 * dt;
+        if (b.vy < -0.25) b.vy = -0.25;
+        if (b.vx > 0.15) b.vx = 0.15;
+        if (b.vx < -0.15) b.vx = -0.15;
 
         b.x += b.vx * dt;
         b.y += b.vy * dt;
       }
 
-      // Pairwise collisions (elastic, equal mass)
+      // Pairwise collisions (bouncy, equal mass)
       for (let i = 0; i < bubbles.length; i++) {
         for (let j = i + 1; j < bubbles.length; j++) {
           const a = bubbles[i];
@@ -115,7 +117,7 @@ export function AeroCursor() {
             const dvy = c.vy - a.vy;
             const vn = dvx * nx + dvy * ny;
             if (vn < 0) {
-              const restitution = 0.85;
+              const restitution = 1.0;
               const impulse = -(1 + restitution) * vn * 0.5;
               a.vx -= impulse * nx;
               a.vy -= impulse * ny;
