@@ -24,7 +24,7 @@ export const Route = createFileRoute("/")({
       },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Audiowide&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Audiowide&family=Bungee&family=Special+Elite&family=VT323&display=swap",
       },
     ],
   }),
