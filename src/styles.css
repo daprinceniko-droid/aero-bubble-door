@@ -349,25 +349,18 @@
 
 .flip-face--back {
   transform: rotateY(180deg);
-  background: #000;
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(40, 200, 110, 0.35) 0%,
+      rgba(10, 60, 30, 0.6) 40%,
+      #000 80%
+    ),
+    #000;
+  box-shadow: inset 0 0 200px rgba(110, 255, 161, 0.25);
 }
 
-/* Matrix rain canvas backdrop */
-.matrix-bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  background: radial-gradient(
-    ellipse at center,
-    #001a08 0%,
-    #000400 70%,
-    #000 100%
-  );
-}
-
-.matrix-overlay {
+.green-glow-overlay {
   position: relative;
   z-index: 2;
   display: flex;
@@ -379,19 +372,19 @@
   color: #6effa1;
   font-family: "Audiowide", system-ui, sans-serif;
   text-shadow:
-    0 0 8px rgba(110, 255, 161, 0.9),
-    0 0 22px rgba(40, 200, 100, 0.6);
+    0 0 10px rgba(110, 255, 161, 0.95),
+    0 0 28px rgba(40, 200, 100, 0.7);
 }
 
-.matrix-overlay h2 {
-  font-size: 1.6rem;
-  letter-spacing: 0.35em;
+.green-glow-overlay h2 {
+  font-size: 1.4rem;
+  letter-spacing: 0.4em;
   text-transform: uppercase;
 }
 
-.matrix-overlay p {
-  font-size: 0.65rem;
-  letter-spacing: 0.45em;
+.green-glow-overlay p {
+  font-size: 0.6rem;
+  letter-spacing: 0.5em;
   text-transform: uppercase;
   color: rgba(110, 255, 161, 0.7);
 }
