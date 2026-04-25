@@ -49,11 +49,11 @@ export function AeroCursor() {
           el,
           x: x + (Math.random() - 0.5) * 18,
           y: y + (Math.random() - 0.5) * 18,
-          vx: (Math.random() - 0.5) * 0.04,
-          vy: -(0.04 + Math.random() * 0.06), // very slow upward drift
+          vx: (Math.random() - 0.5) * 0.004,
+          vy: -(0.004 + Math.random() * 0.006), // ultra slow upward drift (10%)
           r: size / 2,
           life: 0,
-          maxLife: 16000 + Math.random() * 8000,
+          maxLife: 60000 + Math.random() * 30000,
         };
         bubbles.push(b);
       }
