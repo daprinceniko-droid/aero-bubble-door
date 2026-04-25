@@ -4,20 +4,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/*
- * Design system definition.
- *
- * The @theme inline block maps CSS custom properties to Tailwind utility
- * classes (e.g. --color-primary -> bg-primary, text-primary).
- *
- * The :root and .dark blocks define the actual color values using oklch.
- * All colors MUST use oklch format.
- *
- * To add a new semantic color:
- * 1. Add the variable to :root (light value) and .dark (dark value)
- * 2. Register it in @theme inline as --color-<name>: var(--<name>)
- */
-
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -144,13 +130,13 @@
   }
 }
 
-/* Frutiger Aero custom cursor */
+/* Frutiger Aero custom cursor - smaller */
 .aero-cursor {
   position: fixed;
   top: 0;
   left: 0;
-  width: 28px;
-  height: 28px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   pointer-events: none;
   z-index: 9999;
@@ -163,32 +149,64 @@
     rgba(40, 120, 200, 0.25) 100%
   );
   box-shadow:
-    inset 0 0 6px rgba(255, 255, 255, 0.9),
-    inset -2px -3px 6px rgba(40, 120, 200, 0.4),
-    0 0 12px rgba(120, 200, 255, 0.6),
-    0 4px 10px rgba(0, 60, 120, 0.3);
+    inset 0 0 4px rgba(255, 255, 255, 0.9),
+    inset -1px -2px 4px rgba(40, 120, 200, 0.4),
+    0 0 10px rgba(120, 200, 255, 0.6),
+    0 2px 6px rgba(0, 60, 120, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.6);
-  mix-blend-mode: normal;
 }
 
 .aero-cursor::before {
   content: "";
   position: absolute;
-  top: 4px;
-  left: 6px;
-  width: 10px;
-  height: 6px;
+  top: 2px;
+  left: 4px;
+  width: 7px;
+  height: 4px;
   background: rgba(255, 255, 255, 0.85);
   border-radius: 50%;
-  filter: blur(1px);
+  filter: blur(0.5px);
 }
 
-/* Bubbles */
+/* Click pulse - cursor balloons then settles */
+.aero-cursor--pulse {
+  animation: cursor-pulse 0.45s ease-out;
+}
+
+@keyframes cursor-pulse {
+  0% { width: 18px; height: 18px; }
+  40% { width: 38px; height: 38px; }
+  100% { width: 18px; height: 18px; }
+}
+
+/* Trailing dot that follows the cursor */
+.aero-cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle at 35% 35%,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(160, 220, 255, 0.95) 60%,
+    rgba(60, 150, 220, 0.6) 100%
+  );
+  box-shadow:
+    0 0 8px rgba(140, 210, 255, 0.9),
+    0 0 14px rgba(80, 170, 230, 0.5);
+}
+
+/* Bubbles - slow physics float */
 .aero-bubble {
   position: fixed;
   pointer-events: none;
   border-radius: 50%;
-  z-index: 9998;
+  z-index: 9997;
   transform: translate(-50%, -50%);
   background: radial-gradient(
     circle at 30% 30%,
@@ -202,7 +220,7 @@
     inset -2px -3px 6px rgba(40, 120, 200, 0.4),
     0 0 14px rgba(120, 200, 255, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.5);
-  animation: bubble-rise 1.6s ease-out forwards;
+  animation: bubble-float 5s cubic-bezier(0.25, 0.6, 0.35, 1) forwards;
 }
 
 .aero-bubble::before {
@@ -217,18 +235,32 @@
   filter: blur(1px);
 }
 
-@keyframes bubble-rise {
+@keyframes bubble-float {
   0% {
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.2);
   }
-  20% {
+  12% {
     opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(
+        calc(-50% + var(--drift, 0px) * 0.5),
+        calc(-50% + var(--rise, -400px) * 0.5)
+      )
+      scale(calc(var(--scale-end, 1) * 0.95));
+  }
+  85% {
+    opacity: 0.85;
   }
   100% {
     opacity: 0;
-    transform: translate(calc(-50% + var(--drift, 0px)), calc(-50% - 140px))
-      scale(1.2);
+    transform: translate(
+        calc(-50% + var(--drift, 0px)),
+        calc(-50% + var(--rise, -400px))
+      )
+      scale(var(--scale-end, 1));
   }
 }
 
@@ -238,16 +270,16 @@
   color: #ffffff;
 }
 
-/* Frutiger Aero button */
+/* Frutiger Aero button - smaller, refined */
 .aero-button {
   position: relative;
   font-family: "Audiowide", system-ui, sans-serif;
-  font-size: 1.5rem;
-  letter-spacing: 0.15em;
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: #0a3a66;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
-  padding: 1.1rem 3.5rem;
+  padding: 0.55rem 1.8rem;
   border: none;
   border-radius: 999px;
   cursor: none;
@@ -262,10 +294,10 @@
   );
   box-shadow:
     inset 0 1px 1px rgba(255, 255, 255, 0.95),
-    inset 0 -2px 4px rgba(20, 70, 130, 0.4),
+    inset 0 -2px 3px rgba(20, 70, 130, 0.4),
     inset 0 0 0 1px rgba(255, 255, 255, 0.5),
-    0 6px 18px rgba(20, 80, 150, 0.45),
-    0 2px 4px rgba(20, 80, 150, 0.3);
+    0 4px 12px rgba(20, 80, 150, 0.4),
+    0 1px 3px rgba(20, 80, 150, 0.3);
   transition:
     transform 0.15s ease,
     box-shadow 0.15s ease;
@@ -274,7 +306,7 @@
 .aero-button::before {
   content: "";
   position: absolute;
-  top: 4px;
+  top: 2px;
   left: 8%;
   right: 8%;
   height: 38%;
@@ -288,15 +320,118 @@
 }
 
 .aero-button:hover {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   box-shadow:
     inset 0 1px 1px rgba(255, 255, 255, 0.95),
-    inset 0 -2px 4px rgba(20, 70, 130, 0.4),
+    inset 0 -2px 3px rgba(20, 70, 130, 0.4),
     inset 0 0 0 1px rgba(255, 255, 255, 0.6),
-    0 10px 24px rgba(20, 80, 150, 0.55),
-    0 3px 6px rgba(20, 80, 150, 0.35);
+    0 7px 18px rgba(20, 80, 150, 0.5),
+    0 2px 5px rgba(20, 80, 150, 0.35);
 }
 
 .aero-button:active {
   transform: translateY(1px);
+}
+
+/* 3D Matrix Flip Transition */
+.flip-stage {
+  perspective: 1800px;
+  perspective-origin: 50% 50%;
+}
+
+.flip-card {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  transform-style: preserve-3d;
+  transition: transform 1.4s cubic-bezier(0.7, 0, 0.3, 1);
+  will-change: transform;
+}
+
+.flip-card.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.flip-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.flip-face--front {
+  position: relative;
+}
+
+.flip-face--back {
+  transform: rotateY(180deg);
+  background: #000;
+}
+
+/* Matrix rain canvas backdrop */
+.matrix-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: radial-gradient(
+    ellipse at center,
+    #001a08 0%,
+    #000400 70%,
+    #000 100%
+  );
+}
+
+.matrix-overlay {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  color: #6effa1;
+  font-family: "Audiowide", system-ui, sans-serif;
+  text-shadow:
+    0 0 8px rgba(110, 255, 161, 0.9),
+    0 0 22px rgba(40, 200, 100, 0.6);
+}
+
+.matrix-overlay h2 {
+  font-size: 1.6rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+}
+
+.matrix-overlay p {
+  font-size: 0.65rem;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: rgba(110, 255, 161, 0.7);
+}
+
+/* Flash overlay during flip */
+.flip-flash {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(110, 255, 161, 0.35) 0%,
+    rgba(0, 40, 15, 0.1) 40%,
+    transparent 80%
+  );
+  opacity: 0;
+  animation: flip-flash 1.4s ease-out forwards;
+}
+
+@keyframes flip-flash {
+  0% { opacity: 0; }
+  35% { opacity: 1; }
+  100% { opacity: 0; }
 }
