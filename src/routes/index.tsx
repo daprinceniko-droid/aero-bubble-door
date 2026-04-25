@@ -97,13 +97,9 @@ function Index() {
           </main>
         </div>
 
-        {/* BACK - just green glow */}
+        {/* BACK - Y2K grunge placeholder */}
         <div className="flip-face flip-face--back">
-          <div className="green-glow-overlay">
-            <p>// system online</p>
-            <h2>Welcome</h2>
-            <p>placeholder screen</p>
-          </div>
+          <Y2KPlaceholder />
         </div>
       </div>
 
