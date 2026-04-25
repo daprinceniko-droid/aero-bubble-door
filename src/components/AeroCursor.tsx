@@ -133,9 +133,9 @@ export function AeroCursor() {
         const b = bubbles[i];
         const lifeRatio = b.life / b.maxLife;
         // fade in fast, hold, fade out near end
-        let opacity = 1;
-        if (lifeRatio < 0.08) opacity = lifeRatio / 0.08;
-        else if (lifeRatio > 0.85) opacity = (1 - lifeRatio) / 0.15;
+        let opacity = 0.65;
+        if (lifeRatio < 0.08) opacity = (lifeRatio / 0.08) * 0.65;
+        else if (lifeRatio > 0.85) opacity = ((1 - lifeRatio) / 0.15) * 0.65;
         b.el.style.left = `${b.x}px`;
         b.el.style.top = `${b.y}px`;
         b.el.style.opacity = `${Math.max(0, Math.min(1, opacity))}`;
