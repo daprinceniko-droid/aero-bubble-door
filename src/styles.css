@@ -378,44 +378,8 @@
 
 .flip-face--back {
   transform: rotateY(180deg);
-  background:
-    radial-gradient(
-      ellipse at center,
-      rgba(40, 200, 110, 0.35) 0%,
-      rgba(10, 60, 30, 0.6) 40%,
-      #000 80%
-    ),
-    #000;
-  box-shadow: inset 0 0 200px rgba(110, 255, 161, 0.25);
-}
-
-.green-glow-overlay {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.8rem;
-  color: #6effa1;
-  font-family: "Audiowide", system-ui, sans-serif;
-  text-shadow:
-    0 0 10px rgba(110, 255, 161, 0.95),
-    0 0 28px rgba(40, 200, 100, 0.7);
-}
-
-.green-glow-overlay h2 {
-  font-size: 1.4rem;
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-}
-
-.green-glow-overlay p {
-  font-size: 0.6rem;
-  letter-spacing: 0.5em;
-  text-transform: uppercase;
-  color: rgba(110, 255, 161, 0.7);
+  background: #050a06;
+  overflow: hidden;
 }
 
 /* Flash overlay during flip */
@@ -439,3 +403,468 @@
   35% { opacity: 1; }
   100% { opacity: 0; }
 }
+
+/* ==========================================================
+   Y2K GRUNGE PLACEHOLDER
+   ========================================================== */
+.y2k-screen {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(40, 180, 90, 0.25) 0%, transparent 55%),
+    radial-gradient(ellipse at 70% 80%, rgba(20, 120, 60, 0.3) 0%, transparent 60%),
+    radial-gradient(ellipse at center, rgba(8, 30, 16, 1) 0%, #020503 90%);
+  color: #b6ffcf;
+  font-family: "Special Elite", "Courier New", monospace;
+  overflow: hidden;
+  cursor: none;
+}
+
+/* Grain noise overlay */
+.y2k-noise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.18;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.7'/></svg>");
+  z-index: 1;
+}
+
+/* Diagonal scratches */
+.y2k-scratches {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      87deg,
+      transparent 0,
+      transparent 60px,
+      rgba(180, 255, 200, 0.04) 60px,
+      rgba(180, 255, 200, 0.04) 61px,
+      transparent 61px,
+      transparent 140px
+    ),
+    repeating-linear-gradient(
+      -83deg,
+      transparent 0,
+      transparent 90px,
+      rgba(255, 255, 255, 0.03) 90px,
+      rgba(255, 255, 255, 0.03) 91px
+    );
+  z-index: 1;
+}
+
+.y2k-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.85) 100%);
+  z-index: 2;
+}
+
+/* Stickers */
+.y2k-sticker {
+  position: absolute;
+  z-index: 5;
+  font-size: 4rem;
+  color: #6effa1;
+  text-shadow:
+    0 0 12px rgba(110, 255, 161, 0.8),
+    2px 2px 0 #000,
+    -2px -2px 0 #000;
+  filter: drop-shadow(2px 4px 4px rgba(0, 0, 0, 0.8));
+  user-select: none;
+  pointer-events: none;
+}
+.y2k-sticker--biohazard { transform: rotate(-12deg); font-size: 5.5rem; color: #ffe800; }
+.y2k-sticker--star { transform: rotate(18deg); color: #ff3366; font-size: 3.5rem; }
+.y2k-sticker--skull { transform: rotate(-8deg); font-size: 4.5rem; color: #ddd; }
+.y2k-sticker--smile { transform: rotate(22deg); color: #6effa1; }
+.y2k-sticker--lightning { transform: rotate(-15deg); color: #ffe800; font-size: 4.5rem; }
+.y2k-sticker--peace { transform: rotate(8deg); color: #ff8a00; font-size: 4rem; }
+.y2k-sticker--anarchy { transform: rotate(-20deg); font-size: 5rem; color: #ff3366; }
+.y2k-sticker--heart { transform: rotate(-25deg); font-size: 3rem; }
+
+/* Tape strips */
+.y2k-tape {
+  position: absolute;
+  z-index: 6;
+  background: rgba(255, 240, 180, 0.7);
+  color: #2a1a05;
+  font-family: "Special Elite", monospace;
+  font-size: 0.7rem;
+  padding: 0.35rem 1.5rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+.y2k-tape--1 { top: 4%; right: 6%; transform: rotate(8deg); }
+.y2k-tape--2 { bottom: 16%; right: 8%; transform: rotate(-6deg); background: rgba(255, 180, 80, 0.75); }
+
+/* Grungy stamps */
+.y2k-stamp {
+  position: absolute;
+  z-index: 6;
+  font-family: "Bungee", "Impact", sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: 0.1em;
+  color: #ff2a2a;
+  border: 4px solid #ff2a2a;
+  padding: 0.3rem 1rem;
+  opacity: 0.75;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  filter: contrast(1.1);
+}
+.y2k-stamp--top { top: 6%; left: 18%; transform: rotate(-14deg); }
+.y2k-stamp--bottom { bottom: 10%; left: 24%; transform: rotate(7deg); color: #ffe800; border-color: #ffe800; }
+
+/* Title */
+.y2k-title-wrap {
+  position: absolute;
+  top: 2.5%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  text-align: center;
+  pointer-events: none;
+}
+.y2k-title {
+  font-family: "Bungee", "Impact", sans-serif;
+  font-size: 3.5rem;
+  letter-spacing: 0.05em;
+  color: #6effa1;
+  text-shadow:
+    0 0 20px rgba(110, 255, 161, 0.9),
+    0 0 40px rgba(40, 200, 100, 0.6),
+    3px 3px 0 #000,
+    -2px -2px 0 #1a4a25;
+  text-transform: uppercase;
+  margin: 0;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.8));
+}
+.y2k-title-sub {
+  font-family: "VT323", monospace;
+  font-size: 1rem;
+  color: #6effa1;
+  letter-spacing: 0.3em;
+  margin-top: -0.4rem;
+  opacity: 0.8;
+  text-shadow: 0 0 8px rgba(110, 255, 161, 0.7);
+}
+
+/* Center video frame */
+.y2k-video-frame {
+  position: absolute;
+  top: 50%;
+  left: 38%;
+  transform: translate(-50%, -50%) rotate(-1.5deg);
+  z-index: 8;
+  width: 38%;
+  max-width: 480px;
+  aspect-ratio: 16 / 10;
+  background: #000;
+  border: 3px solid #6effa1;
+  box-shadow:
+    0 0 30px rgba(110, 255, 161, 0.5),
+    0 0 60px rgba(40, 200, 100, 0.3),
+    inset 0 0 20px rgba(0, 0, 0, 0.8),
+    8px 12px 30px rgba(0, 0, 0, 0.9);
+  padding: 6px;
+  overflow: hidden;
+}
+.y2k-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: contrast(1.1) saturate(1.2);
+}
+.y2k-video-corner {
+  position: absolute;
+  font-family: "VT323", monospace;
+  color: #6effa1;
+  font-size: 1.2rem;
+  text-shadow: 0 0 6px rgba(110, 255, 161, 0.9);
+  z-index: 2;
+}
+.y2k-video-corner--tl { top: 4px; left: 6px; }
+.y2k-video-corner--tr { top: 4px; right: 6px; }
+.y2k-video-corner--bl { bottom: 2px; left: 6px; }
+.y2k-video-corner--br { bottom: 2px; right: 6px; }
+.y2k-video-tag {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "VT323", monospace;
+  color: #ff3030;
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  text-shadow: 0 0 8px rgba(255, 50, 50, 0.9);
+  z-index: 3;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 1px 8px;
+}
+.y2k-scanline {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 2px,
+    rgba(0, 0, 0, 0.25) 2px,
+    rgba(0, 0, 0, 0.25) 3px
+  );
+  z-index: 4;
+}
+
+/* ==========================================================
+   WINAMP-STYLE PLAYER
+   ========================================================== */
+.winamp {
+  position: absolute;
+  top: 50%;
+  right: 2%;
+  transform: translateY(-50%) rotate(1deg);
+  z-index: 12;
+  width: 320px;
+  background:
+    linear-gradient(180deg, rgba(20, 60, 35, 0.95), rgba(5, 25, 12, 0.95));
+  border: 2px solid #1a4a25;
+  border-radius: 8px;
+  box-shadow:
+    0 0 25px rgba(110, 255, 161, 0.35),
+    inset 0 1px 0 rgba(110, 255, 161, 0.2),
+    inset 0 0 30px rgba(0, 0, 0, 0.6),
+    8px 14px 30px rgba(0, 0, 0, 0.8);
+  font-family: "VT323", monospace;
+  color: #b6ffcf;
+  overflow: hidden;
+}
+
+.winamp__chrome {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 8px;
+  background: linear-gradient(180deg, #2a6a3a 0%, #0c2a14 100%);
+  border-bottom: 1px solid #6effa1;
+  font-size: 0.85rem;
+}
+.winamp__title { display: flex; gap: 6px; align-items: center; color: #d4ffe2; text-shadow: 0 0 6px rgba(110, 255, 161, 0.7); }
+.winamp__logo { color: #6effa1; }
+.winamp__window-btns { display: flex; gap: 4px; color: #6effa1; font-size: 0.8rem; }
+.winamp__window-btns span {
+  width: 14px; height: 14px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #0c2a14;
+  border: 1px solid #6effa1;
+  line-height: 1;
+}
+
+.winamp__display {
+  padding: 10px;
+  background: radial-gradient(ellipse at center, rgba(20, 80, 40, 0.4), rgba(0, 0, 0, 0.6));
+  border-bottom: 1px solid rgba(110, 255, 161, 0.3);
+}
+
+.winamp__viz {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 50px;
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(110, 255, 161, 0.4);
+  margin-bottom: 8px;
+}
+.winamp__bar {
+  flex: 1;
+  background: linear-gradient(to top, #6effa1, #d4ffe2);
+  box-shadow: 0 0 4px rgba(110, 255, 161, 0.8);
+  animation: winamp-bar 0.8s ease-in-out infinite alternate;
+  min-height: 10%;
+}
+@keyframes winamp-bar {
+  from { transform: scaleY(0.5); }
+  to { transform: scaleY(1); }
+}
+
+.winamp__track-info { text-align: center; }
+.winamp__track {
+  font-size: 1.15rem;
+  color: #6effa1;
+  text-shadow: 0 0 8px rgba(110, 255, 161, 0.9);
+  letter-spacing: 0.05em;
+}
+.winamp__artist { font-size: 0.95rem; color: #b6ffcf; opacity: 0.9; }
+.winamp__album { font-size: 0.8rem; color: #6effa1; opacity: 0.7; letter-spacing: 0.2em; }
+
+.winamp__controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  flex-wrap: wrap;
+  background: linear-gradient(180deg, #143a20, #0a2010);
+  border-bottom: 1px solid rgba(110, 255, 161, 0.3);
+}
+.winamp__btn {
+  width: 28px; height: 28px;
+  background: linear-gradient(180deg, #2a6a3a, #0c2a14);
+  border: 1px solid #6effa1;
+  border-radius: 4px;
+  color: #6effa1;
+  font-size: 0.85rem;
+  cursor: none;
+  display: flex; align-items: center; justify-content: center;
+  text-shadow: 0 0 4px rgba(110, 255, 161, 0.8);
+  box-shadow: inset 0 1px 0 rgba(110, 255, 161, 0.3);
+}
+.winamp__btn--play {
+  width: 36px; height: 36px;
+  background: linear-gradient(180deg, #6effa1, #2a8a48);
+  color: #062012;
+  text-shadow: none;
+}
+.winamp__progress {
+  position: relative;
+  flex: 1 1 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(110, 255, 161, 0.5);
+  margin-top: 4px;
+  border-radius: 2px;
+}
+.winamp__progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2a8a48, #6effa1);
+  box-shadow: 0 0 6px rgba(110, 255, 161, 0.8);
+}
+.winamp__progress-thumb {
+  position: absolute;
+  top: 50%;
+  width: 10px; height: 14px;
+  background: linear-gradient(180deg, #d4ffe2, #6effa1);
+  border: 1px solid #1a4a25;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 6px rgba(110, 255, 161, 0.9);
+}
+.winamp__time {
+  font-size: 0.85rem;
+  color: #6effa1;
+  text-shadow: 0 0 4px rgba(110, 255, 161, 0.7);
+  margin-left: 4px;
+}
+.winamp__knob {
+  position: relative;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #6effa1 0%, #2a8a48 40%, #0c2a14 100%);
+  border: 1px solid #6effa1;
+  box-shadow: 0 0 10px rgba(110, 255, 161, 0.6), inset 0 0 4px rgba(0, 0, 0, 0.6);
+  margin-left: auto;
+}
+.winamp__knob-tick {
+  position: absolute;
+  top: 3px;
+  left: 50%;
+  width: 2px;
+  height: 8px;
+  background: #d4ffe2;
+  transform: translateX(-50%) rotate(35deg);
+  transform-origin: bottom center;
+  box-shadow: 0 0 4px rgba(110, 255, 161, 0.9);
+}
+
+.winamp__playlist {
+  padding: 6px 8px;
+  background: rgba(0, 0, 0, 0.5);
+}
+.winamp__playlist-header {
+  font-size: 1rem;
+  color: #d4ffe2;
+  border-bottom: 1px solid rgba(110, 255, 161, 0.4);
+  padding-bottom: 3px;
+  margin-bottom: 4px;
+  text-shadow: 0 0 6px rgba(110, 255, 161, 0.7);
+}
+.winamp__playlist ul { list-style: none; padding: 0; margin: 0; font-size: 0.95rem; }
+.winamp__playlist li {
+  padding: 2px 6px;
+  color: #b6ffcf;
+}
+.winamp__playlist li.is-active {
+  background: linear-gradient(90deg, rgba(110, 255, 161, 0.35), transparent);
+  color: #fff;
+  text-shadow: 0 0 6px rgba(110, 255, 161, 0.9);
+  border-left: 2px solid #6effa1;
+}
+
+.winamp__playlist-footer {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+  align-items: center;
+}
+.winamp__search {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(110, 255, 161, 0.4);
+  color: #6effa1;
+  font-family: "VT323", monospace;
+  font-size: 0.9rem;
+  padding: 2px 6px;
+  outline: none;
+}
+.winamp__small-btn {
+  background: linear-gradient(180deg, #2a6a3a, #0c2a14);
+  border: 1px solid #6effa1;
+  color: #6effa1;
+  font-family: "VT323", monospace;
+  font-size: 0.85rem;
+  padding: 2px 8px;
+  cursor: none;
+  text-shadow: 0 0 4px rgba(110, 255, 161, 0.7);
+}
+
+.winamp__statusbar {
+  font-size: 0.8rem;
+  padding: 3px 8px;
+  background: #0c2a14;
+  color: #6effa1;
+  border-top: 1px solid rgba(110, 255, 161, 0.4);
+  text-shadow: 0 0 4px rgba(110, 255, 161, 0.7);
+}
+
+/* Marquee */
+.y2k-marquee {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 11;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.9));
+  border-top: 1px solid rgba(110, 255, 161, 0.4);
+  overflow: hidden;
+  padding: 6px 0;
+}
+.y2k-marquee__track {
+  white-space: nowrap;
+  font-family: "VT323", monospace;
+  font-size: 1rem;
+  color: #6effa1;
+  text-shadow: 0 0 8px rgba(110, 255, 161, 0.8);
+  letter-spacing: 0.15em;
+  animation: y2k-scroll 30s linear infinite;
+}
+@keyframes y2k-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+

@@ -49,11 +49,11 @@ export function AeroCursor() {
           el,
           x: x + (Math.random() - 0.5) * 18,
           y: y + (Math.random() - 0.5) * 18,
-          vx: (Math.random() - 0.5) * 0.04,
-          vy: -(0.04 + Math.random() * 0.06), // very slow upward drift
+          vx: (Math.random() - 0.5) * 0.004,
+          vy: -(0.004 + Math.random() * 0.006), // ultra slow upward drift (10%)
           r: size / 2,
           life: 0,
-          maxLife: 16000 + Math.random() * 8000,
+          maxLife: 60000 + Math.random() * 30000,
         };
         bubbles.push(b);
       }
@@ -81,14 +81,14 @@ export function AeroCursor() {
       for (let i = 0; i < bubbles.length; i++) {
         const b = bubbles[i];
         b.life += dt;
-        // tiny horizontal jitter (water current)
-        b.vx += (Math.random() - 0.5) * 0.0008;
+        // tiny horizontal jitter (water current) - reduced 10x
+        b.vx += (Math.random() - 0.5) * 0.00008;
         b.vx *= 0.99;
-        // very gentle upward acceleration
-        b.vy += -0.0003 * dt;
-        if (b.vy < -0.25) b.vy = -0.25;
-        if (b.vx > 0.15) b.vx = 0.15;
-        if (b.vx < -0.15) b.vx = -0.15;
+        // very gentle upward acceleration - reduced 10x
+        b.vy += -0.00003 * dt;
+        if (b.vy < -0.025) b.vy = -0.025;
+        if (b.vx > 0.015) b.vx = 0.015;
+        if (b.vx < -0.015) b.vx = -0.015;
 
         b.x += b.vx * dt;
         b.y += b.vy * dt;
@@ -133,9 +133,9 @@ export function AeroCursor() {
         const b = bubbles[i];
         const lifeRatio = b.life / b.maxLife;
         // fade in fast, hold, fade out near end
-        let opacity = 1;
-        if (lifeRatio < 0.08) opacity = lifeRatio / 0.08;
-        else if (lifeRatio > 0.85) opacity = (1 - lifeRatio) / 0.15;
+        let opacity = 0.65;
+        if (lifeRatio < 0.08) opacity = (lifeRatio / 0.08) * 0.65;
+        else if (lifeRatio > 0.85) opacity = ((1 - lifeRatio) / 0.15) * 0.65;
         b.el.style.left = `${b.x}px`;
         b.el.style.top = `${b.y}px`;
         b.el.style.opacity = `${Math.max(0, Math.min(1, opacity))}`;

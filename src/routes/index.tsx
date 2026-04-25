@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { AeroCursor } from "@/components/AeroCursor";
+import { Y2KPlaceholder } from "@/components/Y2KPlaceholder";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -23,7 +24,7 @@ export const Route = createFileRoute("/")({
       },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Audiowide&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Audiowide&family=Bungee&family=Special+Elite&family=VT323&display=swap",
       },
     ],
   }),
@@ -96,13 +97,9 @@ function Index() {
           </main>
         </div>
 
-        {/* BACK - just green glow */}
+        {/* BACK - Y2K grunge placeholder */}
         <div className="flip-face flip-face--back">
-          <div className="green-glow-overlay">
-            <p>// system online</p>
-            <h2>Welcome</h2>
-            <p>placeholder screen</p>
-          </div>
+          <Y2KPlaceholder />
         </div>
       </div>
 
