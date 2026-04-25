@@ -81,14 +81,14 @@ export function AeroCursor() {
       for (let i = 0; i < bubbles.length; i++) {
         const b = bubbles[i];
         b.life += dt;
-        // tiny horizontal jitter (water current)
-        b.vx += (Math.random() - 0.5) * 0.0008;
+        // tiny horizontal jitter (water current) - reduced 10x
+        b.vx += (Math.random() - 0.5) * 0.00008;
         b.vx *= 0.99;
-        // very gentle upward acceleration
-        b.vy += -0.0003 * dt;
-        if (b.vy < -0.25) b.vy = -0.25;
-        if (b.vx > 0.15) b.vx = 0.15;
-        if (b.vx < -0.15) b.vx = -0.15;
+        // very gentle upward acceleration - reduced 10x
+        b.vy += -0.00003 * dt;
+        if (b.vy < -0.025) b.vy = -0.025;
+        if (b.vx > 0.015) b.vx = 0.015;
+        if (b.vx < -0.015) b.vx = -0.015;
 
         b.x += b.vx * dt;
         b.y += b.vy * dt;
