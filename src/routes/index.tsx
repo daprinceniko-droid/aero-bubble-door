@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { AeroCursor } from "@/components/AeroCursor";
+import { Y2KPlaceholder } from "@/components/Y2KPlaceholder";
 
 export const Route = createFileRoute("/")({
   head: () => ({
