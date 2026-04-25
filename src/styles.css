@@ -210,7 +210,7 @@
     0 0 14px rgba(80, 170, 230, 0.5);
 }
 
-/* Bubbles - slow physics float */
+/* Bubbles - JS-driven physics (no CSS animation) */
 .aero-bubble {
   position: fixed;
   pointer-events: none;
@@ -229,7 +229,9 @@
     inset -2px -3px 6px rgba(40, 120, 200, 0.4),
     0 0 14px rgba(120, 200, 255, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.5);
-  animation: bubble-float 5s cubic-bezier(0.25, 0.6, 0.35, 1) forwards;
+  opacity: 0;
+  transition: opacity 0.15s linear;
+  will-change: left, top, opacity;
 }
 
 .aero-bubble::before {
@@ -244,38 +246,9 @@
   filter: blur(1px);
 }
 
-@keyframes bubble-float {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.2);
-  }
-  12% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  50% {
-    transform: translate(
-        calc(-50% + var(--drift, 0px) * 0.5),
-        calc(-50% + var(--rise, -400px) * 0.5)
-      )
-      scale(calc(var(--scale-end, 1) * 0.95));
-  }
-  85% {
-    opacity: 0.85;
-  }
-  100% {
-    opacity: 0;
-    transform: translate(
-        calc(-50% + var(--drift, 0px)),
-        calc(-50% + var(--rise, -400px))
-      )
-      scale(var(--scale-end, 1));
-  }
-}
-
-/* Inversion text effect */
+/* Exclusion / inversion text effect */
 .invert-text {
-  mix-blend-mode: difference;
+  mix-blend-mode: exclusion;
   color: #ffffff;
 }
 
