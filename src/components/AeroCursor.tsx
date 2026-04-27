@@ -18,8 +18,6 @@ export function AeroCursor() {
     const handleMove = (e: MouseEvent) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
-      cursor.style.left = `${mouseX}px`;
-      cursor.style.top = `${mouseY}px`;
     };
 
     const handleClick = () => {
@@ -29,15 +27,15 @@ export function AeroCursor() {
     };
 
     const tick = () => {
+      cursor.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
       dotX += (mouseX - dotX) * 0.18;
       dotY += (mouseY - dotY) * 0.18;
-      dot.style.left = `${dotX}px`;
-      dot.style.top = `${dotY}px`;
+      dot.style.transform = `translate3d(${dotX}px, ${dotY}px, 0) translate(-50%, -50%)`;
       rafId = requestAnimationFrame(tick);
     };
     rafId = requestAnimationFrame(tick);
 
-    window.addEventListener("mousemove", handleMove);
+    window.addEventListener("mousemove", handleMove, { passive: true });
     window.addEventListener("click", handleClick);
     return () => {
       cancelAnimationFrame(rafId);
