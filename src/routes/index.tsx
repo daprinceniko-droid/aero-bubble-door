@@ -105,7 +105,7 @@ function Index() {
       </div>
 
       {showFlash && <div className="flip-flash" />}
-      <AeroCursor />
+      {flipped ? <XpCursor /> : <AeroCursor />}
     </div>
   );
 }
