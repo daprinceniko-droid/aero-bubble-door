@@ -557,24 +557,26 @@
   text-shadow: 0 0 8px rgba(110, 255, 161, 0.7);
 }
 
-/* Center video frame */
+/* Center video frame - full height, left side */
 .y2k-video-frame {
   position: absolute;
-  top: 50%;
-  left: 38%;
-  transform: translate(-50%, -50%) rotate(-1.5deg);
+  top: 0;
+  left: 0;
+  bottom: 0;
   z-index: 8;
   width: 38%;
-  max-width: 480px;
-  aspect-ratio: 16 / 10;
+  max-width: 560px;
+  height: 100vh;
   background: #000;
-  border: 3px solid #6effa1;
+  border-right: 3px solid #6effa1;
+  border-top: none;
+  border-bottom: none;
+  border-left: none;
   box-shadow:
-    0 0 30px rgba(110, 255, 161, 0.5),
-    0 0 60px rgba(40, 200, 100, 0.3),
-    inset 0 0 20px rgba(0, 0, 0, 0.8),
-    8px 12px 30px rgba(0, 0, 0, 0.9);
-  padding: 6px;
+    0 0 40px rgba(110, 255, 161, 0.5),
+    inset 0 0 30px rgba(0, 0, 0, 0.8),
+    8px 0 30px rgba(0, 0, 0, 0.9);
+  padding: 0;
   overflow: hidden;
 }
 .y2k-video {
