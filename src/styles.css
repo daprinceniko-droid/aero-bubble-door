@@ -759,24 +759,33 @@
   text-shadow: 0 0 4px rgba(190, 255, 30, 0.7);
   margin-left: 4px;
 }
-.winamp__knob {
-  position: relative;
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #b6ff10 0%, #4a7a10 40%, #1a2a04 100%);
-  border: 1px solid #b6ff10;
+.winamp__vol {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 70px;
+  height: 6px;
   margin-left: auto;
+  background: linear-gradient(90deg, #1a2a04, #4a7a10);
+  border: 1px solid #b6ff10;
+  border-radius: 3px;
+  outline: none;
   cursor: none;
 }
-.winamp__knob-tick {
-  position: absolute;
-  top: 3px;
-  left: 50%;
-  width: 2px;
-  height: 8px;
-  background: #e8ffb0;
-  transform: translateX(-50%) rotate(35deg);
-  transform-origin: bottom center;
+.winamp__vol::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 14px;
+  background: linear-gradient(180deg, #e8ffb0, #b6ff10);
+  border: 1px solid #3a5a08;
+  cursor: none;
+}
+.winamp__vol::-moz-range-thumb {
+  width: 10px;
+  height: 14px;
+  background: linear-gradient(180deg, #e8ffb0, #b6ff10);
+  border: 1px solid #3a5a08;
+  cursor: none;
 }
 
 .winamp__playlist {
