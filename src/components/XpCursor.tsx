@@ -9,22 +9,37 @@ export function XpCursor() {
     const ring = ringRef.current;
     if (!ring) return;
 
+    let mouseX = 0;
+    let mouseY = 0;
+    let rafId = 0;
+    let queued = false;
+
+    const update = () => {
+      ring.style.transform = `translate3d(${mouseX - 2}px, ${mouseY - 2}px, 0)`;
+      queued = false;
+    };
+
     const handleMove = (e: MouseEvent) => {
-      ring.style.left = `${e.clientX}px`;
-      ring.style.top = `${e.clientY}px`;
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      if (!queued) {
+        queued = true;
+        rafId = requestAnimationFrame(update);
+      }
     };
 
     const handleClick = (e: MouseEvent) => {
       const id = ++idRef.current;
       setRipples((r) => [...r, { id, x: e.clientX, y: e.clientY }]);
-      setTimeout(() => {
+      window.setTimeout(() => {
         setRipples((r) => r.filter((rp) => rp.id !== id));
       }, 700);
     };
 
-    window.addEventListener("mousemove", handleMove);
+    window.addEventListener("mousemove", handleMove, { passive: true });
     window.addEventListener("click", handleClick);
     return () => {
+      cancelAnimationFrame(rafId);
       window.removeEventListener("mousemove", handleMove);
       window.removeEventListener("click", handleClick);
     };
@@ -32,7 +47,6 @@ export function XpCursor() {
 
   return (
     <>
-      {/* Yellow XP-style arrow cursor (SVG) */}
       <div ref={ringRef} className="xp-cursor">
         <svg width="28" height="28" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
           <path
