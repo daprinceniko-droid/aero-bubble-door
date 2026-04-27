@@ -31,6 +31,7 @@ export function Y2KPlaceholder() {
 
   return (
     <div className="y2k-screen">
+      <XpCursor />
       {/* Grunge texture overlays */}
       <div className="y2k-noise" />
       <div className="y2k-scratches" />
