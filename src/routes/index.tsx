@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { AeroCursor } from "@/components/AeroCursor";
+import { XpCursor } from "@/components/XpCursor";
 import { Y2KPlaceholder } from "@/components/Y2KPlaceholder";
 
 export const Route = createFileRoute("/")({
@@ -104,7 +105,7 @@ function Index() {
       </div>
 
       {showFlash && <div className="flip-flash" />}
-      <AeroCursor />
+      {flipped ? <XpCursor /> : <AeroCursor />}
     </div>
   );
 }
