@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { XpCursor } from "./XpCursor";
 
 const TRACKS = [
   "01. Synthwave Drifter",
