@@ -1169,3 +1169,56 @@
   box-shadow: inset 0 0 0 1px rgba(198, 40, 40, 0.4);
   background: rgba(10, 10, 10, 0.25);
 }
+
+.rc-dossier__code--easter {
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s, text-shadow 0.15s;
+}
+.rc-dossier__code--easter:hover {
+  color: #9eff10;
+  text-shadow: 0 0 8px rgba(158, 255, 16, 0.6);
+}
+
+.rc-dossier__access {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(201, 165, 0, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rc-dossier__proceed {
+  font-family: "Bungee", sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  padding: 6px 14px;
+  color: #0b0d0f;
+  background: linear-gradient(180deg, #b6ff2e, #6fbf06);
+  border: 1px solid #2a3a05;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.25),
+    0 0 12px rgba(158, 255, 16, 0.4);
+  cursor: pointer;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: transform 0.08s, box-shadow 0.15s;
+}
+.rc-dossier__proceed:hover {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.25),
+    0 0 18px rgba(158, 255, 16, 0.7);
+}
+.rc-dossier__proceed:active {
+  transform: translateY(1px);
+}
+
+.rc-dossier__granted {
+  font-family: "VT323", monospace;
+  font-size: 16px;
+  color: #9eff10;
+  text-shadow: 0 0 6px rgba(158, 255, 16, 0.5);
+  letter-spacing: 0.08em;
+}
