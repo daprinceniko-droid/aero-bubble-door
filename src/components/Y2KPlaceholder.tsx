@@ -203,6 +203,26 @@ export function Y2KPlaceholder() {
         <div ref={ytContainerRef} />
       </div>
 
+      {/* Easter egg hidden audio */}
+      {easterEgg && (
+        <iframe
+          key="easter-egg"
+          title="easter-egg"
+          src={`https://www.youtube.com/embed/${EASTER_EGG_VIDEO_ID}?autoplay=1&controls=0&loop=1&playlist=${EASTER_EGG_VIDEO_ID}`}
+          allow="autoplay; encrypted-media"
+          style={{
+            position: "fixed",
+            left: -9999,
+            top: -9999,
+            width: 1,
+            height: 1,
+            pointerEvents: "none",
+            opacity: 0,
+            border: 0,
+          }}
+        />
+      )}
+
       {/* Grunge overlays */}
       <div className="y2k-noise" />
       <div className="y2k-scratches" />
