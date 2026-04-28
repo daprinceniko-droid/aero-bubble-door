@@ -341,11 +341,6 @@ export function Y2KPlaceholder() {
               </li>
             ))}
           </ul>
-          <div className="winamp__playlist-footer">
-            <input className="winamp__search" placeholder="Search" />
-            <button className="winamp__small-btn">Add</button>
-            <button className="winamp__small-btn">Clear</button>
-          </div>
         </div>
 
         <div className="winamp__statusbar">
