@@ -277,11 +277,15 @@ export function Y2KPlaceholder() {
             deserunt mollit anim id est laborum — they are your weapon.
           </p>
         </div>
-        <div className="rc-dossier__stats">
-          <span>CALLSIGN: <b>NULL-7</b></span>
-          <span>CLEARANCE: <b>OMEGA</b></span>
-          <span>SECTOR: <b>GEONOSIS-4</b></span>
-          <span>STATUS: <b>ACTIVE</b></span>
+        <div className="rc-dossier__access">
+          <button
+            type="button"
+            className="rc-dossier__proceed"
+            onClick={() => {/* placeholder action */}}
+          >
+            ▶ Proceed
+          </button>
+          <span className="rc-dossier__granted">Access Granted</span>
         </div>
         <div className="rc-dossier__stamp">APPROVED</div>
       </div>
