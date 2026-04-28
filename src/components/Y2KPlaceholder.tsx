@@ -225,6 +225,42 @@ export function Y2KPlaceholder() {
         <div className="y2k-scanline" />
       </div>
 
+      {/* Republic Commando-style dossier panel */}
+      <div className="rc-dossier">
+        <div className="rc-dossier__header">
+          <div className="rc-dossier__badge">CLASSIFIED // EYES ONLY</div>
+          <div className="rc-dossier__code">FILE-187-XK // 2003</div>
+        </div>
+        <h2 className="rc-dossier__title">
+          Subject: <em>About Me</em>
+        </h2>
+        <div className="rc-dossier__subtitle">Operative Dossier · Briefing 01</div>
+        <div className="rc-dossier__body">
+          <p>
+            <span className="drop">L</span>orem ipsum dolor sit amet, consectetur adipiscing elit.
+            Chaos has erupted throughout the network. As leader of an elite squad of pixel
+            commandos, your mission is to infiltrate, dominate, and ultimately annihilate
+            the boredom. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          </p>
+          <p>
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+            aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+            voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+          </p>
+          <p>
+            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+            deserunt mollit anim id est laborum — they are your weapon.
+          </p>
+        </div>
+        <div className="rc-dossier__stats">
+          <span>CALLSIGN: <b>NULL-7</b></span>
+          <span>CLEARANCE: <b>OMEGA</b></span>
+          <span>SECTOR: <b>GEONOSIS-4</b></span>
+          <span>STATUS: <b>ACTIVE</b></span>
+        </div>
+        <div className="rc-dossier__stamp">APPROVED</div>
+      </div>
+
       {/* Winamp player */}
       <div className="winamp">
         <div className="winamp__chrome">
