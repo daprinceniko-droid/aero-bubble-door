@@ -41,6 +41,7 @@ export function Y2KPlaceholder() {
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(70);
   const [easterEgg, setEasterEgg] = useState(false);
+  const [doorPhase, setDoorPhase] = useState<"idle" | "opening" | "zoom" | "full">("idle");
 
   const track = TRACKS[trackIdx];
 
@@ -266,7 +267,9 @@ export function Y2KPlaceholder() {
       </div>
 
       {/* Republic Commando-style dossier panel */}
-      <div className="rc-dossier">
+      <div className={`rc-door rc-door--${doorPhase}`}>
+        <div className="rc-canvas" />
+        <div className="rc-dossier">
         <div className="rc-dossier__header">
           <div className="rc-dossier__badge">CLASSIFIED // EYES ONLY</div>
           <div
@@ -302,13 +305,21 @@ export function Y2KPlaceholder() {
           <button
             type="button"
             className="rc-dossier__proceed"
-            onClick={() => {/* placeholder action */}}
+            onClick={() => {
+              if (doorPhase !== "idle") return;
+              setDoorPhase("opening");
+              window.setTimeout(() => setDoorPhase("zoom"), 1100);
+              window.setTimeout(() => setDoorPhase("full"), 2400);
+            }}
           >
             ▶ Proceed
           </button>
           <span className="rc-dossier__granted">Access Granted</span>
         </div>
         <div className="rc-dossier__stamp">APPROVED</div>
+        </div>
+        <div className="rc-door__leaf rc-door__leaf--left" aria-hidden />
+        <div className="rc-door__leaf rc-door__leaf--right" aria-hidden />
       </div>
 
       {/* Winamp player */}
