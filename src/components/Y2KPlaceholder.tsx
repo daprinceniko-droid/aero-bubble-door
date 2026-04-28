@@ -285,7 +285,7 @@ export function Y2KPlaceholder() {
           <div className="winamp__track-info">
             <div className="winamp__track">{track.title}</div>
             <div className="winamp__artist">{track.artist}</div>
-            <div className="winamp__album">— Frutiger Nights —</div>
+            
           </div>
         </div>
 
