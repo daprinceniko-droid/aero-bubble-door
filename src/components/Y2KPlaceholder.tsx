@@ -267,7 +267,9 @@ export function Y2KPlaceholder() {
       </div>
 
       {/* Republic Commando-style dossier panel */}
-      <div className="rc-dossier">
+      <div className={`rc-door rc-door--${doorPhase}`}>
+        <div className="rc-canvas" />
+        <div className="rc-dossier">
         <div className="rc-dossier__header">
           <div className="rc-dossier__badge">CLASSIFIED // EYES ONLY</div>
           <div
