@@ -693,6 +693,52 @@
   to { transform: scaleY(1); }
 }
 
+.winamp__viz--video {
+  position: relative;
+  height: 140px;
+  padding: 0;
+  overflow: hidden;
+  display: block;
+}
+.winamp__viz-iframe {
+  position: absolute;
+  /* enlarge to hide YT chrome/title overlays */
+  top: -60px;
+  left: -10%;
+  width: 120%;
+  height: calc(100% + 120px);
+  border: 0;
+  pointer-events: none;
+  filter: contrast(1.1) saturate(1.2) brightness(0.95);
+}
+.winamp__viz-lock {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  /* blocks all clicks so user can't pause/change video */
+  cursor: default;
+  background: linear-gradient(
+    180deg,
+    rgba(0,0,0,0.15) 0%,
+    rgba(0,0,0,0) 30%,
+    rgba(0,0,0,0) 70%,
+    rgba(0,0,0,0.25) 100%
+  );
+}
+.winamp__viz-scanline {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(190,255,30,0.06) 0px,
+    rgba(190,255,30,0.06) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: screen;
+
 .winamp__track-info { text-align: center; }
 .winamp__track {
   font-size: 1.15rem;
