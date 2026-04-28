@@ -165,7 +165,7 @@ export function Y2KPlaceholder() {
   const pct = duration ? (current / duration) * 100 : 0;
 
   return (
-    <div className="y2k-screen">
+    <div className="y2k-screen" ref={rootRef}>
       {/* Hidden YouTube player */}
       <div
         style={{
