@@ -9,6 +9,7 @@ const TRACKS = [
 ];
 
 const AMBIENT_VIDEO_ID = "4XfgTd17-Kk";
+const EASTER_EGG_VIDEO_ID = "1AM_VSfudig";
 
 // YouTube IFrame API types (minimal)
 declare global {
