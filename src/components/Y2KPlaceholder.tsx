@@ -2,11 +2,13 @@ import { useEffect, useRef, useState, useCallback } from "react";
 
 const TRACKS = [
   { title: "My Worst Enemy", artist: "Lit", videoId: "4vg7JoGGJic" },
-  { title: "In The End", artist: "Linkin Park", videoId: "eVTXPUF4Oz4" },
-  { title: "Last Resort", artist: "Papa Roach", videoId: "6jKSZG-MdhQ" },
-  { title: "Chop Suey!", artist: "System Of A Down", videoId: "CSvFpBOe8eY" },
-  { title: "Smells Like Teen Spirit", artist: "Nirvana", videoId: "hTWKbfoikeg" },
+  { title: "What The Hell x Language (CONTRABAND Bootleg)", artist: "Ulrich von Strudelheim", videoId: "l85Wz97uf8E" },
+  { title: "Drag Racer (Metal Maniacs)", artist: "Hot Wheels Acceleracers OST", videoId: "XxAgFN7ceBU" },
+  { title: "Radio Up", artist: "Letter Kills", videoId: "TEEu5PuXLP4" },
+  { title: "Hood Took Me Under", artist: "Compton's Most Wanted", videoId: "cDOEJ5YKuQQ" },
 ];
+
+const AMBIENT_VIDEO_ID = "4XfgTd17-Kk";
 
 // YouTube IFrame API types (minimal)
 declare global {
@@ -274,17 +276,17 @@ export function Y2KPlaceholder() {
         </div>
 
         <div className="winamp__display">
-          <div className="winamp__viz">
-            {Array.from({ length: 24 }).map((_, i) => (
-              <div
-                key={i}
-                className={`winamp__bar ${playing ? "" : "winamp__bar--paused"}`}
-                style={{
-                  animationDelay: `${(i % 6) * 0.08}s`,
-                  animationDuration: `${0.6 + (i % 4) * 0.15}s`,
-                }}
-              />
-            ))}
+          <div className="winamp__viz winamp__viz--video">
+            <iframe
+              className="winamp__viz-iframe"
+              src={`https://www.youtube.com/embed/${AMBIENT_VIDEO_ID}?autoplay=1&mute=1&controls=0&loop=1&playlist=${AMBIENT_VIDEO_ID}&modestbranding=1&playsinline=1&disablekb=1&rel=0&iv_load_policy=3`}
+              title="ambient"
+              frameBorder={0}
+              allow="autoplay; encrypted-media; picture-in-picture"
+              tabIndex={-1}
+            />
+            <div className="winamp__viz-lock" />
+            <div className="winamp__viz-scanline" />
           </div>
           <div className="winamp__track-info">
             <div className="winamp__track">{track.title}</div>
