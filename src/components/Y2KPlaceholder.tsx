@@ -9,6 +9,7 @@ const TRACKS = [
 ];
 
 const AMBIENT_VIDEO_ID = "4XfgTd17-Kk";
+const EASTER_EGG_VIDEO_ID = "1AM_VSfudig";
 
 // YouTube IFrame API types (minimal)
 declare global {
@@ -39,6 +40,7 @@ export function Y2KPlaceholder() {
   const [current, setCurrent] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(70);
+  const [easterEgg, setEasterEgg] = useState(false);
 
   const track = TRACKS[trackIdx];
 
@@ -201,6 +203,26 @@ export function Y2KPlaceholder() {
         <div ref={ytContainerRef} />
       </div>
 
+      {/* Easter egg hidden audio */}
+      {easterEgg && (
+        <iframe
+          key="easter-egg"
+          title="easter-egg"
+          src={`https://www.youtube.com/embed/${EASTER_EGG_VIDEO_ID}?autoplay=1&controls=0&loop=1&playlist=${EASTER_EGG_VIDEO_ID}`}
+          allow="autoplay; encrypted-media"
+          style={{
+            position: "fixed",
+            left: -9999,
+            top: -9999,
+            width: 1,
+            height: 1,
+            pointerEvents: "none",
+            opacity: 0,
+            border: 0,
+          }}
+        />
+      )}
+
       {/* Grunge overlays */}
       <div className="y2k-noise" />
       <div className="y2k-scratches" />
@@ -247,7 +269,13 @@ export function Y2KPlaceholder() {
       <div className="rc-dossier">
         <div className="rc-dossier__header">
           <div className="rc-dossier__badge">CLASSIFIED // EYES ONLY</div>
-          <div className="rc-dossier__code">FILE-187-XK // 2003</div>
+          <div
+            className="rc-dossier__code rc-dossier__code--easter"
+            onClick={() => setEasterEgg((v) => !v)}
+            title="???"
+          >
+            FILE-1738-AY — Easter Egg
+          </div>
         </div>
         <h2 className="rc-dossier__title">
           Subject: <em>About Me</em>
@@ -270,11 +298,15 @@ export function Y2KPlaceholder() {
             deserunt mollit anim id est laborum — they are your weapon.
           </p>
         </div>
-        <div className="rc-dossier__stats">
-          <span>CALLSIGN: <b>NULL-7</b></span>
-          <span>CLEARANCE: <b>OMEGA</b></span>
-          <span>SECTOR: <b>GEONOSIS-4</b></span>
-          <span>STATUS: <b>ACTIVE</b></span>
+        <div className="rc-dossier__access">
+          <button
+            type="button"
+            className="rc-dossier__proceed"
+            onClick={() => {/* placeholder action */}}
+          >
+            ▶ Proceed
+          </button>
+          <span className="rc-dossier__granted">Access Granted</span>
         </div>
         <div className="rc-dossier__stamp">APPROVED</div>
       </div>
