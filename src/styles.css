@@ -647,6 +647,12 @@
   color: #d8ff7a;
   overflow: hidden;
   contain: layout paint style;
+  animation: winamp-float 6s ease-in-out infinite;
+  will-change: transform;
+}
+@keyframes winamp-float {
+  0%, 100% { transform: translateY(-50%) rotate(1deg); }
+  50%      { transform: translateY(calc(-50% - 10px)) rotate(1.8deg); }
 }
 
 .winamp__chrome {
