@@ -738,6 +738,7 @@
     transparent 3px
   );
   mix-blend-mode: screen;
+}
 
 .winamp__track-info { text-align: center; }
 .winamp__track {
