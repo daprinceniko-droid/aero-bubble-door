@@ -30,6 +30,8 @@ export function Y2KPlaceholder() {
   const playerRef = useRef<any>(null);
   const ytContainerRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const autoplayedRef = useRef(false);
 
   const [trackIdx, setTrackIdx] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -121,6 +123,26 @@ export function Y2KPlaceholder() {
     return () => clearInterval(id);
   }, [ready, duration]);
 
+  // Autoplay when the Y2K screen becomes visible (after the flip)
+  useEffect(() => {
+    if (!ready) return;
+    const el = rootRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.3 && !autoplayedRef.current) {
+            autoplayedRef.current = true;
+            try { playerRef.current?.playVideo?.(); } catch { /* noop */ }
+          }
+        }
+      },
+      { threshold: [0, 0.3, 0.6] },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [ready]);
+
   const togglePlay = useCallback(() => {
     const p = playerRef.current;
     if (!p) return;
@@ -163,7 +185,7 @@ export function Y2KPlaceholder() {
   const pct = duration ? (current / duration) * 100 : 0;
 
   return (
-    <div className="y2k-screen">
+    <div className="y2k-screen" ref={rootRef}>
       {/* Hidden YouTube player */}
       <div
         style={{
@@ -201,12 +223,6 @@ export function Y2KPlaceholder() {
       {/* Stamps */}
       <div className="y2k-stamp y2k-stamp--top">CLASSIFIED</div>
       <div className="y2k-stamp y2k-stamp--bottom">REJECT // 187</div>
-
-      {/* Title */}
-      <div className="y2k-title-wrap">
-        <h1 className="y2k-title">About Me</h1>
-        <div className="y2k-title-sub">::: enter the void :::</div>
-      </div>
 
       {/* Center video frame */}
       <div className="y2k-video-frame">
@@ -291,7 +307,7 @@ export function Y2KPlaceholder() {
           <div className="winamp__track-info">
             <div className="winamp__track">{track.title}</div>
             <div className="winamp__artist">{track.artist}</div>
-            <div className="winamp__album">— Frutiger Nights —</div>
+            
           </div>
         </div>
 

@@ -571,6 +571,12 @@
     10px 14px 30px rgba(0, 0, 0, 0.85);
   padding: 6px;
   overflow: hidden;
+  animation: y2k-float-screen 7s ease-in-out infinite;
+  will-change: transform;
+}
+@keyframes y2k-float-screen {
+  0%, 100% { transform: translate(-50%, -50%) rotate(-4deg); }
+  50%      { transform: translate(-50%, calc(-50% - 12px)) rotate(-3.2deg); }
 }
 .y2k-video {
   width: 100%;
@@ -641,6 +647,12 @@
   color: #d8ff7a;
   overflow: hidden;
   contain: layout paint style;
+  animation: winamp-float 6s ease-in-out infinite;
+  will-change: transform;
+}
+@keyframes winamp-float {
+  0%, 100% { transform: translateY(-50%) rotate(1deg); }
+  50%      { transform: translateY(calc(-50% - 10px)) rotate(1.8deg); }
 }
 
 .winamp__chrome {
