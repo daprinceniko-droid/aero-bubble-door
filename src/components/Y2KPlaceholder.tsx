@@ -123,6 +123,26 @@ export function Y2KPlaceholder() {
     return () => clearInterval(id);
   }, [ready, duration]);
 
+  // Autoplay when the Y2K screen becomes visible (after the flip)
+  useEffect(() => {
+    if (!ready) return;
+    const el = rootRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.3 && !autoplayedRef.current) {
+            autoplayedRef.current = true;
+            try { playerRef.current?.playVideo?.(); } catch { /* noop */ }
+          }
+        }
+      },
+      { threshold: [0, 0.3, 0.6] },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [ready]);
+
   const togglePlay = useCallback(() => {
     const p = playerRef.current;
     if (!p) return;
