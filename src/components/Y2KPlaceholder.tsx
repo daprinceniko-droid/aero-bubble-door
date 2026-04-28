@@ -40,6 +40,7 @@ export function Y2KPlaceholder() {
   const [current, setCurrent] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(70);
+  const [easterEgg, setEasterEgg] = useState(false);
 
   const track = TRACKS[trackIdx];
 
