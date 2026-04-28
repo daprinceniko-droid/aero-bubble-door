@@ -41,6 +41,7 @@ export function Y2KPlaceholder() {
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(70);
   const [easterEgg, setEasterEgg] = useState(false);
+  const [doorPhase, setDoorPhase] = useState<"idle" | "opening" | "zoom" | "full">("idle");
 
   const track = TRACKS[trackIdx];
 
