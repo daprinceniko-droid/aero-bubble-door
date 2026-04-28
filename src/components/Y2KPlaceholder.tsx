@@ -248,7 +248,13 @@ export function Y2KPlaceholder() {
       <div className="rc-dossier">
         <div className="rc-dossier__header">
           <div className="rc-dossier__badge">CLASSIFIED // EYES ONLY</div>
-          <div className="rc-dossier__code">FILE-187-XK // 2003</div>
+          <div
+            className="rc-dossier__code rc-dossier__code--easter"
+            onClick={() => setEasterEgg((v) => !v)}
+            title="???"
+          >
+            FILE-1738-AY — Easter Egg
+          </div>
         </div>
         <h2 className="rc-dossier__title">
           Subject: <em>About Me</em>
