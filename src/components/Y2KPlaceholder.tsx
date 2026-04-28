@@ -202,12 +202,6 @@ export function Y2KPlaceholder() {
       <div className="y2k-stamp y2k-stamp--top">CLASSIFIED</div>
       <div className="y2k-stamp y2k-stamp--bottom">REJECT // 187</div>
 
-      {/* Title */}
-      <div className="y2k-title-wrap">
-        <h1 className="y2k-title">About Me</h1>
-        <div className="y2k-title-sub">::: enter the void :::</div>
-      </div>
-
       {/* Center video frame */}
       <div className="y2k-video-frame">
         <div className="y2k-video-corner y2k-video-corner--tl">+</div>
