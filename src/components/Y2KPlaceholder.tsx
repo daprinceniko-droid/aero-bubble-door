@@ -303,7 +303,12 @@ export function Y2KPlaceholder() {
           <button
             type="button"
             className="rc-dossier__proceed"
-            onClick={() => {/* placeholder action */}}
+            onClick={() => {
+              if (doorPhase !== "idle") return;
+              setDoorPhase("opening");
+              window.setTimeout(() => setDoorPhase("zoom"), 1100);
+              window.setTimeout(() => setDoorPhase("full"), 2400);
+            }}
           >
             ▶ Proceed
           </button>
