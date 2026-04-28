@@ -30,6 +30,8 @@ export function Y2KPlaceholder() {
   const playerRef = useRef<any>(null);
   const ytContainerRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const autoplayedRef = useRef(false);
 
   const [trackIdx, setTrackIdx] = useState(0);
   const [playing, setPlaying] = useState(false);
