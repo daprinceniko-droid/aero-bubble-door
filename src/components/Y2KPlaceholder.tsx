@@ -26,7 +26,7 @@ const fmt = (s: number) => {
   return `${m.toString().padStart(2, "0")}:${sec.toString().padStart(2, "0")}`;
 };
 
-export function Y2KPlaceholder() {
+export function Y2KPlaceholder({ onCanvasFull }: { onCanvasFull?: () => void } = {}) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<any>(null);
   const ytContainerRef = useRef<HTMLDivElement>(null);
