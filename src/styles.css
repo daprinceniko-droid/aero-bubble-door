@@ -423,9 +423,16 @@
   color: #d8ff7a;
   font-family: "Special Elite", "Courier New", monospace;
   overflow: hidden;
-  cursor: none;
+  cursor: url("/cursors/gold.cur"), auto;
   /* Skip rendering when offscreen (front face) */
   contain: layout paint style;
+}
+
+/* Force the same gold cursor on every interactive element inside Y2K
+   so it never swaps to the pointer/hand on hover. */
+.y2k-screen,
+.y2k-screen * {
+  cursor: url("/cursors/gold.cur"), auto !important;
 }
 
 /* Grain noise overlay — lighter, no blend mode */
