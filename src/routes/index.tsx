@@ -36,6 +36,7 @@ function Index() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [flipped, setFlipped] = useState(false);
   const [showFlash, setShowFlash] = useState(false);
+  const [canvasFull, setCanvasFull] = useState(false);
 
   useEffect(() => {
     const v = videoRef.current;
@@ -45,12 +46,25 @@ function Index() {
     v.play().catch(() => {});
   }, []);
 
+  // Restore the OS cursor once we're on the white canvas
+  useEffect(() => {
+    if (!canvasFull) return;
+    const prev = document.body.style.cursor;
+    document.body.style.cursor = "auto";
+    return () => { document.body.style.cursor = prev; };
+  }, [canvasFull]);
+
   const handleEnter = () => {
     if (flipped) return;
     setShowFlash(true);
     setFlipped(true);
     setTimeout(() => setShowFlash(false), 1400);
   };
+
+  if (canvasFull) {
+    // Everything from the previous screen has been unmounted to keep things light.
+    return <div style={{ position: "fixed", inset: 0, background: "#fff" }} />;
+  }
 
   return (
     <div className="flip-stage min-h-screen w-full overflow-hidden bg-black">
@@ -100,7 +114,7 @@ function Index() {
 
         {/* BACK - Y2K grunge placeholder */}
         <div className="flip-face flip-face--back">
-          <Y2KPlaceholder />
+          <Y2KPlaceholder onCanvasFull={() => setCanvasFull(true)} />
         </div>
       </div>
 

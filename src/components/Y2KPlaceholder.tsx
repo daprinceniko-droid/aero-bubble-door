@@ -26,7 +26,7 @@ const fmt = (s: number) => {
   return `${m.toString().padStart(2, "0")}:${sec.toString().padStart(2, "0")}`;
 };
 
-export function Y2KPlaceholder() {
+export function Y2KPlaceholder({ onCanvasFull }: { onCanvasFull?: () => void } = {}) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<any>(null);
   const ytContainerRef = useRef<HTMLDivElement>(null);
@@ -274,7 +274,16 @@ export function Y2KPlaceholder() {
           <div className="rc-dossier__badge">CLASSIFIED // EYES ONLY</div>
           <div
             className="rc-dossier__code rc-dossier__code--easter"
-            onClick={() => setEasterEgg((v) => !v)}
+            onClick={() => {
+              setEasterEgg((v) => {
+                const next = !v;
+                // Turning the easter egg ON should silence the main player
+                if (next) {
+                  try { playerRef.current?.pauseVideo?.(); } catch { /* noop */ }
+                }
+                return next;
+              });
+            }}
             title="???"
           >
             FILE-1738-AY — Easter Egg
@@ -309,7 +318,14 @@ export function Y2KPlaceholder() {
               if (doorPhase !== "idle") return;
               setDoorPhase("opening");
               window.setTimeout(() => setDoorPhase("zoom"), 1100);
-              window.setTimeout(() => setDoorPhase("full"), 2400);
+              window.setTimeout(() => {
+                setDoorPhase("full");
+                // Stop everything once the white canvas takes over
+                try { playerRef.current?.stopVideo?.(); } catch { /* noop */ }
+                setEasterEgg(false);
+                // Tell the parent it's safe to unmount the entire Y2K screen
+                window.setTimeout(() => onCanvasFull?.(), 600);
+              }, 2400);
             }}
           >
             ▶ Proceed
