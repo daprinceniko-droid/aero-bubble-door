@@ -1011,7 +1011,7 @@
     ),
     /* uploaded restricted-area artwork */
     linear-gradient(rgba(8,10,12,0.45), rgba(8,10,12,0.55)),
-    url("/src/assets/about-bg.png") center/cover no-repeat,
+    url("/about-bg.png") center/cover no-repeat,
     linear-gradient(
       140deg,
       #3a4248 0%,
