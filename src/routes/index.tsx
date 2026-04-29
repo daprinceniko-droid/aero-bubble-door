@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { AeroCursor } from "@/components/AeroCursor";
 import { XpCursor } from "@/components/XpCursor";
 import { Y2KPlaceholder } from "@/components/Y2KPlaceholder";
+import { ProjectsCanvas } from "@/components/ProjectsCanvas";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -63,7 +64,7 @@ function Index() {
 
   if (canvasFull) {
     // Everything from the previous screen has been unmounted to keep things light.
-    return <div style={{ position: "fixed", inset: 0, background: "#fff" }} />;
+    return <ProjectsCanvas />;
   }
 
   return (

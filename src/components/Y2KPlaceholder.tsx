@@ -332,7 +332,6 @@ export function Y2KPlaceholder({ onCanvasFull }: { onCanvasFull?: () => void } =
           </button>
           <span className="rc-dossier__granted">Access Granted</span>
         </div>
-        <div className="rc-dossier__stamp">APPROVED</div>
         </div>
         <div className="rc-door__leaf rc-door__leaf--left" aria-hidden />
         <div className="rc-door__leaf rc-door__leaf--right" aria-hidden />
