@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { AeroCursor } from "@/components/AeroCursor";
 import { XpCursor } from "@/components/XpCursor";
 import { Y2KPlaceholder } from "@/components/Y2KPlaceholder";
+import { ProjectsCanvas } from "@/components/ProjectsCanvas";
 
 export const Route = createFileRoute("/")({
   head: () => ({
