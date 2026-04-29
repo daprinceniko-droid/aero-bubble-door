@@ -274,7 +274,16 @@ export function Y2KPlaceholder({ onCanvasFull }: { onCanvasFull?: () => void } =
           <div className="rc-dossier__badge">CLASSIFIED // EYES ONLY</div>
           <div
             className="rc-dossier__code rc-dossier__code--easter"
-            onClick={() => setEasterEgg((v) => !v)}
+            onClick={() => {
+              setEasterEgg((v) => {
+                const next = !v;
+                // Turning the easter egg ON should silence the main player
+                if (next) {
+                  try { playerRef.current?.pauseVideo?.(); } catch { /* noop */ }
+                }
+                return next;
+              });
+            }}
             title="???"
           >
             FILE-1738-AY — Easter Egg
