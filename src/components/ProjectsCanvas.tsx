@@ -1,11 +1,12 @@
 import { useState } from "react";
+import sunset from "@/assets/la-sunset.jpg";
 
 const projects = [
-  { title: "Project One", type: "Spell Card", attribute: "FIRE", atk: 2400, def: 1800, desc: "A blazing endeavor that ignites creativity and burns through challenges." },
-  { title: "Project Two", type: "Trap Card", attribute: "WATER", atk: 1900, def: 2100, desc: "Flows seamlessly between concepts, adapting to any environment." },
-  { title: "Project Three", type: "Monster Card", attribute: "EARTH", atk: 2800, def: 2500, desc: "Grounded in solid architecture, this build stands the test of time." },
-  { title: "Project Four", type: "Effect Card", attribute: "WIND", atk: 2200, def: 1600, desc: "Swift and elegant, cutting through complexity with ease." },
-  { title: "Project Five", type: "Ritual Card", attribute: "DARK", atk: 3000, def: 2400, desc: "A mysterious masterpiece born from forbidden experimentation." },
+  { type: "Spell Card", attribute: "FIRE", desc: "A blazing endeavor that ignites creativity and burns through challenges." },
+  { type: "Trap Card", attribute: "WATER", desc: "Flows seamlessly between concepts, adapting to any environment." },
+  { type: "Monster Card", attribute: "EARTH", desc: "Grounded in solid architecture, this build stands the test of time." },
+  { type: "Effect Card", attribute: "WIND", desc: "Swift and elegant, cutting through complexity with ease." },
+  { type: "Ritual Card", attribute: "DARK", desc: "A mysterious masterpiece born from forbidden experimentation." },
 ];
 
 const attributeColors: Record<string, string> = {
@@ -15,6 +16,8 @@ const attributeColors: Record<string, string> = {
   WIND: "linear-gradient(135deg, #aed581, #33691e)",
   DARK: "linear-gradient(135deg, #7e57c2, #311b92)",
 };
+
+const cloister = `'Cloister Black', 'UnifrakturCook', 'Blackletter', serif`;
 
 export function ProjectsCanvas() {
   const [index, setIndex] = useState(0);
@@ -31,22 +34,50 @@ export function ProjectsCanvas() {
       style={{
         position: "fixed",
         inset: 0,
-        background: "radial-gradient(ellipse at center, #f5f5f5 0%, #d8d8d8 100%)",
+        backgroundImage: `linear-gradient(180deg, rgba(40,0,40,0.25) 0%, rgba(0,0,0,0.55) 100%), url(${sunset})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         padding: "48px 24px",
-        fontFamily: "'Inter', system-ui, sans-serif",
-        color: "#111",
+        fontFamily: cloister,
+        color: "#f5e9c8",
         overflow: "hidden",
+        cursor: "url('/cursors/sa-pistol.png') 4 4, auto",
       }}
     >
+      <style>{`
+        @import url('https://fonts.cdnfonts.com/css/cloister-black');
+        @import url('https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap');
+        @keyframes cardFloat {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-12px); }
+        }
+        @keyframes whoosh {
+          0% { opacity: 0; transform: scaleX(0.5); }
+          40% { opacity: 1; }
+          100% { opacity: 0; transform: scaleX(1.5); }
+        }
+        .gfunk-title {
+          background: linear-gradient(180deg, #fff2b0 0%, #ffb347 45%, #c1272d 100%);
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+          text-shadow: 0 4px 0 rgba(0,0,0,0.35);
+          filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+        }
+      `}</style>
+
       <h1
+        className="gfunk-title"
         style={{
-          fontSize: "48px",
-          fontWeight: 700,
+          fontFamily: cloister,
+          fontSize: "84px",
+          fontWeight: 400,
           letterSpacing: "0.02em",
-          marginBottom: "24px",
+          marginBottom: "16px",
+          lineHeight: 1,
         }}
       >
         Projects
@@ -73,11 +104,13 @@ export function ProjectsCanvas() {
             width: 56,
             height: 56,
             borderRadius: "50%",
-            border: "1px solid #bbb",
-            background: "rgba(255,255,255,0.9)",
-            cursor: "pointer",
+            border: "2px solid #c1272d",
+            background: "rgba(0,0,0,0.6)",
+            color: "#f5e9c8",
+            cursor: "url('/cursors/sa-pistol.png') 4 4, auto",
             fontSize: 22,
-            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            fontFamily: cloister,
+            boxShadow: "0 4px 12px rgba(0,0,0,0.5)",
           }}
         >
           ←
@@ -92,7 +125,6 @@ export function ProjectsCanvas() {
           }}
         >
           {projects.map((p, i) => {
-            // signed shortest distance from current index (handles wraparound)
             let offset = i - index;
             if (offset > total / 2) offset -= total;
             if (offset < -total / 2) offset += total;
@@ -125,7 +157,6 @@ export function ProjectsCanvas() {
             );
           })}
 
-          {/* whoosh streaks on transition */}
           <div
             key={`whoosh-${index}-${direction}`}
             aria-hidden
@@ -134,7 +165,7 @@ export function ProjectsCanvas() {
               inset: 0,
               pointerEvents: "none",
               animation: "whoosh 600ms ease-out forwards",
-              background: `linear-gradient(${direction === 1 ? "90deg" : "270deg"}, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%)`,
+              background: `linear-gradient(${direction === 1 ? "90deg" : "270deg"}, transparent 0%, rgba(255,200,120,0.5) 50%, transparent 100%)`,
               filter: "blur(8px)",
               opacity: 0,
             }}
@@ -151,11 +182,13 @@ export function ProjectsCanvas() {
             width: 56,
             height: 56,
             borderRadius: "50%",
-            border: "1px solid #bbb",
-            background: "rgba(255,255,255,0.9)",
-            cursor: "pointer",
+            border: "2px solid #c1272d",
+            background: "rgba(0,0,0,0.6)",
+            color: "#f5e9c8",
+            cursor: "url('/cursors/sa-pistol.png') 4 4, auto",
             fontSize: 22,
-            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            fontFamily: cloister,
+            boxShadow: "0 4px 12px rgba(0,0,0,0.5)",
           }}
         >
           →
@@ -175,26 +208,14 @@ export function ProjectsCanvas() {
               width: 10,
               height: 10,
               borderRadius: "50%",
-              border: "none",
-              background: i === index ? "#111" : "#bbb",
-              cursor: "pointer",
+              border: "1px solid rgba(0,0,0,0.5)",
+              background: i === index ? "#f5e9c8" : "rgba(245,233,200,0.35)",
+              cursor: "url('/cursors/sa-pistol.png') 4 4, auto",
               padding: 0,
             }}
           />
         ))}
       </div>
-
-      <style>{`
-        @keyframes cardFloat {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-12px); }
-        }
-        @keyframes whoosh {
-          0% { opacity: 0; transform: scaleX(0.5); }
-          40% { opacity: 1; }
-          100% { opacity: 0; transform: scaleX(1.5); }
-        }
-      `}</style>
     </div>
   );
 }
@@ -209,46 +230,15 @@ function YuGiOhCard({ project, active }: { project: typeof projects[number]; act
         padding: 12,
         background: "linear-gradient(145deg, #d4a85a 0%, #b8862f 50%, #8a5a1a 100%)",
         boxShadow: active
-          ? "0 30px 60px rgba(0,0,0,0.5), 0 0 40px rgba(212,168,90,0.6), inset 0 0 0 2px #5a3a10"
-          : "0 20px 40px rgba(0,0,0,0.4), inset 0 0 0 2px #5a3a10",
+          ? "0 30px 60px rgba(0,0,0,0.6), 0 0 40px rgba(255,150,80,0.55), inset 0 0 0 2px #5a3a10"
+          : "0 20px 40px rgba(0,0,0,0.5), inset 0 0 0 2px #5a3a10",
         display: "flex",
         flexDirection: "column",
         gap: 8,
-        fontFamily: "'Times New Roman', serif",
+        fontFamily: cloister,
         color: "#1a1a1a",
       }}
     >
-      {/* Title bar */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "4px 8px",
-        }}
-      >
-        <div style={{ fontWeight: 700, fontSize: 16, textShadow: "1px 1px 0 rgba(255,255,255,0.3)" }}>
-          {project.title}
-        </div>
-        <div
-          style={{
-            width: 28,
-            height: 28,
-            borderRadius: "50%",
-            background: attributeColors[project.attribute],
-            border: "2px solid #1a1a1a",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 8,
-            fontWeight: 700,
-            color: "#fff",
-          }}
-        >
-          {project.attribute.slice(0, 1)}
-        </div>
-      </div>
-
       {/* Artwork */}
       <div
         style={{
@@ -270,7 +260,15 @@ function YuGiOhCard({ project, active }: { project: typeof projects[number]; act
             background: "radial-gradient(circle at 30% 20%, rgba(255,255,255,0.4), transparent 60%)",
           }}
         />
-        <div style={{ fontSize: 64, color: "rgba(255,255,255,0.85)", fontWeight: 700 }}>
+        <div
+          style={{
+            fontFamily: cloister,
+            fontSize: 96,
+            color: "rgba(255,255,255,0.9)",
+            fontWeight: 400,
+            textShadow: "0 4px 0 rgba(0,0,0,0.4)",
+          }}
+        >
           {project.attribute.slice(0, 1)}
         </div>
       </div>
@@ -280,14 +278,15 @@ function YuGiOhCard({ project, active }: { project: typeof projects[number]; act
         style={{
           background: "#1a1a1a",
           color: "#d4a85a",
-          padding: "3px 8px",
-          fontSize: 11,
-          fontWeight: 700,
+          padding: "4px 10px",
+          fontSize: 18,
+          fontFamily: cloister,
           letterSpacing: "0.05em",
           borderRadius: 2,
+          textAlign: "center",
         }}
       >
-        [{project.type.toUpperCase()}]
+        [{project.type}]
       </div>
 
       {/* Description */}
@@ -296,30 +295,15 @@ function YuGiOhCard({ project, active }: { project: typeof projects[number]; act
           background: "#f5e9c8",
           border: "1px solid #1a1a1a",
           borderRadius: 2,
-          padding: "6px 8px",
-          fontSize: 10,
-          lineHeight: 1.3,
-          minHeight: 60,
+          padding: "8px 10px",
+          fontSize: 13,
+          lineHeight: 1.35,
+          minHeight: 70,
+          fontFamily: "'Times New Roman', serif",
           fontStyle: "italic",
         }}
       >
         {project.desc}
-      </div>
-
-      {/* ATK/DEF */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          gap: 12,
-          padding: "2px 8px",
-          fontSize: 12,
-          fontWeight: 700,
-          color: "#1a1a1a",
-        }}
-      >
-        <span>ATK/{project.atk}</span>
-        <span>DEF/{project.def}</span>
       </div>
     </div>
   );
