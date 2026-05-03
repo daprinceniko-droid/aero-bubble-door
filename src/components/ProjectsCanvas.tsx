@@ -3,58 +3,48 @@ import { useState } from "react";
 type Project = {
   title: string;
   tagline: string;
-  images: [string, string, string];
+  image: string;
 };
 
 const projects: Project[] = [
   {
     title: "Project Alpha",
     tagline: "The one that started it all",
-    images: [
-      "https://images.unsplash.com/photo-1502136969935-8d8eef54d77b?w=800",
-      "https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?w=800",
-      "https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=800",
-    ],
+    image: "https://images.unsplash.com/photo-1502136969935-8d8eef54d77b?w=1600",
   },
   {
     title: "Side Quest",
     tagline: "Detour worth taking",
-    images: [
-      "https://images.unsplash.com/photo-1542435503-956c469947f6?w=800",
-      "https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800",
-      "https://images.unsplash.com/photo-1533422902779-aff35862e462?w=800",
-    ],
+    image: "https://images.unsplash.com/photo-1542435503-956c469947f6?w=1600",
   },
   {
     title: "Night Drive",
     tagline: "Neon, asphalt, infinity",
-    images: [
-      "https://images.unsplash.com/photo-1517511620798-cec17d428bc0?w=800",
-      "https://images.unsplash.com/photo-1502920514313-52581002a659?w=800",
-      "https://images.unsplash.com/photo-1444723121867-7a241cacace9?w=800",
-    ],
+    image: "https://images.unsplash.com/photo-1517511620798-cec17d428bc0?w=1600",
   },
   {
     title: "Grove Street",
     tagline: "Home, ese.",
-    images: [
-      "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=800",
-      "https://images.unsplash.com/photo-1514565131-fce0801e5785?w=800",
-      "https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=800",
-    ],
+    image: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=1600",
   },
   {
     title: "Last Ride",
     tagline: "Final cut, no encores",
-    images: [
-      "https://images.unsplash.com/photo-1494797262163-102fae527c62?w=800",
-      "https://images.unsplash.com/photo-1485470733090-0aae1788d5af?w=800",
-      "https://images.unsplash.com/photo-1496450681664-3df85efbd29f?w=800",
-    ],
+    image: "https://images.unsplash.com/photo-1494797262163-102fae527c62?w=1600",
   },
 ];
 
-const heading = `'Anton', 'Bebas Neue', Impact, sans-serif`;
+const cloister = `'Cloister Black', 'UnifrakturCook', 'Blackletter', serif`;
+
+// Shard layout: each shard renders the SAME image but offset, so when placed
+// side-by-side with small gaps they look like one image broken into slabs.
+// Heights/rotations vary slightly to feel scattered/shattered.
+const shards = [
+  { wPct: 22, hPct: 78, rot: -3, yOff: 4 },
+  { wPct: 30, hPct: 92, rot: 1.5, yOff: -2 },
+  { wPct: 22, hPct: 80, rot: -1, yOff: 6 },
+  { wPct: 22, hPct: 74, rot: 3, yOff: 2 },
+];
 
 export function ProjectsCanvas() {
   const [index, setIndex] = useState(0);
@@ -67,13 +57,7 @@ export function ProjectsCanvas() {
   };
 
   const project = projects[index];
-
-  // 3 panels: left, center, right
-  const panelConfigs = [
-    { rotate: -7, x: -180, y: 30, z: 1, w: 280, h: 360 },
-    { rotate: 2, x: 0, y: 0, z: 3, w: 360, h: 460 },
-    { rotate: 6, x: 180, y: 40, z: 2, w: 280, h: 360 },
-  ];
+  const totalW = shards.reduce((s, c) => s + c.wPct, 0); // for offset math
 
   return (
     <div
@@ -87,24 +71,28 @@ export function ProjectsCanvas() {
         justifyContent: "center",
         overflow: "hidden",
         cursor: "url('/cursors/sa-pistol.png') 4 4, auto",
-        fontFamily: heading,
+        fontFamily: cloister,
         color: "#fff",
       }}
     >
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&family=UnifrakturMaguntia&display=swap');
+        @font-face {
+          font-family: 'Cloister Black';
+          src: local('Cloister Black'), local('CloisterBlack');
+          font-display: swap;
+        }
+        .gta-root, .gta-root * { font-family: ${cloister} !important; }
+
         @keyframes grain {
           0%, 100% { transform: translate(0,0); }
-          10% { transform: translate(-2%, -2%); }
-          30% { transform: translate(2%, -1%); }
-          50% { transform: translate(-1%, 2%); }
-          70% { transform: translate(1%, 1%); }
-          90% { transform: translate(-2%, 1%); }
+          25% { transform: translate(-2%, -1%); }
+          50% { transform: translate(1%, 2%); }
+          75% { transform: translate(-1%, 1%); }
         }
         .gta-grain::before {
           content: "";
-          position: absolute;
-          inset: -50%;
+          position: absolute; inset: -50%;
           pointer-events: none;
           background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.5'/></svg>");
           opacity: 0.18;
@@ -112,200 +100,179 @@ export function ProjectsCanvas() {
           animation: grain 1.2s steps(4) infinite;
           z-index: 1;
         }
-        @keyframes panelIn {
-          0% { opacity: 0; transform: translate(var(--tx-from), var(--ty)) rotate(var(--rot-from)) scale(0.85); }
-          100% { opacity: 1; transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(1); }
+        @keyframes shardIn {
+          0% { opacity: 0; transform: translate(var(--tx-from), var(--ty)) rotate(var(--rot-from)); }
+          100% { opacity: 1; transform: translate(0, var(--ty)) rotate(var(--rot)); }
         }
-        .gta-panel {
-          animation: panelIn 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
-          transition: transform 300ms ease, box-shadow 300ms ease;
+        .gta-shard {
+          animation: shardIn 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+          transition: transform 300ms ease, box-shadow 300ms ease, filter 300ms ease;
         }
-        .gta-panel:hover {
-          transform: translate(var(--tx), calc(var(--ty) - 12px)) rotate(var(--rot)) scale(1.04) !important;
-          box-shadow: 0 30px 60px rgba(0,0,0,0.9), 0 0 0 2px #000;
-          z-index: 99 !important;
+        .gta-shard:hover {
+          transform: translate(0, calc(var(--ty) - 10px)) rotate(var(--rot)) scale(1.03) !important;
+          box-shadow: 0 28px 60px rgba(0,0,0,0.95);
+          z-index: 50;
+          filter: brightness(1.1);
         }
         .gta-title {
-          font-family: ${heading};
           color: #fff;
-          -webkit-text-stroke: 3px #000;
-          text-shadow: 6px 6px 0 #000, 8px 8px 0 rgba(180,140,60,0.6);
-          letter-spacing: 0.04em;
-          line-height: 0.9;
+          -webkit-text-stroke: 2px #000;
+          text-shadow: 5px 5px 0 #000, 7px 7px 0 rgba(180,140,60,0.55);
+          letter-spacing: 0.02em;
+          line-height: 0.95;
         }
         .gta-arrow {
-          font-family: ${heading};
-          background: transparent;
-          border: none;
-          color: #fff;
-          font-size: 96px;
-          line-height: 1;
+          background: transparent; border: none; color: #fff;
+          font-size: 88px; line-height: 1;
           cursor: url('/cursors/sa-pistol.png') 4 4, auto;
           text-shadow: 4px 4px 0 #000;
           transition: transform 200ms ease;
-          padding: 0 24px;
-          z-index: 50;
+          padding: 0 24px; z-index: 50;
         }
         .gta-arrow:hover { transform: scale(1.15); }
         @media (max-width: 768px) {
-          .gta-side-panel { display: none; }
-          .gta-center-panel { width: 78vw !important; height: 60vh !important; }
+          .gta-shard.is-side { display: none; }
+          .gta-shard.is-main { width: 70vw !important; }
           .gta-title-block { font-size: 56px !important; }
         }
       `}</style>
 
-      <div className="gta-grain" style={{ position: "absolute", inset: 0 }} />
+      <div className="gta-root" style={{ position: "absolute", inset: 0 }}>
+        <div className="gta-grain" style={{ position: "absolute", inset: 0 }} />
 
-      {/* Title */}
-      <div
-        className="gta-title gta-title-block"
-        style={{
-          position: "absolute",
-          top: 32,
-          fontSize: 72,
-          zIndex: 10,
-          textAlign: "center",
-        }}
-      >
-        Projects
-      </div>
-
-      {/* Stage */}
-      <div
-        style={{
-          position: "relative",
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 5,
-        }}
-      >
-        <button className="gta-arrow" aria-label="Previous" onClick={() => go(-1)} style={{ position: "absolute", left: "4%" }}>
-          ‹
-        </button>
-
+        {/* Title */}
         <div
-          key={index}
+          className="gta-title gta-title-block"
           style={{
-            position: "relative",
-            width: 720,
-            height: 500,
+            position: "absolute",
+            top: 24,
+            left: 0, right: 0,
+            fontSize: 88,
+            zIndex: 10,
+            textAlign: "center",
+          }}
+        >
+          Projects
+        </div>
+
+        {/* Stage */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            zIndex: 5,
           }}
         >
-          {panelConfigs.map((cfg, i) => {
-            const isCenter = i === 1;
-            return (
-              <div
-                key={`${index}-${i}`}
-                className={`gta-panel ${isCenter ? "gta-center-panel" : "gta-side-panel"}`}
-                style={
-                  {
-                    position: "absolute",
-                    width: cfg.w,
-                    height: cfg.h,
-                    zIndex: cfg.z,
-                    background: "#111",
-                    border: "4px solid #000",
-                    boxShadow: "0 20px 40px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.05)",
-                    overflow: "hidden",
-                    "--tx": `${cfg.x}px`,
-                    "--ty": `${cfg.y}px`,
-                    "--rot": `${cfg.rotate}deg`,
-                    "--tx-from": `${cfg.x + dir * 220}px`,
-                    "--rot-from": `${cfg.rotate + dir * 18}deg`,
-                    animationDelay: `${i * 90}ms`,
-                  } as React.CSSProperties
-                }
-              >
-                <img
-                  src={project.images[i]}
-                  alt={`${project.title} panel ${i + 1}`}
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                  loading="lazy"
-                />
-                {/* Sepia overlay */}
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    background:
-                      "linear-gradient(180deg, rgba(180,140,60,0.35) 0%, rgba(120,70,20,0.45) 100%)",
-                    mixBlendMode: "multiply",
-                  }}
-                />
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    background: "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%)",
-                  }}
-                />
+          <button className="gta-arrow" aria-label="Previous" onClick={() => go(-1)} style={{ position: "absolute", left: "3%" }}>
+            ‹
+          </button>
 
-                {isCenter && (
+          <div
+            key={index}
+            style={{
+              position: "relative",
+              width: "min(1100px, 88vw)",
+              height: "min(560px, 70vh)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+            }}
+          >
+            {shards.map((s, i) => {
+              // Compute the horizontal offset of this shard's left edge within the row
+              const leftPct = shards.slice(0, i).reduce((a, c) => a + c.wPct, 0);
+              // background-position so each shard reveals its slice of the same image
+              const bgPosX = totalW === s.wPct ? 50 : (leftPct / (totalW - s.wPct)) * 100;
+              const bgSize = `${(100 / s.wPct) * totalW}% auto`;
+              const isMain = i === 1;
+
+              return (
+                <div
+                  key={`${index}-${i}`}
+                  className={`gta-shard ${isMain ? "is-main" : "is-side"}`}
+                  style={
+                    {
+                      flex: `0 0 ${s.wPct}%`,
+                      height: `${s.hPct}%`,
+                      backgroundImage: `linear-gradient(180deg, rgba(180,140,60,0.30) 0%, rgba(120,70,20,0.45) 100%), url(${project.image})`,
+                      backgroundSize: `auto, ${bgSize}`,
+                      backgroundPosition: `center, ${bgPosX}% center`,
+                      backgroundBlendMode: "multiply, normal",
+                      border: "3px solid #000",
+                      boxShadow: "0 18px 40px rgba(0,0,0,0.85)",
+                      position: "relative",
+                      "--tx-from": `${dir * 240}px`,
+                      "--ty": `${s.yOff}px`,
+                      "--rot": `${s.rot}deg`,
+                      "--rot-from": `${s.rot + dir * 12}deg`,
+                      animationDelay: `${i * 70}ms`,
+                      transform: `translate(0, ${s.yOff}px) rotate(${s.rot}deg)`,
+                    } as React.CSSProperties
+                  }
+                >
+                  {/* Inner vignette */}
                   <div
                     style={{
-                      position: "absolute",
-                      left: 0,
-                      right: 0,
-                      bottom: 24,
-                      padding: "0 20px",
-                      textAlign: "center",
+                      position: "absolute", inset: 0,
+                      background: "radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,0.65) 100%)",
+                      pointerEvents: "none",
                     }}
-                  >
-                    <div className="gta-title" style={{ fontSize: 56 }}>
-                      {project.title}
-                    </div>
-                    <div
-                      style={{
-                        marginTop: 8,
-                        fontFamily: "'Bebas Neue', sans-serif",
-                        fontSize: 18,
-                        letterSpacing: "0.15em",
-                        color: "#f5e9c8",
-                        textShadow: "2px 2px 0 #000",
-                      }}
-                    >
-                      {project.tagline}
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                  />
+                </div>
+              );
+            })}
+          </div>
+
+          <button className="gta-arrow" aria-label="Next" onClick={() => go(1)} style={{ position: "absolute", right: "3%" }}>
+            ›
+          </button>
         </div>
 
-        <button className="gta-arrow" aria-label="Next" onClick={() => go(1)} style={{ position: "absolute", right: "4%" }}>
-          ›
-        </button>
-      </div>
-
-      {/* Dots */}
-      <div style={{ position: "absolute", bottom: 32, display: "flex", gap: 12, zIndex: 10 }}>
-        {projects.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => {
-              setDir(i > index ? 1 : -1);
-              setIndex(i);
-            }}
-            aria-label={`Slide ${i + 1}`}
+        {/* Caption */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 80,
+            left: 0, right: 0,
+            textAlign: "center",
+            zIndex: 10,
+          }}
+        >
+          <div className="gta-title" style={{ fontSize: 52 }}>{project.title}</div>
+          <div
             style={{
-              width: 14,
-              height: 14,
-              borderRadius: "50%",
-              border: "2px solid #fff",
-              background: i === index ? "#fff" : "transparent",
-              cursor: "url('/cursors/sa-pistol.png') 4 4, auto",
-              boxShadow: "2px 2px 0 #000",
-              padding: 0,
+              marginTop: 6,
+              fontSize: 22,
+              letterSpacing: "0.1em",
+              color: "#f5e9c8",
+              textShadow: "2px 2px 0 #000",
             }}
-          />
-        ))}
+          >
+            {project.tagline}
+          </div>
+        </div>
+
+        {/* Dots */}
+        <div style={{ position: "absolute", bottom: 28, left: 0, right: 0, display: "flex", justifyContent: "center", gap: 12, zIndex: 10 }}>
+          {projects.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => { setDir(i > index ? 1 : -1); setIndex(i); }}
+              aria-label={`Slide ${i + 1}`}
+              style={{
+                width: 14, height: 14, borderRadius: "50%",
+                border: "2px solid #fff",
+                background: i === index ? "#fff" : "transparent",
+                cursor: "url('/cursors/sa-pistol.png') 4 4, auto",
+                boxShadow: "2px 2px 0 #000", padding: 0,
+              }}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
