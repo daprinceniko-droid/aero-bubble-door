@@ -1,309 +1,311 @@
 import { useState } from "react";
-import sunset from "@/assets/la-sunset.jpg";
 
-const projects = [
-  { type: "Spell Card", attribute: "FIRE", desc: "A blazing endeavor that ignites creativity and burns through challenges." },
-  { type: "Trap Card", attribute: "WATER", desc: "Flows seamlessly between concepts, adapting to any environment." },
-  { type: "Monster Card", attribute: "EARTH", desc: "Grounded in solid architecture, this build stands the test of time." },
-  { type: "Effect Card", attribute: "WIND", desc: "Swift and elegant, cutting through complexity with ease." },
-  { type: "Ritual Card", attribute: "DARK", desc: "A mysterious masterpiece born from forbidden experimentation." },
-];
-
-const attributeColors: Record<string, string> = {
-  FIRE: "linear-gradient(135deg, #ff6b35, #c1272d)",
-  WATER: "linear-gradient(135deg, #4fc3f7, #1565c0)",
-  EARTH: "linear-gradient(135deg, #a1887f, #5d4037)",
-  WIND: "linear-gradient(135deg, #aed581, #33691e)",
-  DARK: "linear-gradient(135deg, #7e57c2, #311b92)",
+type Project = {
+  title: string;
+  tagline: string;
+  images: [string, string, string];
 };
 
-const cloister = `'Cloister Black', 'UnifrakturCook', 'Blackletter', serif`;
+const projects: Project[] = [
+  {
+    title: "Project Alpha",
+    tagline: "The one that started it all",
+    images: [
+      "https://images.unsplash.com/photo-1502136969935-8d8eef54d77b?w=800",
+      "https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?w=800",
+      "https://images.unsplash.com/photo-1493514789931-586cb221d7a7?w=800",
+    ],
+  },
+  {
+    title: "Side Quest",
+    tagline: "Detour worth taking",
+    images: [
+      "https://images.unsplash.com/photo-1542435503-956c469947f6?w=800",
+      "https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800",
+      "https://images.unsplash.com/photo-1533422902779-aff35862e462?w=800",
+    ],
+  },
+  {
+    title: "Night Drive",
+    tagline: "Neon, asphalt, infinity",
+    images: [
+      "https://images.unsplash.com/photo-1517511620798-cec17d428bc0?w=800",
+      "https://images.unsplash.com/photo-1502920514313-52581002a659?w=800",
+      "https://images.unsplash.com/photo-1444723121867-7a241cacace9?w=800",
+    ],
+  },
+  {
+    title: "Grove Street",
+    tagline: "Home, ese.",
+    images: [
+      "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=800",
+      "https://images.unsplash.com/photo-1514565131-fce0801e5785?w=800",
+      "https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=800",
+    ],
+  },
+  {
+    title: "Last Ride",
+    tagline: "Final cut, no encores",
+    images: [
+      "https://images.unsplash.com/photo-1494797262163-102fae527c62?w=800",
+      "https://images.unsplash.com/photo-1485470733090-0aae1788d5af?w=800",
+      "https://images.unsplash.com/photo-1496450681664-3df85efbd29f?w=800",
+    ],
+  },
+];
+
+const heading = `'Anton', 'Bebas Neue', Impact, sans-serif`;
 
 export function ProjectsCanvas() {
   const [index, setIndex] = useState(0);
-  const [direction, setDirection] = useState<1 | -1>(1);
+  const [dir, setDir] = useState<1 | -1>(1);
   const total = projects.length;
 
-  const go = (dir: 1 | -1) => {
-    setDirection(dir);
-    setIndex((i) => (i + dir + total) % total);
+  const go = (d: 1 | -1) => {
+    setDir(d);
+    setIndex((i) => (i + d + total) % total);
   };
+
+  const project = projects[index];
+
+  // 3 panels: left, center, right
+  const panelConfigs = [
+    { rotate: -7, x: -180, y: 30, z: 1, w: 280, h: 360 },
+    { rotate: 2, x: 0, y: 0, z: 3, w: 360, h: 460 },
+    { rotate: 6, x: 180, y: 40, z: 2, w: 280, h: 360 },
+  ];
 
   return (
     <div
       style={{
         position: "fixed",
         inset: 0,
-        backgroundImage: `linear-gradient(180deg, rgba(40,0,40,0.25) 0%, rgba(0,0,0,0.55) 100%), url(${sunset})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
+        background: "#000",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        padding: "48px 24px",
-        fontFamily: cloister,
-        color: "#f5e9c8",
+        justifyContent: "center",
         overflow: "hidden",
         cursor: "url('/cursors/sa-pistol.png') 4 4, auto",
+        fontFamily: heading,
+        color: "#fff",
       }}
     >
       <style>{`
-        @import url('https://fonts.cdnfonts.com/css/cloister-black');
-        @import url('https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap');
-        @keyframes cardFloat {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-12px); }
+        @import url('https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&display=swap');
+        @keyframes grain {
+          0%, 100% { transform: translate(0,0); }
+          10% { transform: translate(-2%, -2%); }
+          30% { transform: translate(2%, -1%); }
+          50% { transform: translate(-1%, 2%); }
+          70% { transform: translate(1%, 1%); }
+          90% { transform: translate(-2%, 1%); }
         }
-        @keyframes whoosh {
-          0% { opacity: 0; transform: scaleX(0.5); }
-          40% { opacity: 1; }
-          100% { opacity: 0; transform: scaleX(1.5); }
+        .gta-grain::before {
+          content: "";
+          position: absolute;
+          inset: -50%;
+          pointer-events: none;
+          background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.5'/></svg>");
+          opacity: 0.18;
+          mix-blend-mode: overlay;
+          animation: grain 1.2s steps(4) infinite;
+          z-index: 1;
         }
-        .gfunk-title {
-          background: linear-gradient(180deg, #fff2b0 0%, #ffb347 45%, #c1272d 100%);
-          -webkit-background-clip: text;
-          background-clip: text;
-          -webkit-text-fill-color: transparent;
-          text-shadow: 0 4px 0 rgba(0,0,0,0.35);
-          filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+        @keyframes panelIn {
+          0% { opacity: 0; transform: translate(var(--tx-from), var(--ty)) rotate(var(--rot-from)) scale(0.85); }
+          100% { opacity: 1; transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(1); }
+        }
+        .gta-panel {
+          animation: panelIn 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+          transition: transform 300ms ease, box-shadow 300ms ease;
+        }
+        .gta-panel:hover {
+          transform: translate(var(--tx), calc(var(--ty) - 12px)) rotate(var(--rot)) scale(1.04) !important;
+          box-shadow: 0 30px 60px rgba(0,0,0,0.9), 0 0 0 2px #000;
+          z-index: 99 !important;
+        }
+        .gta-title {
+          font-family: ${heading};
+          color: #fff;
+          -webkit-text-stroke: 3px #000;
+          text-shadow: 6px 6px 0 #000, 8px 8px 0 rgba(180,140,60,0.6);
+          letter-spacing: 0.04em;
+          line-height: 0.9;
+        }
+        .gta-arrow {
+          font-family: ${heading};
+          background: transparent;
+          border: none;
+          color: #fff;
+          font-size: 96px;
+          line-height: 1;
+          cursor: url('/cursors/sa-pistol.png') 4 4, auto;
+          text-shadow: 4px 4px 0 #000;
+          transition: transform 200ms ease;
+          padding: 0 24px;
+          z-index: 50;
+        }
+        .gta-arrow:hover { transform: scale(1.15); }
+        @media (max-width: 768px) {
+          .gta-side-panel { display: none; }
+          .gta-center-panel { width: 78vw !important; height: 60vh !important; }
+          .gta-title-block { font-size: 56px !important; }
         }
       `}</style>
 
-      <h1
-        className="gfunk-title"
+      <div className="gta-grain" style={{ position: "absolute", inset: 0 }} />
+
+      {/* Title */}
+      <div
+        className="gta-title gta-title-block"
         style={{
-          fontFamily: cloister,
-          fontSize: "84px",
-          fontWeight: 400,
-          letterSpacing: "0.02em",
-          marginBottom: "16px",
-          lineHeight: 1,
+          position: "absolute",
+          top: 32,
+          fontSize: 72,
+          zIndex: 10,
+          textAlign: "center",
         }}
       >
         Projects
-      </h1>
+      </div>
 
+      {/* Stage */}
       <div
         style={{
           position: "relative",
           width: "100%",
-          flex: 1,
+          height: "100%",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          perspective: "1600px",
+          zIndex: 5,
         }}
       >
-        <button
-          onClick={() => go(-1)}
-          aria-label="Previous"
-          style={{
-            position: "absolute",
-            left: "8%",
-            zIndex: 100,
-            width: 56,
-            height: 56,
-            borderRadius: "50%",
-            border: "2px solid #c1272d",
-            background: "rgba(0,0,0,0.6)",
-            color: "#f5e9c8",
-            cursor: "url('/cursors/sa-pistol.png') 4 4, auto",
-            fontSize: 22,
-            fontFamily: cloister,
-            boxShadow: "0 4px 12px rgba(0,0,0,0.5)",
-          }}
-        >
-          ←
+        <button className="gta-arrow" aria-label="Previous" onClick={() => go(-1)} style={{ position: "absolute", left: "4%" }}>
+          ‹
         </button>
 
         <div
+          key={index}
           style={{
             position: "relative",
-            width: 320,
-            height: 460,
-            transformStyle: "preserve-3d",
+            width: 720,
+            height: 500,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          {projects.map((p, i) => {
-            let offset = i - index;
-            if (offset > total / 2) offset -= total;
-            if (offset < -total / 2) offset += total;
-
-            const abs = Math.abs(offset);
-            const isActive = offset === 0;
-
-            const translateX = offset * 140;
-            const translateZ = -abs * 220;
-            const rotateY = offset * -25;
-            const opacity = abs > 2 ? 0 : 1 - abs * 0.2;
-            const zIndex = 50 - abs;
-
+          {panelConfigs.map((cfg, i) => {
+            const isCenter = i === 1;
             return (
               <div
-                key={i}
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  transform: `translateX(${translateX}px) translateZ(${translateZ}px) rotateY(${rotateY}deg)`,
-                  transition: "transform 700ms cubic-bezier(0.22, 1, 0.36, 1), opacity 700ms ease",
-                  opacity,
-                  zIndex,
-                  transformStyle: "preserve-3d",
-                  animation: isActive ? "cardFloat 4s ease-in-out infinite" : undefined,
-                }}
+                key={`${index}-${i}`}
+                className={`gta-panel ${isCenter ? "gta-center-panel" : "gta-side-panel"}`}
+                style={
+                  {
+                    position: "absolute",
+                    width: cfg.w,
+                    height: cfg.h,
+                    zIndex: cfg.z,
+                    background: "#111",
+                    border: "4px solid #000",
+                    boxShadow: "0 20px 40px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.05)",
+                    overflow: "hidden",
+                    "--tx": `${cfg.x}px`,
+                    "--ty": `${cfg.y}px`,
+                    "--rot": `${cfg.rotate}deg`,
+                    "--tx-from": `${cfg.x + dir * 220}px`,
+                    "--rot-from": `${cfg.rotate + dir * 18}deg`,
+                    animationDelay: `${i * 90}ms`,
+                  } as React.CSSProperties
+                }
               >
-                <YuGiOhCard project={p} active={isActive} />
+                <img
+                  src={project.images[i]}
+                  alt={`${project.title} panel ${i + 1}`}
+                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  loading="lazy"
+                />
+                {/* Sepia overlay */}
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background:
+                      "linear-gradient(180deg, rgba(180,140,60,0.35) 0%, rgba(120,70,20,0.45) 100%)",
+                    mixBlendMode: "multiply",
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background: "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%)",
+                  }}
+                />
+
+                {isCenter && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: 0,
+                      right: 0,
+                      bottom: 24,
+                      padding: "0 20px",
+                      textAlign: "center",
+                    }}
+                  >
+                    <div className="gta-title" style={{ fontSize: 56 }}>
+                      {project.title}
+                    </div>
+                    <div
+                      style={{
+                        marginTop: 8,
+                        fontFamily: "'Bebas Neue', sans-serif",
+                        fontSize: 18,
+                        letterSpacing: "0.15em",
+                        color: "#f5e9c8",
+                        textShadow: "2px 2px 0 #000",
+                      }}
+                    >
+                      {project.tagline}
+                    </div>
+                  </div>
+                )}
               </div>
             );
           })}
-
-          <div
-            key={`whoosh-${index}-${direction}`}
-            aria-hidden
-            style={{
-              position: "absolute",
-              inset: 0,
-              pointerEvents: "none",
-              animation: "whoosh 600ms ease-out forwards",
-              background: `linear-gradient(${direction === 1 ? "90deg" : "270deg"}, transparent 0%, rgba(255,200,120,0.5) 50%, transparent 100%)`,
-              filter: "blur(8px)",
-              opacity: 0,
-            }}
-          />
         </div>
 
-        <button
-          onClick={() => go(1)}
-          aria-label="Next"
-          style={{
-            position: "absolute",
-            right: "8%",
-            zIndex: 100,
-            width: 56,
-            height: 56,
-            borderRadius: "50%",
-            border: "2px solid #c1272d",
-            background: "rgba(0,0,0,0.6)",
-            color: "#f5e9c8",
-            cursor: "url('/cursors/sa-pistol.png') 4 4, auto",
-            fontSize: 22,
-            fontFamily: cloister,
-            boxShadow: "0 4px 12px rgba(0,0,0,0.5)",
-          }}
-        >
-          →
+        <button className="gta-arrow" aria-label="Next" onClick={() => go(1)} style={{ position: "absolute", right: "4%" }}>
+          ›
         </button>
       </div>
 
-      <div style={{ display: "flex", gap: 8, marginTop: 24, marginBottom: 16 }}>
+      {/* Dots */}
+      <div style={{ position: "absolute", bottom: 32, display: "flex", gap: 12, zIndex: 10 }}>
         {projects.map((_, i) => (
           <button
             key={i}
             onClick={() => {
-              setDirection(i > index ? 1 : -1);
+              setDir(i > index ? 1 : -1);
               setIndex(i);
             }}
-            aria-label={`Go to slide ${i + 1}`}
+            aria-label={`Slide ${i + 1}`}
             style={{
-              width: 10,
-              height: 10,
+              width: 14,
+              height: 14,
               borderRadius: "50%",
-              border: "1px solid rgba(0,0,0,0.5)",
-              background: i === index ? "#f5e9c8" : "rgba(245,233,200,0.35)",
+              border: "2px solid #fff",
+              background: i === index ? "#fff" : "transparent",
               cursor: "url('/cursors/sa-pistol.png') 4 4, auto",
+              boxShadow: "2px 2px 0 #000",
               padding: 0,
             }}
           />
         ))}
-      </div>
-    </div>
-  );
-}
-
-function YuGiOhCard({ project, active }: { project: typeof projects[number]; active: boolean }) {
-  return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        borderRadius: 14,
-        padding: 12,
-        background: "linear-gradient(145deg, #d4a85a 0%, #b8862f 50%, #8a5a1a 100%)",
-        boxShadow: active
-          ? "0 30px 60px rgba(0,0,0,0.6), 0 0 40px rgba(255,150,80,0.55), inset 0 0 0 2px #5a3a10"
-          : "0 20px 40px rgba(0,0,0,0.5), inset 0 0 0 2px #5a3a10",
-        display: "flex",
-        flexDirection: "column",
-        gap: 8,
-        fontFamily: cloister,
-        color: "#1a1a1a",
-      }}
-    >
-      {/* Artwork */}
-      <div
-        style={{
-          flex: 1,
-          background: attributeColors[project.attribute],
-          border: "2px solid #1a1a1a",
-          borderRadius: 4,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: "radial-gradient(circle at 30% 20%, rgba(255,255,255,0.4), transparent 60%)",
-          }}
-        />
-        <div
-          style={{
-            fontFamily: cloister,
-            fontSize: 96,
-            color: "rgba(255,255,255,0.9)",
-            fontWeight: 400,
-            textShadow: "0 4px 0 rgba(0,0,0,0.4)",
-          }}
-        >
-          {project.attribute.slice(0, 1)}
-        </div>
-      </div>
-
-      {/* Type bar */}
-      <div
-        style={{
-          background: "#1a1a1a",
-          color: "#d4a85a",
-          padding: "4px 10px",
-          fontSize: 18,
-          fontFamily: cloister,
-          letterSpacing: "0.05em",
-          borderRadius: 2,
-          textAlign: "center",
-        }}
-      >
-        [{project.type}]
-      </div>
-
-      {/* Description */}
-      <div
-        style={{
-          background: "#f5e9c8",
-          border: "1px solid #1a1a1a",
-          borderRadius: 2,
-          padding: "8px 10px",
-          fontSize: 13,
-          lineHeight: 1.35,
-          minHeight: 70,
-          fontFamily: "'Times New Roman', serif",
-          fontStyle: "italic",
-        }}
-      >
-        {project.desc}
       </div>
     </div>
   );
