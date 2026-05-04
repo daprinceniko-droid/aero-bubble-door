@@ -453,20 +453,19 @@ export function ProjectsCanvas() {
           </div>
         </div>
 
-        <div style={{ position: "absolute", bottom: 28, left: 0, right: 0, display: "flex", justifyContent: "center", gap: 12, zIndex: 10 }}>
-          {projects.map((_, i) => (
+        <div style={{ position: "absolute", bottom: 28, left: 0, right: 0, display: "flex", justifyContent: "center", zIndex: 10 }}>
+          {isLast ? (
             <button
-              key={i}
-              onClick={() => { setDir(i > index ? 1 : -1); setIndex(i); }}
-              aria-label={`Slide ${i + 1}`}
-              style={{
-                width: 14, height: 14, borderRadius: "50%",
-                border: "2px solid #fff",
-                background: i === index ? "#fff" : "transparent",
-                padding: 0,
-              }}
-            />
-          ))}
+              className="gta-continue"
+              onClick={() => { /* continue action — wire up as needed */ }}
+            >
+              CONTINUE
+            </button>
+          ) : (
+            <div className="gta-loadbar" role="progressbar" aria-valuenow={progressPct} aria-valuemin={0} aria-valuemax={100}>
+              <div className="gta-loadbar-fill" style={{ width: `${progressPct}%` }} />
+            </div>
+          )}
         </div>
       </div>
 
