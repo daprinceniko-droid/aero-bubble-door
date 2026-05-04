@@ -43,42 +43,72 @@ const projects: Project[] = [
 const cloister = `'Cloister Black', 'UnifrakturCook', 'Blackletter', serif`;
 const SA_CURSOR = `url('/cursors/sa-pistol-sm.png') 2 2, auto`;
 
-type Shard = { wPct: number; hPct: number; rot: number; yOff: number };
+// Layout: a strip of quadrilateral shards.
+// `cuts` are x-positions (% of strip width) for each vertical cut.
+// `slants` are horizontal offsets (% of strip width) added to the TOP of each cut.
+// Cut i is shared by shard i and shard i+1, so both use the same slant -> gap is parallel.
+// `top`/`bot` clamp the top/bottom edges (% of strip height) per shard for height variation.
+type Layout = {
+  cuts: number[];   // length = N-1, sorted ascending, between 0 and 100
+  slants: number[]; // length = N-1, top offset for each cut
+  top: number[];    // length = N, top edge per shard
+  bot: number[];    // length = N, bottom edge per shard
+};
 
-const layouts: Shard[][] = [
-  [
-    { wPct: 22, hPct: 78, rot: -3, yOff: 4 },
-    { wPct: 30, hPct: 92, rot: 1.5, yOff: -2 },
-    { wPct: 22, hPct: 80, rot: -1, yOff: 6 },
-    { wPct: 22, hPct: 74, rot: 3, yOff: 2 },
-  ],
-  [
-    { wPct: 18, hPct: 64, rot: 4, yOff: -10 },
-    { wPct: 26, hPct: 88, rot: -2, yOff: 8 },
-    { wPct: 18, hPct: 72, rot: 2, yOff: -4 },
-    { wPct: 14, hPct: 56, rot: -5, yOff: 14 },
-    { wPct: 20, hPct: 82, rot: 1, yOff: 0 },
-  ],
-  [
-    { wPct: 28, hPct: 90, rot: -2, yOff: 6 },
-    { wPct: 16, hPct: 60, rot: 5, yOff: -12 },
-    { wPct: 22, hPct: 84, rot: -1, yOff: 2 },
-    { wPct: 30, hPct: 70, rot: 2.5, yOff: 10 },
-  ],
-  [
-    { wPct: 14, hPct: 70, rot: -4, yOff: 8 },
-    { wPct: 20, hPct: 86, rot: 2, yOff: -6 },
-    { wPct: 18, hPct: 62, rot: -2, yOff: 12 },
-    { wPct: 24, hPct: 92, rot: 1, yOff: 0 },
-    { wPct: 20, hPct: 76, rot: -3, yOff: 4 },
-  ],
-  [
-    { wPct: 32, hPct: 86, rot: 1, yOff: -4 },
-    { wPct: 18, hPct: 70, rot: -3, yOff: 10 },
-    { wPct: 24, hPct: 92, rot: 2, yOff: 0 },
-    { wPct: 22, hPct: 64, rot: -2, yOff: 8 },
-  ],
+const layouts: Layout[] = [
+  {
+    cuts:   [26, 52, 76],
+    slants: [-4,  3, -2],
+    top:    [ 6,  2, 10,  4],
+    bot:    [94, 96, 90, 92],
+  },
+  {
+    cuts:   [22, 46, 68, 86],
+    slants: [ 5, -3,  4, -2],
+    top:    [10,  4,  8,  2,  6],
+    bot:    [88, 96, 90, 94, 92],
+  },
+  {
+    cuts:   [30, 58, 80],
+    slants: [-3,  5, -4],
+    top:    [ 4, 12,  2,  8],
+    bot:    [96, 88, 94, 90],
+  },
+  {
+    cuts:   [20, 42, 64, 84],
+    slants: [ 4, -5,  3, -2],
+    top:    [ 8,  2, 10,  4,  6],
+    bot:    [90, 94, 88, 96, 92],
+  },
+  {
+    cuts:   [28, 54, 78],
+    slants: [-5,  2, -3],
+    top:    [ 6,  4,  8,  2],
+    bot:    [92, 96, 90, 94],
+  },
 ];
+
+// Build clip-path polygon string for shard i in a layout (in shard's own coordinate space).
+function shardClip(layout: Layout, i: number, gapPct: number): string {
+  const N = layout.top.length;
+  const xLeftCut = i === 0 ? 0 : layout.cuts[i - 1];
+  const xRightCut = i === N - 1 ? 100 : layout.cuts[i];
+  const slantL = i === 0 ? 0 : layout.slants[i - 1];
+  const slantR = i === N - 1 ? 0 : layout.slants[i];
+
+  const w = xRightCut - xLeftCut;
+  // Convert to local 0..100 space inside the shard's bounding box.
+  // Local x of left-bottom = 0; left-top = slantL converted.
+  const ltx = (-slantL / w) * 100 + (gapPct / w) * 100 * 0.5;
+  const lbx = 0 + (gapPct / w) * 100 * 0.5;
+  const rtx = 100 + (-slantR / w) * 100 - (gapPct / w) * 100 * 0.5;
+  const rbx = 100 - (gapPct / w) * 100 * 0.5;
+
+  const ty = layout.top[i];
+  const by = layout.bot[i];
+
+  return `polygon(${ltx}% ${ty}%, ${rtx}% ${ty}%, ${rbx}% ${by}%, ${lbx}% ${by}%)`;
+}
 
 type Spark = { id: number; x: number; y: number };
 
