@@ -295,6 +295,49 @@ export function ProjectsCanvas() {
           filter: blur(0.6px);
         }
 
+        @keyframes loadbarStripes {
+          0% { background-position: 0 0; }
+          100% { background-position: 40px 0; }
+        }
+        .gta-loadbar {
+          width: min(520px, 60vw);
+          height: 18px;
+          border: 2px solid #fff;
+          background: rgba(0,0,0,0.6);
+          padding: 2px;
+          box-shadow: 0 0 0 1px #000, 0 0 12px rgba(255,255,255,0.15);
+          overflow: hidden;
+        }
+        .gta-loadbar-fill {
+          height: 100%;
+          background:
+            repeating-linear-gradient(45deg, rgba(0,0,0,0.25) 0 8px, transparent 8px 16px),
+            linear-gradient(180deg, #ffe9a8 0%, #d49a2a 50%, #8a5a10 100%);
+          background-size: 40px 100%, 100% 100%;
+          animation: loadbarStripes 800ms linear infinite;
+          transition: width 450ms cubic-bezier(0.22, 1, 0.36, 1);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(0,0,0,0.4);
+        }
+        @keyframes continuePulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.04); }
+        }
+        .gta-continue {
+          font-family: ${cloister};
+          font-size: 28px;
+          letter-spacing: 0.12em;
+          color: #fff;
+          background: transparent;
+          border: 2px solid #fff;
+          padding: 8px 28px;
+          text-transform: uppercase;
+          -webkit-text-stroke: 1px #000;
+          box-shadow: 0 0 0 1px #000, 0 0 18px rgba(255,220,140,0.35);
+          animation: continuePulse 1.6s ease-in-out infinite;
+          transition: background 200ms ease, color 200ms ease;
+        }
+        .gta-continue:hover { background: #fff; color: #000; -webkit-text-stroke: 0; }
+
         @media (max-width: 768px) {
           .gta-shard.is-side { display: none; }
           .gta-shard.is-main { width: 70vw !important; }
