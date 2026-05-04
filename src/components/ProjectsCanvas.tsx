@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Project = {
   title: string;
@@ -41,10 +41,10 @@ const projects: Project[] = [
 ];
 
 const cloister = `'Cloister Black', 'UnifrakturCook', 'Blackletter', serif`;
+const SA_CURSOR = `url('/cursors/sa-pistol-sm.png') 2 2, auto`;
 
 type Shard = { wPct: number; hPct: number; rot: number; yOff: number };
 
-// One unique shattered layout per project so no two slides look the same.
 const layouts: Shard[][] = [
   [
     { wPct: 22, hPct: 78, rot: -3, yOff: 4 },
@@ -80,16 +80,34 @@ const layouts: Shard[][] = [
   ],
 ];
 
+type Spark = { id: number; x: number; y: number };
+
 export function ProjectsCanvas() {
   const [index, setIndex] = useState(0);
   const [dir, setDir] = useState<1 | -1>(1);
   const [hoverActive, setHoverActive] = useState(false);
+  const [sparks, setSparks] = useState<Spark[]>([]);
+  const [holes, setHoles] = useState<Spark[]>([]);
+  const idRef = useRef(0);
   const total = projects.length;
 
   const go = (d: 1 | -1) => {
     setDir(d);
     setIndex((i) => (i + d + total) % total);
   };
+
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      const id = ++idRef.current;
+      const s: Spark = { id, x: e.clientX, y: e.clientY };
+      setSparks((p) => [...p, s]);
+      setHoles((p) => [...p, s]);
+      window.setTimeout(() => setSparks((p) => p.filter((x) => x.id !== id)), 350);
+      window.setTimeout(() => setHoles((p) => p.filter((x) => x.id !== id)), 2500);
+    };
+    window.addEventListener("click", onClick);
+    return () => window.removeEventListener("click", onClick);
+  }, []);
 
   const project = projects[index];
   const shards = layouts[index % layouts.length];
@@ -101,12 +119,8 @@ export function ProjectsCanvas() {
         position: "fixed",
         inset: 0,
         background: "#000",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
         overflow: "hidden",
-        cursor: "url('/cursors/sa-pistol.png') 4 4, auto",
+        cursor: SA_CURSOR,
         fontFamily: cloister,
         color: "#fff",
       }}
@@ -118,7 +132,11 @@ export function ProjectsCanvas() {
           src: local('Cloister Black'), local('CloisterBlack');
           font-display: swap;
         }
-        .gta-root, .gta-root * { font-family: ${cloister} !important; }
+        .gta-root, .gta-root * {
+          font-family: ${cloister} !important;
+          cursor: ${SA_CURSOR};
+        }
+        button, a, [role="button"] { cursor: ${SA_CURSOR} !important; }
 
         @keyframes grain {
           0%, 100% { transform: translate(0,0); }
@@ -142,10 +160,11 @@ export function ProjectsCanvas() {
         }
         .gta-stage { filter: grayscale(1) contrast(1.05); transition: filter 400ms ease; }
         .gta-stage.is-hot { filter: grayscale(0) contrast(1); }
+        .gta-stage.is-hot .shard-gif { opacity: 1; }
+        .gta-stage.is-hot .shard-img { opacity: 0; }
 
         .gta-shard {
           animation: shardIn 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
-          transition: box-shadow 300ms ease;
           position: relative;
           overflow: hidden;
         }
@@ -156,11 +175,7 @@ export function ProjectsCanvas() {
           transition: opacity 250ms ease;
         }
         .gta-shard .shard-gif { opacity: 0; }
-        .gta-shard:hover .shard-gif { opacity: 1; }
-        .gta-shard:hover .shard-img { opacity: 0; }
-        .gta-shard:hover { box-shadow: 0 28px 60px rgba(0,0,0,0.95); z-index: 50; }
 
-        /* Glass specular + refraction overlays */
         .glass-spec {
           position: absolute; inset: 0; pointer-events: none;
           background:
@@ -187,20 +202,66 @@ export function ProjectsCanvas() {
 
         .gta-title {
           color: #fff;
-          -webkit-text-stroke: 2px #000;
-          text-shadow: 5px 5px 0 #000, 7px 7px 0 rgba(180,140,60,0.55);
           letter-spacing: 0.02em;
           line-height: 0.95;
         }
         .gta-arrow {
           background: transparent; border: none; color: #fff;
           font-size: 88px; line-height: 1;
-          cursor: url('/cursors/sa-pistol.png') 4 4, auto;
-          text-shadow: 4px 4px 0 #000;
           transition: transform 200ms ease;
           padding: 0 24px; z-index: 50;
         }
         .gta-arrow:hover { transform: scale(1.15); }
+
+        @keyframes sparkPop {
+          0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; }
+          60% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+          100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; }
+        }
+        .gun-spark {
+          position: fixed; width: 48px; height: 48px;
+          pointer-events: none; z-index: 9999;
+          animation: sparkPop 350ms ease-out forwards;
+          background:
+            radial-gradient(circle at center, rgba(255,240,170,1) 0%, rgba(255,170,40,0.9) 30%, rgba(255,80,0,0.5) 55%, transparent 70%);
+          border-radius: 50%;
+          mix-blend-mode: screen;
+          filter: blur(0.5px);
+        }
+        .gun-spark::before, .gun-spark::after {
+          content:""; position:absolute; left:50%; top:50%;
+          width: 60px; height: 2px;
+          background: linear-gradient(90deg, transparent, #fff7c2, transparent);
+          transform: translate(-50%,-50%) rotate(20deg);
+        }
+        .gun-spark::after { transform: translate(-50%,-50%) rotate(-55deg); width: 50px; }
+
+        @keyframes holeFade {
+          0% { opacity: 1; }
+          80% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+        .bullet-hole {
+          position: fixed; width: 16px; height: 16px;
+          transform: translate(-50%, -50%);
+          pointer-events: none; z-index: 9998;
+          border-radius: 50%;
+          background: radial-gradient(circle at 45% 40%, #000 0%, #1a1a1a 45%, rgba(0,0,0,0.6) 70%, transparent 78%);
+          box-shadow:
+            0 0 0 1px rgba(255,255,255,0.08),
+            0 0 6px 1px rgba(0,0,0,0.6);
+          animation: holeFade 2.5s ease-out forwards;
+        }
+        .bullet-hole::before {
+          content:""; position:absolute; inset:-6px;
+          background:
+            radial-gradient(circle at 30% 30%, rgba(255,255,255,0.18), transparent 40%),
+            conic-gradient(from 0deg, rgba(255,255,255,0.08), transparent 30%, rgba(255,255,255,0.08) 60%, transparent 90%);
+          border-radius: 50%;
+          mix-blend-mode: screen;
+          filter: blur(0.6px);
+        }
+
         @media (max-width: 768px) {
           .gta-shard.is-side { display: none; }
           .gta-shard.is-main { width: 70vw !important; }
@@ -217,9 +278,10 @@ export function ProjectsCanvas() {
             position: "absolute",
             top: 24, left: 0, right: 0,
             fontSize: 88, zIndex: 10, textAlign: "center",
+            textTransform: "uppercase",
           }}
         >
-          Projects
+          PROJECTS
         </div>
 
         <div
@@ -263,7 +325,6 @@ export function ProjectsCanvas() {
                       flex: `0 0 ${s.wPct}%`,
                       height: `${s.hPct}%`,
                       border: "3px solid #000",
-                      boxShadow: "0 18px 40px rgba(0,0,0,0.85)",
                       "--tx-from": `${dir * 240}px`,
                       "--ty": `${s.yOff}px`,
                       "--rot": `${s.rot}deg`,
@@ -273,7 +334,6 @@ export function ProjectsCanvas() {
                     } as React.CSSProperties
                   }
                 >
-                  {/* Static image (default) */}
                   <div
                     className="shard-img"
                     style={{
@@ -283,7 +343,6 @@ export function ProjectsCanvas() {
                       backgroundBlendMode: "multiply, normal",
                     }}
                   />
-                  {/* Gif (plays on hover) */}
                   <div
                     className="shard-gif"
                     style={{
@@ -293,13 +352,9 @@ export function ProjectsCanvas() {
                     }}
                   />
 
-                  {/* Glass refraction tint */}
                   <div className="glass-refract" />
-                  {/* Specular highlight streak */}
                   <div className="glass-spec" />
-                  {/* Crisp inner edge */}
                   <div className="glass-edge" />
-                  {/* Vignette */}
                   <div
                     style={{
                       position: "absolute", inset: 0,
@@ -327,7 +382,7 @@ export function ProjectsCanvas() {
           <div
             style={{
               marginTop: 6, fontSize: 22, letterSpacing: "0.1em",
-              color: "#f5e9c8", textShadow: "2px 2px 0 #000",
+              color: "#f5e9c8",
             }}
           >
             {project.tagline}
@@ -344,13 +399,19 @@ export function ProjectsCanvas() {
                 width: 14, height: 14, borderRadius: "50%",
                 border: "2px solid #fff",
                 background: i === index ? "#fff" : "transparent",
-                cursor: "url('/cursors/sa-pistol.png') 4 4, auto",
-                boxShadow: "2px 2px 0 #000", padding: 0,
+                padding: 0,
               }}
             />
           ))}
         </div>
       </div>
+
+      {holes.map((h) => (
+        <div key={`h-${h.id}`} className="bullet-hole" style={{ left: h.x, top: h.y }} />
+      ))}
+      {sparks.map((s) => (
+        <div key={`s-${s.id}`} className="gun-spark" style={{ left: s.x, top: s.y }} />
+      ))}
     </div>
   );
 }
