@@ -337,17 +337,45 @@ export function ProjectsCanvas() {
               position: "relative",
               width: "min(1100px, 88vw)",
               height: "min(560px, 70vh)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
             }}
           >
-            {shards.map((s, i) => {
-              const leftPct = shards.slice(0, i).reduce((a, c) => a + c.wPct, 0);
-              const bgPosX = totalW === s.wPct ? 50 : (leftPct / (totalW - s.wPct)) * 100;
-              const bgSize = `${(100 / s.wPct) * totalW}% auto`;
-              const isMain = i === Math.floor(shards.length / 2);
+            {Array.from({ length: N }).map((_, i) => {
+              const xLeftCut = i === 0 ? 0 : layout.cuts[i - 1];
+              const xRightCut = i === N - 1 ? 100 : layout.cuts[i];
+              const slantL = i === 0 ? 0 : layout.slants[i - 1];
+              const slantR = i === N - 1 ? 0 : layout.slants[i];
+              const ty = layout.top[i];
+              const by = layout.bot[i];
+
+              // Bounding box in stage % coords
+              const bbLeft = Math.min(xLeftCut, xLeftCut + slantL);
+              const bbRight = Math.max(xRightCut, xRightCut + slantR);
+              const bbW = bbRight - bbLeft;
+              const bbTop = ty;
+              const bbH = by - ty;
+
+              // Local clip-path coords (within bounding box, 0..100)
+              const ltx = ((xLeftCut + slantL - bbLeft) / bbW) * 100;
+              const rtx = ((xRightCut + slantR - bbLeft) / bbW) * 100;
+              const lbx = ((xLeftCut - bbLeft) / bbW) * 100;
+              const rbx = ((xRightCut - bbLeft) / bbW) * 100;
+
+              // Inset clip slightly along x so neighboring shards leave a parallel gap
+              const gapInset = (GAP / bbW) * 100 * 0.5;
+              const ltX = ltx + (i === 0 ? 0 : gapInset);
+              const lbX = lbx + (i === 0 ? 0 : gapInset);
+              const rtX = rtx - (i === N - 1 ? 0 : gapInset);
+              const rbX = rbx - (i === N - 1 ? 0 : gapInset);
+              const clip = `polygon(${ltX}% 0%, ${rtX}% 0%, ${rbX}% 100%, ${lbX}% 100%)`;
+
+              // Background slicing: scale image so its full width = stage width,
+              // then position so this bbox shows the correct slice.
+              const bgSizeW = (100 / bbW) * 100;       // % width relative to bbox
+              const bgSizeH = (100 / bbH) * 100;       // % height relative to bbox
+              const bgPosX = bbW >= 100 ? 50 : (bbLeft / (100 - bbW)) * 100;
+              const bgPosY = bbH >= 100 ? 50 : (bbTop / (100 - bbH)) * 100;
+
+              const isMain = i === Math.floor(N / 2);
 
               return (
                 <div
@@ -355,15 +383,18 @@ export function ProjectsCanvas() {
                   className={`gta-shard ${isMain ? "is-main" : "is-side"}`}
                   style={
                     {
-                      flex: `0 0 ${s.wPct}%`,
-                      height: `${s.hPct}%`,
-                      border: "3px solid #000",
+                      position: "absolute",
+                      left: `${bbLeft}%`,
+                      top: `${bbTop}%`,
+                      width: `${bbW}%`,
+                      height: `${bbH}%`,
+                      clipPath: clip,
+                      WebkitClipPath: clip,
                       "--tx-from": `${dir * 240}px`,
-                      "--ty": `${s.yOff}px`,
-                      "--rot": `${s.rot}deg`,
-                      "--rot-from": `${s.rot + dir * 12}deg`,
+                      "--ty": `0px`,
+                      "--rot": `0deg`,
+                      "--rot-from": `0deg`,
                       animationDelay: `${i * 70}ms`,
-                      transform: `translate(0, ${s.yOff}px) rotate(${s.rot}deg)`,
                     } as React.CSSProperties
                   }
                 >
@@ -371,8 +402,8 @@ export function ProjectsCanvas() {
                     className="shard-img"
                     style={{
                       backgroundImage: `linear-gradient(180deg, rgba(180,140,60,0.30) 0%, rgba(120,70,20,0.45) 100%), url(${project.image})`,
-                      backgroundSize: `auto, ${bgSize}`,
-                      backgroundPosition: `center, ${bgPosX}% center`,
+                      backgroundSize: `auto, ${bgSizeW}% ${bgSizeH}%`,
+                      backgroundPosition: `center, ${bgPosX}% ${bgPosY}%`,
                       backgroundBlendMode: "multiply, normal",
                     }}
                   />
@@ -380,8 +411,8 @@ export function ProjectsCanvas() {
                     className="shard-gif"
                     style={{
                       backgroundImage: `url(${project.gif})`,
-                      backgroundSize: `${bgSize}`,
-                      backgroundPosition: `${bgPosX}% center`,
+                      backgroundSize: `${bgSizeW}% ${bgSizeH}%`,
+                      backgroundPosition: `${bgPosX}% ${bgPosY}%`,
                     }}
                   />
 
