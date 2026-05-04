@@ -43,42 +43,72 @@ const projects: Project[] = [
 const cloister = `'Cloister Black', 'UnifrakturCook', 'Blackletter', serif`;
 const SA_CURSOR = `url('/cursors/sa-pistol-sm.png') 2 2, auto`;
 
-type Shard = { wPct: number; hPct: number; rot: number; yOff: number };
+// Layout: a strip of quadrilateral shards.
+// `cuts` are x-positions (% of strip width) for each vertical cut.
+// `slants` are horizontal offsets (% of strip width) added to the TOP of each cut.
+// Cut i is shared by shard i and shard i+1, so both use the same slant -> gap is parallel.
+// `top`/`bot` clamp the top/bottom edges (% of strip height) per shard for height variation.
+type Layout = {
+  cuts: number[];   // length = N-1, sorted ascending, between 0 and 100
+  slants: number[]; // length = N-1, top offset for each cut
+  top: number[];    // length = N, top edge per shard
+  bot: number[];    // length = N, bottom edge per shard
+};
 
-const layouts: Shard[][] = [
-  [
-    { wPct: 22, hPct: 78, rot: -3, yOff: 4 },
-    { wPct: 30, hPct: 92, rot: 1.5, yOff: -2 },
-    { wPct: 22, hPct: 80, rot: -1, yOff: 6 },
-    { wPct: 22, hPct: 74, rot: 3, yOff: 2 },
-  ],
-  [
-    { wPct: 18, hPct: 64, rot: 4, yOff: -10 },
-    { wPct: 26, hPct: 88, rot: -2, yOff: 8 },
-    { wPct: 18, hPct: 72, rot: 2, yOff: -4 },
-    { wPct: 14, hPct: 56, rot: -5, yOff: 14 },
-    { wPct: 20, hPct: 82, rot: 1, yOff: 0 },
-  ],
-  [
-    { wPct: 28, hPct: 90, rot: -2, yOff: 6 },
-    { wPct: 16, hPct: 60, rot: 5, yOff: -12 },
-    { wPct: 22, hPct: 84, rot: -1, yOff: 2 },
-    { wPct: 30, hPct: 70, rot: 2.5, yOff: 10 },
-  ],
-  [
-    { wPct: 14, hPct: 70, rot: -4, yOff: 8 },
-    { wPct: 20, hPct: 86, rot: 2, yOff: -6 },
-    { wPct: 18, hPct: 62, rot: -2, yOff: 12 },
-    { wPct: 24, hPct: 92, rot: 1, yOff: 0 },
-    { wPct: 20, hPct: 76, rot: -3, yOff: 4 },
-  ],
-  [
-    { wPct: 32, hPct: 86, rot: 1, yOff: -4 },
-    { wPct: 18, hPct: 70, rot: -3, yOff: 10 },
-    { wPct: 24, hPct: 92, rot: 2, yOff: 0 },
-    { wPct: 22, hPct: 64, rot: -2, yOff: 8 },
-  ],
+const layouts: Layout[] = [
+  {
+    cuts:   [26, 52, 76],
+    slants: [-4,  3, -2],
+    top:    [ 6,  2, 10,  4],
+    bot:    [94, 96, 90, 92],
+  },
+  {
+    cuts:   [22, 46, 68, 86],
+    slants: [ 5, -3,  4, -2],
+    top:    [10,  4,  8,  2,  6],
+    bot:    [88, 96, 90, 94, 92],
+  },
+  {
+    cuts:   [30, 58, 80],
+    slants: [-3,  5, -4],
+    top:    [ 4, 12,  2,  8],
+    bot:    [96, 88, 94, 90],
+  },
+  {
+    cuts:   [20, 42, 64, 84],
+    slants: [ 4, -5,  3, -2],
+    top:    [ 8,  2, 10,  4,  6],
+    bot:    [90, 94, 88, 96, 92],
+  },
+  {
+    cuts:   [28, 54, 78],
+    slants: [-5,  2, -3],
+    top:    [ 6,  4,  8,  2],
+    bot:    [92, 96, 90, 94],
+  },
 ];
+
+// Build clip-path polygon string for shard i in a layout (in shard's own coordinate space).
+function shardClip(layout: Layout, i: number, gapPct: number): string {
+  const N = layout.top.length;
+  const xLeftCut = i === 0 ? 0 : layout.cuts[i - 1];
+  const xRightCut = i === N - 1 ? 100 : layout.cuts[i];
+  const slantL = i === 0 ? 0 : layout.slants[i - 1];
+  const slantR = i === N - 1 ? 0 : layout.slants[i];
+
+  const w = xRightCut - xLeftCut;
+  // Convert to local 0..100 space inside the shard's bounding box.
+  // Local x of left-bottom = 0; left-top = slantL converted.
+  const ltx = (-slantL / w) * 100 + (gapPct / w) * 100 * 0.5;
+  const lbx = 0 + (gapPct / w) * 100 * 0.5;
+  const rtx = 100 + (-slantR / w) * 100 - (gapPct / w) * 100 * 0.5;
+  const rbx = 100 - (gapPct / w) * 100 * 0.5;
+
+  const ty = layout.top[i];
+  const by = layout.bot[i];
+
+  return `polygon(${ltx}% ${ty}%, ${rtx}% ${ty}%, ${rbx}% ${by}%, ${lbx}% ${by}%)`;
+}
 
 type Spark = { id: number; x: number; y: number };
 
@@ -110,8 +140,11 @@ export function ProjectsCanvas() {
   }, []);
 
   const project = projects[index];
-  const shards = layouts[index % layouts.length];
-  const totalW = shards.reduce((s, c) => s + c.wPct, 0);
+  const layout = layouts[index % layouts.length];
+  const N = layout.top.length;
+  const isLast = index === total - 1;
+  const progressPct = ((index + 1) / total) * 100;
+  const GAP = 1.2; // % of strip width — perpendicular gap between shards
 
   return (
     <div
@@ -262,6 +295,49 @@ export function ProjectsCanvas() {
           filter: blur(0.6px);
         }
 
+        @keyframes loadbarStripes {
+          0% { background-position: 0 0; }
+          100% { background-position: 40px 0; }
+        }
+        .gta-loadbar {
+          width: min(520px, 60vw);
+          height: 18px;
+          border: 2px solid #fff;
+          background: rgba(0,0,0,0.6);
+          padding: 2px;
+          box-shadow: 0 0 0 1px #000, 0 0 12px rgba(255,255,255,0.15);
+          overflow: hidden;
+        }
+        .gta-loadbar-fill {
+          height: 100%;
+          background:
+            repeating-linear-gradient(45deg, rgba(0,0,0,0.25) 0 8px, transparent 8px 16px),
+            linear-gradient(180deg, #ffe9a8 0%, #d49a2a 50%, #8a5a10 100%);
+          background-size: 40px 100%, 100% 100%;
+          animation: loadbarStripes 800ms linear infinite;
+          transition: width 450ms cubic-bezier(0.22, 1, 0.36, 1);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(0,0,0,0.4);
+        }
+        @keyframes continuePulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.04); }
+        }
+        .gta-continue {
+          font-family: ${cloister};
+          font-size: 28px;
+          letter-spacing: 0.12em;
+          color: #fff;
+          background: transparent;
+          border: 2px solid #fff;
+          padding: 8px 28px;
+          text-transform: uppercase;
+          -webkit-text-stroke: 1px #000;
+          box-shadow: 0 0 0 1px #000, 0 0 18px rgba(255,220,140,0.35);
+          animation: continuePulse 1.6s ease-in-out infinite;
+          transition: background 200ms ease, color 200ms ease;
+        }
+        .gta-continue:hover { background: #fff; color: #000; -webkit-text-stroke: 0; }
+
         @media (max-width: 768px) {
           .gta-shard.is-side { display: none; }
           .gta-shard.is-main { width: 70vw !important; }
@@ -304,17 +380,45 @@ export function ProjectsCanvas() {
               position: "relative",
               width: "min(1100px, 88vw)",
               height: "min(560px, 70vh)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
             }}
           >
-            {shards.map((s, i) => {
-              const leftPct = shards.slice(0, i).reduce((a, c) => a + c.wPct, 0);
-              const bgPosX = totalW === s.wPct ? 50 : (leftPct / (totalW - s.wPct)) * 100;
-              const bgSize = `${(100 / s.wPct) * totalW}% auto`;
-              const isMain = i === Math.floor(shards.length / 2);
+            {Array.from({ length: N }).map((_, i) => {
+              const xLeftCut = i === 0 ? 0 : layout.cuts[i - 1];
+              const xRightCut = i === N - 1 ? 100 : layout.cuts[i];
+              const slantL = i === 0 ? 0 : layout.slants[i - 1];
+              const slantR = i === N - 1 ? 0 : layout.slants[i];
+              const ty = layout.top[i];
+              const by = layout.bot[i];
+
+              // Bounding box in stage % coords
+              const bbLeft = Math.min(xLeftCut, xLeftCut + slantL);
+              const bbRight = Math.max(xRightCut, xRightCut + slantR);
+              const bbW = bbRight - bbLeft;
+              const bbTop = ty;
+              const bbH = by - ty;
+
+              // Local clip-path coords (within bounding box, 0..100)
+              const ltx = ((xLeftCut + slantL - bbLeft) / bbW) * 100;
+              const rtx = ((xRightCut + slantR - bbLeft) / bbW) * 100;
+              const lbx = ((xLeftCut - bbLeft) / bbW) * 100;
+              const rbx = ((xRightCut - bbLeft) / bbW) * 100;
+
+              // Inset clip slightly along x so neighboring shards leave a parallel gap
+              const gapInset = (GAP / bbW) * 100 * 0.5;
+              const ltX = ltx + (i === 0 ? 0 : gapInset);
+              const lbX = lbx + (i === 0 ? 0 : gapInset);
+              const rtX = rtx - (i === N - 1 ? 0 : gapInset);
+              const rbX = rbx - (i === N - 1 ? 0 : gapInset);
+              const clip = `polygon(${ltX}% 0%, ${rtX}% 0%, ${rbX}% 100%, ${lbX}% 100%)`;
+
+              // Background slicing: scale image so its full width = stage width,
+              // then position so this bbox shows the correct slice.
+              const bgSizeW = (100 / bbW) * 100;       // % width relative to bbox
+              const bgSizeH = (100 / bbH) * 100;       // % height relative to bbox
+              const bgPosX = bbW >= 100 ? 50 : (bbLeft / (100 - bbW)) * 100;
+              const bgPosY = bbH >= 100 ? 50 : (bbTop / (100 - bbH)) * 100;
+
+              const isMain = i === Math.floor(N / 2);
 
               return (
                 <div
@@ -322,15 +426,18 @@ export function ProjectsCanvas() {
                   className={`gta-shard ${isMain ? "is-main" : "is-side"}`}
                   style={
                     {
-                      flex: `0 0 ${s.wPct}%`,
-                      height: `${s.hPct}%`,
-                      border: "3px solid #000",
+                      position: "absolute",
+                      left: `${bbLeft}%`,
+                      top: `${bbTop}%`,
+                      width: `${bbW}%`,
+                      height: `${bbH}%`,
+                      clipPath: clip,
+                      WebkitClipPath: clip,
                       "--tx-from": `${dir * 240}px`,
-                      "--ty": `${s.yOff}px`,
-                      "--rot": `${s.rot}deg`,
-                      "--rot-from": `${s.rot + dir * 12}deg`,
+                      "--ty": `0px`,
+                      "--rot": `0deg`,
+                      "--rot-from": `0deg`,
                       animationDelay: `${i * 70}ms`,
-                      transform: `translate(0, ${s.yOff}px) rotate(${s.rot}deg)`,
                     } as React.CSSProperties
                   }
                 >
@@ -338,8 +445,8 @@ export function ProjectsCanvas() {
                     className="shard-img"
                     style={{
                       backgroundImage: `linear-gradient(180deg, rgba(180,140,60,0.30) 0%, rgba(120,70,20,0.45) 100%), url(${project.image})`,
-                      backgroundSize: `auto, ${bgSize}`,
-                      backgroundPosition: `center, ${bgPosX}% center`,
+                      backgroundSize: `auto, ${bgSizeW}% ${bgSizeH}%`,
+                      backgroundPosition: `center, ${bgPosX}% ${bgPosY}%`,
                       backgroundBlendMode: "multiply, normal",
                     }}
                   />
@@ -347,8 +454,8 @@ export function ProjectsCanvas() {
                     className="shard-gif"
                     style={{
                       backgroundImage: `url(${project.gif})`,
-                      backgroundSize: `${bgSize}`,
-                      backgroundPosition: `${bgPosX}% center`,
+                      backgroundSize: `${bgSizeW}% ${bgSizeH}%`,
+                      backgroundPosition: `${bgPosX}% ${bgPosY}%`,
                     }}
                   />
 
@@ -389,20 +496,19 @@ export function ProjectsCanvas() {
           </div>
         </div>
 
-        <div style={{ position: "absolute", bottom: 28, left: 0, right: 0, display: "flex", justifyContent: "center", gap: 12, zIndex: 10 }}>
-          {projects.map((_, i) => (
+        <div style={{ position: "absolute", bottom: 28, left: 0, right: 0, display: "flex", justifyContent: "center", zIndex: 10 }}>
+          {isLast ? (
             <button
-              key={i}
-              onClick={() => { setDir(i > index ? 1 : -1); setIndex(i); }}
-              aria-label={`Slide ${i + 1}`}
-              style={{
-                width: 14, height: 14, borderRadius: "50%",
-                border: "2px solid #fff",
-                background: i === index ? "#fff" : "transparent",
-                padding: 0,
-              }}
-            />
-          ))}
+              className="gta-continue"
+              onClick={() => { /* continue action — wire up as needed */ }}
+            >
+              CONTINUE
+            </button>
+          ) : (
+            <div className="gta-loadbar" role="progressbar" aria-valuenow={progressPct} aria-valuemin={0} aria-valuemax={100}>
+              <div className="gta-loadbar-fill" style={{ width: `${progressPct}%` }} />
+            </div>
+          )}
         </div>
       </div>
 
