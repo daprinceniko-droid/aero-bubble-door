@@ -140,8 +140,11 @@ export function ProjectsCanvas() {
   }, []);
 
   const project = projects[index];
-  const shards = layouts[index % layouts.length];
-  const totalW = shards.reduce((s, c) => s + c.wPct, 0);
+  const layout = layouts[index % layouts.length];
+  const N = layout.top.length;
+  const isLast = index === total - 1;
+  const progressPct = ((index + 1) / total) * 100;
+  const GAP = 1.2; // % of strip width — perpendicular gap between shards
 
   return (
     <div
