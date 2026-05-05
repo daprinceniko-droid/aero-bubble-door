@@ -542,7 +542,7 @@ export function ProjectsCanvas() {
               return (
                 <div
                   key={`${index}-${i}`}
-                  className={`gta-shard ${isMain ? "is-main" : "is-side"}`}
+                  className={`gta-shard ${isMain ? "is-main" : "is-side"} ${revealed[i] ? "is-revealed" : ""}`}
                   style={
                     {
                       position: "absolute",
