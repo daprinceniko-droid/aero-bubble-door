@@ -122,7 +122,6 @@ export function ProjectsCanvas() {
   const [showContinue, setShowContinue] = useState(false);
   const [phase, setPhase] = useState<"projects" | "fadeOut1" | "loading" | "fadeOut2" | "final">("projects");
   const idRef = useRef(0);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const total = projects.length;
 
   const go = (d: 1 | -1) => {
