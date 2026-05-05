@@ -121,7 +121,10 @@ export function ProjectsCanvas() {
   const [reachedLast, setReachedLast] = useState(false);
   const [showContinue, setShowContinue] = useState(false);
   const [phase, setPhase] = useState<"projects" | "fadeOut1" | "loading" | "fadeOut2" | "final">("projects");
+  const [revealed, setRevealed] = useState<boolean[]>([]);
+  const [allRevealed, setAllRevealed] = useState(false);
   const idRef = useRef(0);
+  const audioRef = useRef<HTMLIFrameElement | null>(null);
   const total = projects.length;
 
   const go = (d: 1 | -1) => {
@@ -142,13 +145,37 @@ export function ProjectsCanvas() {
     return () => window.removeEventListener("click", onClick);
   }, []);
 
+  // On slide change: hide all shards, then reveal them one by one in random order over ~2s.
+  useEffect(() => {
+    const layout = layouts[index % layouts.length];
+    const N = layout.top.length;
+    setRevealed(new Array(N).fill(false));
+    setAllRevealed(false);
+    const order = Array.from({ length: N }, (_, i) => i).sort(() => Math.random() - 0.5);
+    const totalMs = 2000;
+    const step = totalMs / N;
+    const timers: number[] = [];
+    order.forEach((shardIdx, k) => {
+      const t = window.setTimeout(() => {
+        setRevealed((prev) => {
+          const next = [...prev];
+          next[shardIdx] = true;
+          return next;
+        });
+        if (k === N - 1) setAllRevealed(true);
+      }, step * (k + 1));
+      timers.push(t);
+    });
+    return () => timers.forEach((t) => window.clearTimeout(t));
+  }, [index]);
+
   // Track whether we've reached the last slide; once true, keep CONTINUE visible.
   useEffect(() => {
     if (index === total - 1 && !reachedLast) {
       const t = window.setTimeout(() => {
         setReachedLast(true);
         setShowContinue(true);
-      }, 500);
+      }, 1500);
       return () => window.clearTimeout(t);
     }
   }, [index, total, reachedLast]);
@@ -168,6 +195,39 @@ export function ProjectsCanvas() {
       return () => window.clearTimeout(t);
     }
   }, [phase]);
+
+  // Music fade-in / fade-out via YouTube IFrame postMessage API.
+  useEffect(() => {
+    if (phase !== "loading") return;
+    const send = (func: string, args: unknown[] = []) => {
+      audioRef.current?.contentWindow?.postMessage(
+        JSON.stringify({ event: "command", func, args }),
+        "*"
+      );
+    };
+    let vol = 0;
+    send("setVolume", [0]);
+    send("playVideo");
+    const fadeIn = window.setInterval(() => {
+      vol = Math.min(100, vol + 7);
+      send("setVolume", [vol]);
+      if (vol >= 100) window.clearInterval(fadeIn);
+    }, 100);
+    // Begin fade-out ~1.5s before phase ends (loading lasts 8s)
+    const fadeOutStart = window.setTimeout(() => {
+      let v = 100;
+      const fadeOut = window.setInterval(() => {
+        v = Math.max(0, v - 8);
+        send("setVolume", [v]);
+        if (v <= 0) window.clearInterval(fadeOut);
+      }, 100);
+    }, 6500);
+    return () => {
+      window.clearInterval(fadeIn);
+      window.clearTimeout(fadeOutStart);
+    };
+  }, [phase]);
+
 
   const project = projects[index];
   const layout = layouts[index % layouts.length];
@@ -222,15 +282,16 @@ export function ProjectsCanvas() {
           100% { opacity: 1; transform: translate(0, var(--ty)) rotate(var(--rot)); }
         }
         .gta-stage { filter: grayscale(1) contrast(1.05); transition: filter 400ms ease; }
-        .gta-stage.is-hot { filter: grayscale(0) contrast(1); }
-        .gta-stage.is-hot .shard-gif { opacity: 1; }
-        .gta-stage.is-hot .shard-img { opacity: 0; }
+        .gta-stage.is-hot.is-ready { filter: grayscale(0) contrast(1); }
+        .gta-stage.is-hot.is-ready .shard-gif { opacity: 1; }
+        .gta-stage.is-hot.is-ready .shard-img { opacity: 0; }
 
         .gta-shard {
-          animation: shardIn 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
           position: relative;
           overflow: hidden;
+          visibility: hidden;
         }
+        .gta-shard.is-revealed { visibility: visible; }
         .gta-shard .shard-img,
         .gta-shard .shard-gif {
           position: absolute; inset: 0;
@@ -431,13 +492,13 @@ export function ProjectsCanvas() {
 
           <div
             key={index}
-            className={`gta-stage ${hoverActive ? "is-hot" : ""}`}
+            className={`gta-stage ${hoverActive ? "is-hot" : ""} ${allRevealed ? "is-ready" : ""}`}
             onMouseEnter={() => setHoverActive(true)}
             onMouseLeave={() => setHoverActive(false)}
             style={{
               position: "relative",
-              width: "min(1100px, 88vw)",
-              height: "min(560px, 70vh)",
+              width: "min(880px, 72vw)",
+              height: "min(440px, 56vh)",
             }}
           >
             {Array.from({ length: N }).map((_, i) => {
@@ -481,7 +542,7 @@ export function ProjectsCanvas() {
               return (
                 <div
                   key={`${index}-${i}`}
-                  className={`gta-shard ${isMain ? "is-main" : "is-side"}`}
+                  className={`gta-shard ${isMain ? "is-main" : "is-side"} ${revealed[i] ? "is-revealed" : ""}`}
                   style={
                     {
                       position: "absolute",
@@ -491,11 +552,10 @@ export function ProjectsCanvas() {
                       height: `${bbH}%`,
                       clipPath: clip,
                       WebkitClipPath: clip,
-                      "--tx-from": `${dir * 240}px`,
+                      "--tx-from": `0px`,
                       "--ty": `0px`,
                       "--rot": `0deg`,
                       "--rot-from": `0deg`,
-                      animationDelay: `${i * 70}ms`,
                     } as React.CSSProperties
                   }
                 >
@@ -582,8 +642,9 @@ export function ProjectsCanvas() {
       {/* Hidden YouTube iframe — only mounted during loading phase so it autoplays then unmounts (stops music). */}
       {phase === "loading" && (
         <iframe
+          ref={audioRef}
           title="loading-audio"
-          src="https://www.youtube.com/embed/xh40QxwZz7Q?autoplay=1&controls=0&modestbranding=1&playsinline=1"
+          src="https://www.youtube.com/embed/xh40QxwZz7Q?autoplay=1&controls=0&modestbranding=1&playsinline=1&start=60&enablejsapi=1"
           allow="autoplay"
           style={{ position: "fixed", width: 1, height: 1, opacity: 0, pointerEvents: "none", border: 0, left: -9999, top: -9999 }}
         />
