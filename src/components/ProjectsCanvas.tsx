@@ -355,19 +355,47 @@ export function ProjectsCanvas() {
         }
         .gta-continue {
           font-family: ${cloister};
-          font-size: 28px;
+          font-size: 18px;
           letter-spacing: 0.12em;
           color: #fff;
           background: transparent;
           border: 2px solid #fff;
-          padding: 8px 28px;
+          padding: 5px 18px;
           text-transform: uppercase;
           -webkit-text-stroke: 1px #000;
-          box-shadow: 0 0 0 1px #000, 0 0 18px rgba(255,220,140,0.35);
-          animation: continuePulse 1.6s ease-in-out infinite;
+          box-shadow: 0 0 0 1px #000, 0 0 12px rgba(255,220,140,0.25);
           transition: background 200ms ease, color 200ms ease;
+          opacity: 0;
+          animation: continueFade 400ms ease-out forwards;
         }
+        @keyframes continueFade { to { opacity: 1; } }
         .gta-continue:hover { background: #fff; color: #000; -webkit-text-stroke: 0; }
+
+        /* Glass reflection shift on hover */
+        .gta-stage .glass-spec { transition: transform 600ms ease, background-position 600ms ease; }
+        .gta-stage.is-hot .glass-spec { transform: translate(-3%, -2%); }
+        .gta-stage .glass-refract { transition: transform 700ms ease; }
+        .gta-stage.is-hot .glass-refract { transform: translate(2%, 1.5%) scale(1.04); }
+
+        @keyframes phaseFade { from { opacity: 0; } to { opacity: 1; } }
+        .phase-overlay {
+          position: fixed; inset: 0; z-index: 10000;
+          background: #000;
+          display: flex; align-items: center; justify-content: center;
+          animation: phaseFade 750ms ease forwards;
+        }
+        .phase-loading {
+          position: fixed; inset: 0; z-index: 10000;
+          background: #000 center/cover no-repeat;
+          background-image: url('https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif');
+          animation: phaseFade 750ms ease forwards;
+        }
+        .phase-final {
+          position: fixed; inset: 0; z-index: 10000;
+          background: #fff;
+          animation: phaseFade 750ms ease forwards;
+        }
+
 
         @media (max-width: 768px) {
           .gta-shard.is-side { display: none; }
