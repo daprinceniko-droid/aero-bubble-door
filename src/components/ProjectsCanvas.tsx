@@ -492,13 +492,13 @@ export function ProjectsCanvas() {
 
           <div
             key={index}
-            className={`gta-stage ${hoverActive ? "is-hot" : ""}`}
+            className={`gta-stage ${hoverActive ? "is-hot" : ""} ${allRevealed ? "is-ready" : ""}`}
             onMouseEnter={() => setHoverActive(true)}
             onMouseLeave={() => setHoverActive(false)}
             style={{
               position: "relative",
-              width: "min(1100px, 88vw)",
-              height: "min(560px, 70vh)",
+              width: "min(880px, 72vw)",
+              height: "min(440px, 56vh)",
             }}
           >
             {Array.from({ length: N }).map((_, i) => {
