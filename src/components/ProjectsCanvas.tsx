@@ -285,7 +285,7 @@ export function ProjectsCanvas() {
         .gun-spark {
           position: fixed; width: 48px; height: 48px;
           pointer-events: none; z-index: 9999;
-          animation: sparkPop 350ms ease-out forwards;
+          animation: sparkPop 70ms ease-out forwards;
           background:
             radial-gradient(circle at center, rgba(255,240,170,1) 0%, rgba(255,170,40,0.9) 30%, rgba(255,80,0,0.5) 55%, transparent 70%);
           border-radius: 50%;
