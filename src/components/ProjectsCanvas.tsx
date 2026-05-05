@@ -145,13 +145,37 @@ export function ProjectsCanvas() {
     return () => window.removeEventListener("click", onClick);
   }, []);
 
+  // On slide change: hide all shards, then reveal them one by one in random order over ~2s.
+  useEffect(() => {
+    const layout = layouts[index % layouts.length];
+    const N = layout.top.length;
+    setRevealed(new Array(N).fill(false));
+    setAllRevealed(false);
+    const order = Array.from({ length: N }, (_, i) => i).sort(() => Math.random() - 0.5);
+    const totalMs = 2000;
+    const step = totalMs / N;
+    const timers: number[] = [];
+    order.forEach((shardIdx, k) => {
+      const t = window.setTimeout(() => {
+        setRevealed((prev) => {
+          const next = [...prev];
+          next[shardIdx] = true;
+          return next;
+        });
+        if (k === N - 1) setAllRevealed(true);
+      }, step * (k + 1));
+      timers.push(t);
+    });
+    return () => timers.forEach((t) => window.clearTimeout(t));
+  }, [index]);
+
   // Track whether we've reached the last slide; once true, keep CONTINUE visible.
   useEffect(() => {
     if (index === total - 1 && !reachedLast) {
       const t = window.setTimeout(() => {
         setReachedLast(true);
         setShowContinue(true);
-      }, 500);
+      }, 1500);
       return () => window.clearTimeout(t);
     }
   }, [index, total, reachedLast]);
@@ -171,6 +195,39 @@ export function ProjectsCanvas() {
       return () => window.clearTimeout(t);
     }
   }, [phase]);
+
+  // Music fade-in / fade-out via YouTube IFrame postMessage API.
+  useEffect(() => {
+    if (phase !== "loading") return;
+    const send = (func: string, args: unknown[] = []) => {
+      audioRef.current?.contentWindow?.postMessage(
+        JSON.stringify({ event: "command", func, args }),
+        "*"
+      );
+    };
+    let vol = 0;
+    send("setVolume", [0]);
+    send("playVideo");
+    const fadeIn = window.setInterval(() => {
+      vol = Math.min(100, vol + 7);
+      send("setVolume", [vol]);
+      if (vol >= 100) window.clearInterval(fadeIn);
+    }, 100);
+    // Begin fade-out ~1.5s before phase ends (loading lasts 8s)
+    const fadeOutStart = window.setTimeout(() => {
+      let v = 100;
+      const fadeOut = window.setInterval(() => {
+        v = Math.max(0, v - 8);
+        send("setVolume", [v]);
+        if (v <= 0) window.clearInterval(fadeOut);
+      }, 100);
+    }, 6500);
+    return () => {
+      window.clearInterval(fadeIn);
+      window.clearTimeout(fadeOutStart);
+    };
+  }, [phase]);
+
 
   const project = projects[index];
   const layout = layouts[index % layouts.length];
