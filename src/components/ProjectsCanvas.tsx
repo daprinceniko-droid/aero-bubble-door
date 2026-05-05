@@ -580,29 +580,20 @@ export function ProjectsCanvas() {
         <div key={`s-${s.id}`} className="gun-spark" style={{ left: s.x, top: s.y }} />
       ))}
 
-      {/* Audio: YouTube link converted to a hosted audio placeholder. Browsers can't play YT directly. */}
-      <audio
-        ref={audioRef}
-        src="https://www.youtube.com/watch?v=xh40QxwZz7Q"
-        onEnded={() => { if (audioRef.current) audioRef.current.pause(); }}
-      />
-
-      {(phase === "fadeOut1") && <div className="phase-overlay" />}
+      {/* Hidden YouTube iframe — only mounted during loading phase so it autoplays then unmounts (stops music). */}
       {phase === "loading" && (
-        <div className="phase-loading" onAnimationEnd={() => {}} />
-      )}
-      {phase === "fadeOut2" && <div className="phase-overlay" />}
-      {phase === "final" && (
-        <div
-          className="phase-final"
-          ref={(el) => {
-            if (el && audioRef.current) {
-              audioRef.current.pause();
-              audioRef.current.currentTime = 0;
-            }
-          }}
+        <iframe
+          title="loading-audio"
+          src="https://www.youtube.com/embed/xh40QxwZz7Q?autoplay=1&controls=0&modestbranding=1&playsinline=1"
+          allow="autoplay"
+          style={{ position: "fixed", width: 1, height: 1, opacity: 0, pointerEvents: "none", border: 0, left: -9999, top: -9999 }}
         />
       )}
+
+      {(phase === "fadeOut1") && <div className="phase-overlay" />}
+      {phase === "loading" && <div className="phase-loading" />}
+      {phase === "fadeOut2" && <div className="phase-overlay" />}
+      {phase === "final" && <div className="phase-final" />}
     </div>
   );
 }
