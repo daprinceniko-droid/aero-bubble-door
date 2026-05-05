@@ -556,10 +556,18 @@ export function ProjectsCanvas() {
         </div>
 
         <div style={{ position: "absolute", bottom: 28, left: 0, right: 0, display: "flex", justifyContent: "center", zIndex: 10 }}>
-          {isLast ? (
+          {showContinue ? (
             <button
               className="gta-continue"
-              onClick={() => { /* continue action — wire up as needed */ }}
+              onClick={() => {
+                setPhase("fadeOut1");
+                window.setTimeout(() => {
+                  if (audioRef.current) {
+                    audioRef.current.volume = 0.6;
+                    audioRef.current.play().catch(() => {});
+                  }
+                }, 750);
+              }}
             >
               CONTINUE
             </button>
@@ -577,6 +585,30 @@ export function ProjectsCanvas() {
       {sparks.map((s) => (
         <div key={`s-${s.id}`} className="gun-spark" style={{ left: s.x, top: s.y }} />
       ))}
+
+      {/* Audio: YouTube link converted to a hosted audio placeholder. Browsers can't play YT directly. */}
+      <audio
+        ref={audioRef}
+        src="https://www.youtube.com/watch?v=xh40QxwZz7Q"
+        onEnded={() => { if (audioRef.current) audioRef.current.pause(); }}
+      />
+
+      {(phase === "fadeOut1") && <div className="phase-overlay" />}
+      {phase === "loading" && (
+        <div className="phase-loading" onAnimationEnd={() => {}} />
+      )}
+      {phase === "fadeOut2" && <div className="phase-overlay" />}
+      {phase === "final" && (
+        <div
+          className="phase-final"
+          ref={(el) => {
+            if (el && audioRef.current) {
+              audioRef.current.pause();
+              audioRef.current.currentTime = 0;
+            }
+          }}
+        />
+      )}
     </div>
   );
 }
