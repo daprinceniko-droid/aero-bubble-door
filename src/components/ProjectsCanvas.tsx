@@ -561,12 +561,6 @@ export function ProjectsCanvas() {
               className="gta-continue"
               onClick={() => {
                 setPhase("fadeOut1");
-                window.setTimeout(() => {
-                  if (audioRef.current) {
-                    audioRef.current.volume = 0.6;
-                    audioRef.current.play().catch(() => {});
-                  }
-                }, 750);
               }}
             >
               CONTINUE
