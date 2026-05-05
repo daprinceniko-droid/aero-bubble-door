@@ -136,19 +136,46 @@ export function ProjectsCanvas() {
       const s: Spark = { id, x: e.clientX, y: e.clientY };
       setSparks((p) => [...p, s]);
       setHoles((p) => [...p, s]);
-      window.setTimeout(() => setSparks((p) => p.filter((x) => x.id !== id)), 350);
+      window.setTimeout(() => setSparks((p) => p.filter((x) => x.id !== id)), 70);
       window.setTimeout(() => setHoles((p) => p.filter((x) => x.id !== id)), 2500);
     };
     window.addEventListener("click", onClick);
     return () => window.removeEventListener("click", onClick);
   }, []);
 
+  // Track whether we've reached the last slide; once true, keep CONTINUE visible.
+  useEffect(() => {
+    if (index === total - 1 && !reachedLast) {
+      const t = window.setTimeout(() => {
+        setReachedLast(true);
+        setShowContinue(true);
+      }, 500);
+      return () => window.clearTimeout(t);
+    }
+  }, [index, total, reachedLast]);
+
+  // Loading sequence after CONTINUE
+  useEffect(() => {
+    if (phase === "fadeOut1") {
+      const t = window.setTimeout(() => setPhase("loading"), 750);
+      return () => window.clearTimeout(t);
+    }
+    if (phase === "loading") {
+      const t = window.setTimeout(() => setPhase("fadeOut2"), 8000);
+      return () => window.clearTimeout(t);
+    }
+    if (phase === "fadeOut2") {
+      const t = window.setTimeout(() => setPhase("final"), 750);
+      return () => window.clearTimeout(t);
+    }
+  }, [phase]);
+
   const project = projects[index];
   const layout = layouts[index % layouts.length];
   const N = layout.top.length;
-  const isLast = index === total - 1;
   const progressPct = ((index + 1) / total) * 100;
   const GAP = 1.2; // % of strip width — perpendicular gap between shards
+
 
   return (
     <div
