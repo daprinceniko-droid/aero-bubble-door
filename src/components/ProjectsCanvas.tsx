@@ -552,11 +552,10 @@ export function ProjectsCanvas() {
                       height: `${bbH}%`,
                       clipPath: clip,
                       WebkitClipPath: clip,
-                      "--tx-from": `${dir * 240}px`,
+                      "--tx-from": `0px`,
                       "--ty": `0px`,
                       "--rot": `0deg`,
                       "--rot-from": `0deg`,
-                      animationDelay: `${i * 70}ms`,
                     } as React.CSSProperties
                   }
                 >
