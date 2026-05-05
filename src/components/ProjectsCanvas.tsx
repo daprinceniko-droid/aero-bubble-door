@@ -282,15 +282,16 @@ export function ProjectsCanvas() {
           100% { opacity: 1; transform: translate(0, var(--ty)) rotate(var(--rot)); }
         }
         .gta-stage { filter: grayscale(1) contrast(1.05); transition: filter 400ms ease; }
-        .gta-stage.is-hot { filter: grayscale(0) contrast(1); }
-        .gta-stage.is-hot .shard-gif { opacity: 1; }
-        .gta-stage.is-hot .shard-img { opacity: 0; }
+        .gta-stage.is-hot.is-ready { filter: grayscale(0) contrast(1); }
+        .gta-stage.is-hot.is-ready .shard-gif { opacity: 1; }
+        .gta-stage.is-hot.is-ready .shard-img { opacity: 0; }
 
         .gta-shard {
-          animation: shardIn 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
           position: relative;
           overflow: hidden;
+          visibility: hidden;
         }
+        .gta-shard.is-revealed { visibility: visible; }
         .gta-shard .shard-img,
         .gta-shard .shard-gif {
           position: absolute; inset: 0;
