@@ -642,8 +642,9 @@ export function ProjectsCanvas() {
       {/* Hidden YouTube iframe — only mounted during loading phase so it autoplays then unmounts (stops music). */}
       {phase === "loading" && (
         <iframe
+          ref={audioRef}
           title="loading-audio"
-          src="https://www.youtube.com/embed/xh40QxwZz7Q?autoplay=1&controls=0&modestbranding=1&playsinline=1"
+          src="https://www.youtube.com/embed/xh40QxwZz7Q?autoplay=1&controls=0&modestbranding=1&playsinline=1&start=60&enablejsapi=1"
           allow="autoplay"
           style={{ position: "fixed", width: 1, height: 1, opacity: 0, pointerEvents: "none", border: 0, left: -9999, top: -9999 }}
         />
