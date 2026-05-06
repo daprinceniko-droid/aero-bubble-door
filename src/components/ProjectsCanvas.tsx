@@ -197,33 +197,36 @@ export function ProjectsCanvas() {
     }
   }, [phase]);
 
-  // Music fade-in / fade-out via YouTube IFrame postMessage API.
+  // Background music: fade in to 50% over 2s on mount, toggle via musicOn.
   useEffect(() => {
-    if (phase !== "loading") return;
     const send = (func: string, args: unknown[] = []) => {
-      audioRef.current?.contentWindow?.postMessage(
+      bgAudioRef.current?.contentWindow?.postMessage(
         JSON.stringify({ event: "command", func, args }),
         "*"
       );
     };
-    // Music fades in instantly (full volume immediately) when loading begins
-    send("setVolume", [100]);
+    let v = 0;
+    send("setVolume", [0]);
     send("playVideo");
-    const fadeIn = window.setInterval(() => {}, 100000);
-    // Begin fade-out ~1.5s before phase ends (loading lasts 8s)
-    const fadeOutStart = window.setTimeout(() => {
-      let v = 100;
-      const fadeOut = window.setInterval(() => {
-        v = Math.max(0, v - 8);
-        send("setVolume", [v]);
-        if (v <= 0) window.clearInterval(fadeOut);
-      }, 100);
-    }, 6500);
-    return () => {
-      window.clearInterval(fadeIn);
-      window.clearTimeout(fadeOutStart);
+    const fade = window.setInterval(() => {
+      if (!musicOn) { window.clearInterval(fade); return; }
+      v = Math.min(50, v + 2.5);
+      send("setVolume", [v]);
+      if (v >= 50) window.clearInterval(fade);
+    }, 100);
+    return () => window.clearInterval(fade);
+  }, []);
+
+  useEffect(() => {
+    const send = (func: string, args: unknown[] = []) => {
+      bgAudioRef.current?.contentWindow?.postMessage(
+        JSON.stringify({ event: "command", func, args }),
+        "*"
+      );
     };
-  }, [phase]);
+    if (musicOn) { send("setVolume", [50]); send("playVideo"); }
+    else { send("pauseVideo"); }
+  }, [musicOn]);
 
 
   const project = projects[index];
