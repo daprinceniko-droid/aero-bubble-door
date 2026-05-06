@@ -126,9 +126,9 @@ export function Y2KPlaceholder({ onCanvasFull, started = true }: { onCanvasFull?
     return () => clearInterval(id);
   }, [ready, duration]);
 
-  // Autoplay when the Y2K screen becomes visible (after the flip)
+  // Autoplay when the Y2K screen becomes visible AND the user has signaled "ready" (clicked Enter)
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || !started) return;
     const el = rootRef.current;
     if (!el) return;
     const io = new IntersectionObserver(
@@ -144,7 +144,7 @@ export function Y2KPlaceholder({ onCanvasFull, started = true }: { onCanvasFull?
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [ready]);
+  }, [ready, started]);
 
   const togglePlay = useCallback(() => {
     const p = playerRef.current;
