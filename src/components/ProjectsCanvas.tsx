@@ -205,14 +205,10 @@ export function ProjectsCanvas() {
         "*"
       );
     };
-    let vol = 0;
-    send("setVolume", [0]);
+    // Music fades in instantly (full volume immediately) when loading begins
+    send("setVolume", [100]);
     send("playVideo");
-    const fadeIn = window.setInterval(() => {
-      vol = Math.min(100, vol + 7);
-      send("setVolume", [vol]);
-      if (vol >= 100) window.clearInterval(fadeIn);
-    }, 100);
+    const fadeIn = window.setInterval(() => {}, 100000);
     // Begin fade-out ~1.5s before phase ends (loading lasts 8s)
     const fadeOutStart = window.setTimeout(() => {
       let v = 100;
