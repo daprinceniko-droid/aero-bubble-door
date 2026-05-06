@@ -123,8 +123,9 @@ export function ProjectsCanvas() {
   const [phase, setPhase] = useState<"projects" | "fadeOut1" | "loading" | "fadeOut2" | "final">("projects");
   const [revealed, setRevealed] = useState<boolean[]>([]);
   const [allRevealed, setAllRevealed] = useState(false);
+  const [musicOn, setMusicOn] = useState(true);
   const idRef = useRef(0);
-  const audioRef = useRef<HTMLIFrameElement | null>(null);
+  const bgAudioRef = useRef<HTMLIFrameElement | null>(null);
   const total = projects.length;
 
   const go = (d: 1 | -1) => {
@@ -196,33 +197,36 @@ export function ProjectsCanvas() {
     }
   }, [phase]);
 
-  // Music fade-in / fade-out via YouTube IFrame postMessage API.
+  // Background music: fade in to 50% over 2s on mount, toggle via musicOn.
   useEffect(() => {
-    if (phase !== "loading") return;
     const send = (func: string, args: unknown[] = []) => {
-      audioRef.current?.contentWindow?.postMessage(
+      bgAudioRef.current?.contentWindow?.postMessage(
         JSON.stringify({ event: "command", func, args }),
         "*"
       );
     };
-    // Music fades in instantly (full volume immediately) when loading begins
-    send("setVolume", [100]);
+    let v = 0;
+    send("setVolume", [0]);
     send("playVideo");
-    const fadeIn = window.setInterval(() => {}, 100000);
-    // Begin fade-out ~1.5s before phase ends (loading lasts 8s)
-    const fadeOutStart = window.setTimeout(() => {
-      let v = 100;
-      const fadeOut = window.setInterval(() => {
-        v = Math.max(0, v - 8);
-        send("setVolume", [v]);
-        if (v <= 0) window.clearInterval(fadeOut);
-      }, 100);
-    }, 6500);
-    return () => {
-      window.clearInterval(fadeIn);
-      window.clearTimeout(fadeOutStart);
+    const fade = window.setInterval(() => {
+      if (!musicOn) { window.clearInterval(fade); return; }
+      v = Math.min(50, v + 2.5);
+      send("setVolume", [v]);
+      if (v >= 50) window.clearInterval(fade);
+    }, 100);
+    return () => window.clearInterval(fade);
+  }, []);
+
+  useEffect(() => {
+    const send = (func: string, args: unknown[] = []) => {
+      bgAudioRef.current?.contentWindow?.postMessage(
+        JSON.stringify({ event: "command", func, args }),
+        "*"
+      );
     };
-  }, [phase]);
+    if (musicOn) { send("setVolume", [50]); send("playVideo"); }
+    else { send("pauseVideo"); }
+  }, [musicOn]);
 
 
   const project = projects[index];
@@ -635,16 +639,34 @@ export function ProjectsCanvas() {
         <div key={`s-${s.id}`} className="gun-spark" style={{ left: s.x, top: s.y }} />
       ))}
 
-      {/* Hidden YouTube iframe — only mounted during loading phase so it autoplays then unmounts (stops music). */}
-      {phase === "loading" && (
+      {/* Persistent background music — keeps playing through the loading phase, stops on final. */}
+      {phase !== "final" && (
         <iframe
-          ref={audioRef}
-          title="loading-audio"
-          src="https://www.youtube.com/embed/xh40QxwZz7Q?autoplay=1&controls=0&modestbranding=1&playsinline=1&start=60&enablejsapi=1"
+          ref={bgAudioRef}
+          title="bg-audio"
+          src="https://www.youtube.com/embed/6DpR3VSXcJk?autoplay=1&controls=0&modestbranding=1&playsinline=1&enablejsapi=1&loop=1&playlist=6DpR3VSXcJk"
           allow="autoplay"
           style={{ position: "fixed", width: 1, height: 1, opacity: 0, pointerEvents: "none", border: 0, left: -9999, top: -9999 }}
         />
       )}
+
+      {/* Music toggle */}
+      <button
+        type="button"
+        onClick={() => setMusicOn((v) => !v)}
+        title={musicOn ? "Mute music" : "Play music"}
+        style={{
+          position: "fixed", right: 18, bottom: 18, zIndex: 10001,
+          width: 42, height: 42, borderRadius: "50%",
+          background: "rgba(0,0,0,0.55)", color: "#fff",
+          border: "1px solid rgba(255,255,255,0.4)",
+          fontSize: 18, lineHeight: 1, cursor: SA_CURSOR,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          backdropFilter: "blur(4px)",
+        }}
+      >
+        {musicOn ? "♪" : "𝄽"}
+      </button>
 
       {(phase === "fadeOut1") && <div className="phase-overlay" />}
       {phase === "loading" && <div className="phase-loading" />}
