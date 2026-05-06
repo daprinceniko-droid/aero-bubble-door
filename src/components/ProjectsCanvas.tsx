@@ -282,9 +282,9 @@ export function ProjectsCanvas() {
           100% { opacity: 1; transform: translate(0, var(--ty)) rotate(var(--rot)); }
         }
         .gta-stage { filter: grayscale(1) contrast(1.05); transition: filter 400ms ease; }
-        .gta-stage.is-hot.is-ready { filter: grayscale(0) contrast(1); }
-        .gta-stage.is-hot.is-ready .shard-gif { opacity: 1; }
-        .gta-stage.is-hot.is-ready .shard-img { opacity: 0; }
+        .gta-stage.is-ready { filter: grayscale(0) contrast(1); }
+        .gta-stage.is-ready .shard-gif { opacity: 1; }
+        .gta-stage.is-ready .shard-img { opacity: 0; }
 
         .gta-shard {
           position: relative;
