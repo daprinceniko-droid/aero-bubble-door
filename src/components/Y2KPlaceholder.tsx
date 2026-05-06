@@ -103,15 +103,19 @@ export function Y2KPlaceholder({ onCanvasFull, started = true }: { onCanvasFull?
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Switch track when trackIdx changes
+  // Switch track when trackIdx changes (cue only — don't autoplay until user has started)
   useEffect(() => {
     if (!ready || !playerRef.current) return;
     try {
-      playerRef.current.loadVideoById(TRACKS[trackIdx].videoId);
+      if (started) {
+        playerRef.current.loadVideoById(TRACKS[trackIdx].videoId);
+      } else {
+        playerRef.current.cueVideoById(TRACKS[trackIdx].videoId);
+      }
     } catch {
       /* noop */
     }
-  }, [trackIdx, ready]);
+  }, [trackIdx, ready, started]);
 
   // Progress polling
   useEffect(() => {
@@ -317,15 +321,10 @@ export function Y2KPlaceholder({ onCanvasFull, started = true }: { onCanvasFull?
             onClick={() => {
               if (doorPhase !== "idle") return;
               setDoorPhase("opening");
-              window.setTimeout(() => setDoorPhase("zoom"), 1100);
-              window.setTimeout(() => {
-                setDoorPhase("full");
-                // Stop everything once the white canvas takes over
-                try { playerRef.current?.stopVideo?.(); } catch { /* noop */ }
-                setEasterEgg(false);
-                // Tell the parent it's safe to unmount the entire Y2K screen
-                window.setTimeout(() => onCanvasFull?.(), 600);
-              }, 2400);
+              // Stop music and reveal Projects immediately as the gate begins to open
+              try { playerRef.current?.stopVideo?.(); } catch { /* noop */ }
+              setEasterEgg(false);
+              onCanvasFull?.();
             }}
           >
             ▶ Proceed
