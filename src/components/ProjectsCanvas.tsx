@@ -123,8 +123,9 @@ export function ProjectsCanvas() {
   const [phase, setPhase] = useState<"projects" | "fadeOut1" | "loading" | "fadeOut2" | "final">("projects");
   const [revealed, setRevealed] = useState<boolean[]>([]);
   const [allRevealed, setAllRevealed] = useState(false);
+  const [musicOn, setMusicOn] = useState(true);
   const idRef = useRef(0);
-  const audioRef = useRef<HTMLIFrameElement | null>(null);
+  const bgAudioRef = useRef<HTMLIFrameElement | null>(null);
   const total = projects.length;
 
   const go = (d: 1 | -1) => {
