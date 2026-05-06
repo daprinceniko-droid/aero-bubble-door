@@ -321,15 +321,10 @@ export function Y2KPlaceholder({ onCanvasFull, started = true }: { onCanvasFull?
             onClick={() => {
               if (doorPhase !== "idle") return;
               setDoorPhase("opening");
-              window.setTimeout(() => setDoorPhase("zoom"), 1100);
-              window.setTimeout(() => {
-                setDoorPhase("full");
-                // Stop everything once the white canvas takes over
-                try { playerRef.current?.stopVideo?.(); } catch { /* noop */ }
-                setEasterEgg(false);
-                // Tell the parent it's safe to unmount the entire Y2K screen
-                window.setTimeout(() => onCanvasFull?.(), 600);
-              }, 2400);
+              // Stop music and reveal Projects immediately as the gate begins to open
+              try { playerRef.current?.stopVideo?.(); } catch { /* noop */ }
+              setEasterEgg(false);
+              onCanvasFull?.();
             }}
           >
             ▶ Proceed
