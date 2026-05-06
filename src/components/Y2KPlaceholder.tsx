@@ -26,7 +26,7 @@ const fmt = (s: number) => {
   return `${m.toString().padStart(2, "0")}:${sec.toString().padStart(2, "0")}`;
 };
 
-export function Y2KPlaceholder({ onCanvasFull }: { onCanvasFull?: () => void } = {}) {
+export function Y2KPlaceholder({ onCanvasFull, started = true }: { onCanvasFull?: () => void; started?: boolean } = {}) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<any>(null);
   const ytContainerRef = useRef<HTMLDivElement>(null);
@@ -126,9 +126,9 @@ export function Y2KPlaceholder({ onCanvasFull }: { onCanvasFull?: () => void } =
     return () => clearInterval(id);
   }, [ready, duration]);
 
-  // Autoplay when the Y2K screen becomes visible (after the flip)
+  // Autoplay when the Y2K screen becomes visible AND the user has signaled "ready" (clicked Enter)
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || !started) return;
     const el = rootRef.current;
     if (!el) return;
     const io = new IntersectionObserver(
@@ -144,7 +144,7 @@ export function Y2KPlaceholder({ onCanvasFull }: { onCanvasFull?: () => void } =
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [ready]);
+  }, [ready, started]);
 
   const togglePlay = useCallback(() => {
     const p = playerRef.current;

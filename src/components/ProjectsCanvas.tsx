@@ -169,16 +169,16 @@ export function ProjectsCanvas() {
     return () => timers.forEach((t) => window.clearTimeout(t));
   }, [index]);
 
-  // Track whether we've reached the last slide; once true, keep CONTINUE visible.
+  // Show CONTINUE only after the last slide's shards have all revealed and the gif has started.
   useEffect(() => {
-    if (index === total - 1 && !reachedLast) {
+    if (index === total - 1 && allRevealed && !reachedLast) {
       const t = window.setTimeout(() => {
         setReachedLast(true);
         setShowContinue(true);
-      }, 1500);
+      }, 600);
       return () => window.clearTimeout(t);
     }
-  }, [index, total, reachedLast]);
+  }, [index, total, allRevealed, reachedLast]);
 
   // Loading sequence after CONTINUE
   useEffect(() => {
@@ -205,14 +205,10 @@ export function ProjectsCanvas() {
         "*"
       );
     };
-    let vol = 0;
-    send("setVolume", [0]);
+    // Music fades in instantly (full volume immediately) when loading begins
+    send("setVolume", [100]);
     send("playVideo");
-    const fadeIn = window.setInterval(() => {
-      vol = Math.min(100, vol + 7);
-      send("setVolume", [vol]);
-      if (vol >= 100) window.clearInterval(fadeIn);
-    }, 100);
+    const fadeIn = window.setInterval(() => {}, 100000);
     // Begin fade-out ~1.5s before phase ends (loading lasts 8s)
     const fadeOutStart = window.setTimeout(() => {
       let v = 100;
@@ -282,9 +278,9 @@ export function ProjectsCanvas() {
           100% { opacity: 1; transform: translate(0, var(--ty)) rotate(var(--rot)); }
         }
         .gta-stage { filter: grayscale(1) contrast(1.05); transition: filter 400ms ease; }
-        .gta-stage.is-hot.is-ready { filter: grayscale(0) contrast(1); }
-        .gta-stage.is-hot.is-ready .shard-gif { opacity: 1; }
-        .gta-stage.is-hot.is-ready .shard-img { opacity: 0; }
+        .gta-stage.is-ready { filter: grayscale(0) contrast(1); }
+        .gta-stage.is-ready .shard-gif { opacity: 1; }
+        .gta-stage.is-ready .shard-img { opacity: 0; }
 
         .gta-shard {
           position: relative;
