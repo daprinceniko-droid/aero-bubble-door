@@ -103,15 +103,19 @@ export function Y2KPlaceholder({ onCanvasFull, started = true }: { onCanvasFull?
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Switch track when trackIdx changes
+  // Switch track when trackIdx changes (cue only — don't autoplay until user has started)
   useEffect(() => {
     if (!ready || !playerRef.current) return;
     try {
-      playerRef.current.loadVideoById(TRACKS[trackIdx].videoId);
+      if (started) {
+        playerRef.current.loadVideoById(TRACKS[trackIdx].videoId);
+      } else {
+        playerRef.current.cueVideoById(TRACKS[trackIdx].videoId);
+      }
     } catch {
       /* noop */
     }
-  }, [trackIdx, ready]);
+  }, [trackIdx, ready, started]);
 
   // Progress polling
   useEffect(() => {
