@@ -320,11 +320,14 @@ export function Y2KPlaceholder({ onCanvasFull, started = true }: { onCanvasFull?
             className="rc-dossier__proceed"
             onClick={() => {
               if (doorPhase !== "idle") return;
-              setDoorPhase("opening");
-              // Stop music and reveal Projects immediately as the gate begins to open
-              try { playerRef.current?.stopVideo?.(); } catch { /* noop */ }
               setEasterEgg(false);
-              onCanvasFull?.();
+              try { playerRef.current?.stopVideo?.(); } catch { /* noop */ }
+              setDoorPhase("opening");
+              window.setTimeout(() => setDoorPhase("zoom"), 900);
+              window.setTimeout(() => {
+                setDoorPhase("full");
+                onCanvasFull?.();
+              }, 1900);
             }}
           >
             ▶ Proceed
