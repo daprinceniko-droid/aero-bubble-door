@@ -169,16 +169,16 @@ export function ProjectsCanvas() {
     return () => timers.forEach((t) => window.clearTimeout(t));
   }, [index]);
 
-  // Track whether we've reached the last slide; once true, keep CONTINUE visible.
+  // Show CONTINUE only after the last slide's shards have all revealed and the gif has started.
   useEffect(() => {
-    if (index === total - 1 && !reachedLast) {
+    if (index === total - 1 && allRevealed && !reachedLast) {
       const t = window.setTimeout(() => {
         setReachedLast(true);
         setShowContinue(true);
-      }, 1500);
+      }, 600);
       return () => window.clearTimeout(t);
     }
-  }, [index, total, reachedLast]);
+  }, [index, total, allRevealed, reachedLast]);
 
   // Loading sequence after CONTINUE
   useEffect(() => {
