@@ -188,7 +188,7 @@ export function ProjectsCanvas() {
       return () => window.clearTimeout(t);
     }
     if (phase === "loading") {
-      const t = window.setTimeout(() => setPhase("fadeOut2"), 8000);
+      const t = window.setTimeout(() => setPhase("fadeOut2"), 6000);
       return () => window.clearTimeout(t);
     }
     if (phase === "fadeOut2") {
@@ -446,9 +446,11 @@ export function ProjectsCanvas() {
         }
         .phase-loading {
           position: fixed; inset: 0; z-index: 10000;
-          background: #000 center/cover no-repeat;
-          background-image: url('https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif');
+          background: #000;
           animation: phaseFade 750ms ease forwards;
+        }
+        .phase-loading video {
+          width: 100%; height: 100%; object-fit: cover;
         }
         .phase-final {
           position: fixed; inset: 0; z-index: 10000;
@@ -650,7 +652,8 @@ export function ProjectsCanvas() {
         />
       )}
 
-      {/* Music toggle */}
+      {/* Music toggle — hidden once loading video has completed */}
+      {phase !== "final" && phase !== "fadeOut2" && (
       <button
         type="button"
         onClick={() => setMusicOn((v) => !v)}
@@ -667,9 +670,14 @@ export function ProjectsCanvas() {
       >
         {musicOn ? "♪" : "𝄽"}
       </button>
+      )}
 
       {(phase === "fadeOut1") && <div className="phase-overlay" />}
-      {phase === "loading" && <div className="phase-loading" />}
+      {phase === "loading" && (
+        <div className="phase-loading">
+          <video src="/loading_screen.mp4" autoPlay muted playsInline />
+        </div>
+      )}
       {phase === "fadeOut2" && <div className="phase-overlay" />}
       {phase === "final" && <div className="phase-final" />}
     </div>
