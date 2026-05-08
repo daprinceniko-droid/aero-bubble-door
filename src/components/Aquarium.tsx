@@ -186,8 +186,8 @@ export function Aquarium() {
         .aq-bubble {
           position: absolute; bottom: 10px;
           width: 12px; height: 12px; border-radius: 50%;
-          background: radial-gradient(circle at 35% 35%, rgba(255,180,230,0.95), rgba(255,45,165,0.25) 60%, transparent 75%);
-          border: 1px solid rgba(255,140,210,0.55);
+          background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.95), rgba(255,255,255,0.2) 60%, transparent 75%);
+          border: 1px solid rgba(255,255,255,0.5);
           animation: bubbleRise 6s linear infinite;
           pointer-events: none;
         }
