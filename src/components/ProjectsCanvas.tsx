@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Aquarium } from "./Aquarium";
 
 type Project = {
   title: string;
@@ -679,7 +680,7 @@ export function ProjectsCanvas() {
         </div>
       )}
       {phase === "fadeOut2" && <div className="phase-overlay" />}
-      {phase === "final" && <div className="phase-final" />}
+      {phase === "final" && <Aquarium />}
     </div>
   );
 }
