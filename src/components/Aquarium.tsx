@@ -347,6 +347,13 @@ export function Aquarium() {
 
       {/* Inspector - right */}
       <div style={{ width: 380, padding: "32px 32px 32px 0", display: "flex", flexDirection: "column", position: "relative", zIndex: 1 }}>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 8 }}>
+          <img
+            src="/glitter-kiss.gif"
+            alt="kiss kiss"
+            style={{ height: 80, filter: "drop-shadow(0 0 12px #ff2da5)" }}
+          />
+        </div>
         <h2 className="y2k-title" style={{ fontSize: 26 }}>♡ Fish Inspector ♡</h2>
         <div
           ref={inspectorRef}
