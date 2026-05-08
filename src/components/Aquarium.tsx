@@ -186,8 +186,8 @@ export function Aquarium() {
         .aq-bubble {
           position: absolute; bottom: 10px;
           width: 12px; height: 12px; border-radius: 50%;
-          background: radial-gradient(circle at 35% 35%, rgba(255,180,230,0.95), rgba(255,45,165,0.25) 60%, transparent 75%);
-          border: 1px solid rgba(255,140,210,0.55);
+          background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.95), rgba(255,255,255,0.2) 60%, transparent 75%);
+          border: 1px solid rgba(255,255,255,0.5);
           animation: bubbleRise 6s linear infinite;
           pointer-events: none;
         }
@@ -258,11 +258,11 @@ export function Aquarium() {
             flex: 1,
             position: "relative",
             background:
-              "linear-gradient(180deg, #5a0a3a 0%, #2a0418 60%, #0a0008 100%)",
+              "linear-gradient(180deg, #4fb6e6 0%, #1a4a7a 100%)",
             borderRadius: 14,
             border: "4px solid #ff2da5",
             boxShadow:
-              "0 0 24px #ff2da5, 0 0 60px rgba(255,45,165,0.4), inset 0 0 60px rgba(255,45,165,0.25), inset 0 0 0 2px rgba(255,180,230,0.3)",
+              "0 0 24px #ff2da5, 0 0 60px rgba(255,45,165,0.4), inset 0 0 60px rgba(0,0,0,0.35), inset 0 0 0 2px rgba(255,180,230,0.3)",
             overflow: "hidden",
           }}
         >
@@ -281,21 +281,19 @@ export function Aquarium() {
           <div
             style={{
               position: "absolute", left: 0, right: 0, bottom: 0, height: 40,
-              background: "linear-gradient(180deg, #1a0010 0%, #000 100%)",
-              borderTop: "2px solid #ff2da5",
-              boxShadow: "0 -4px 16px rgba(255,45,165,0.5)",
+              background: "linear-gradient(180deg, #d4b878 0%, #a88848 100%)",
+              borderTop: "2px solid rgba(0,0,0,0.25)",
             }}
           />
-          {/* Pink seaweed */}
+          {/* Seaweed */}
           {[15, 35, 70, 88].map((l, i) => (
             <div
               key={i}
               style={{
                 position: "absolute", bottom: 30, left: `${l}%`,
                 width: 8, height: 60 + (i % 2) * 30,
-                background: "linear-gradient(180deg, #ff79c8 0%, #8a0040 100%)",
+                background: "linear-gradient(180deg, #2d8a3e 0%, #1a5a28 100%)",
                 borderRadius: "50% 50% 4px 4px / 30% 30% 4px 4px",
-                boxShadow: "0 0 8px #ff2da5",
               }}
             />
           ))}
@@ -349,6 +347,13 @@ export function Aquarium() {
 
       {/* Inspector - right */}
       <div style={{ width: 380, padding: "32px 32px 32px 0", display: "flex", flexDirection: "column", position: "relative", zIndex: 1 }}>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 8 }}>
+          <img
+            src="/glitter-kiss.gif"
+            alt="kiss kiss"
+            style={{ height: 80, filter: "drop-shadow(0 0 12px #ff2da5)" }}
+          />
+        </div>
         <h2 className="y2k-title" style={{ fontSize: 26 }}>♡ Fish Inspector ♡</h2>
         <div
           ref={inspectorRef}
