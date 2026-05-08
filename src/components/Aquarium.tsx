@@ -13,7 +13,7 @@ const FISHES: Fish[] = [
     id: "blub",
     name: "Sir Blubsworth",
     emoji: "🐠",
-    color: "#ff9a3c",
+    color: "#ff4fb0",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sir Blubsworth glides through coral reefs with regal poise, nibbling on plankton and judging passersby with quiet dignity.",
   },
@@ -21,7 +21,7 @@ const FISHES: Fish[] = [
     id: "gilly",
     name: "Gilly the Swift",
     emoji: "🐟",
-    color: "#4fc3f7",
+    color: "#ff8fd4",
     description:
       "Vivamus lacinia odio vitae vestibulum. Gilly is the fastest fin in the tank, known for darting between bubbles and stealing flakes before anyone else notices.",
   },
@@ -29,7 +29,7 @@ const FISHES: Fish[] = [
     id: "puff",
     name: "Captain Puffington",
     emoji: "🐡",
-    color: "#ffd54f",
+    color: "#ffb6e6",
     description:
       "Sed do eiusmod tempor incididunt ut labore. Captain Puffington tells tall tales of deep-sea adventures, though he has never actually left the aquarium.",
   },
@@ -52,6 +52,17 @@ export function Aquarium() {
   const dragPos = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const [, force] = useState(0);
 
+  // Sparkles
+  const sparkles = useRef(
+    Array.from({ length: 40 }).map(() => ({
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      delay: Math.random() * 4,
+      dur: 2 + Math.random() * 3,
+      size: 4 + Math.random() * 8,
+    }))
+  );
+
   // Swim animation
   useEffect(() => {
     let raf = 0;
@@ -66,7 +77,6 @@ export function Aquarium() {
           y += vy;
           if (x < 5 || x > 92) vx = -vx;
           if (y < 10 || y > 88) vy = -vy;
-          // Tiny wander
           vy += (Math.random() - 0.5) * 0.005;
           vy = Math.max(-0.1, Math.min(0.1, vy));
           next[k] = { x, y, vx, vy };
@@ -83,7 +93,6 @@ export function Aquarium() {
     if (!dragging) return;
     const onMove = (e: MouseEvent) => {
       dragPos.current = { x: e.clientX - dragOffset.current.dx, y: e.clientY - dragOffset.current.dy };
-      // Detect hover over inspector
       const r = inspectorRef.current?.getBoundingClientRect();
       if (r) {
         const inside =
@@ -100,7 +109,6 @@ export function Aquarium() {
         const fish = FISHES.find((f) => f.id === dragging);
         if (fish) setInspected(fish);
       }
-      // Snap fish back into tank coords based on final pointer position
       const tr = tankRef.current?.getBoundingClientRect();
       if (tr && dragging) {
         let x = ((dragPos.current.x - tr.left) / tr.width) * 100;
@@ -134,23 +142,52 @@ export function Aquarium() {
       style={{
         position: "fixed",
         inset: 0,
-        background: "#f4f1ea",
+        background:
+          "radial-gradient(ellipse at 20% 10%, #2a0a20 0%, #0a0008 55%, #000 100%)",
         display: "flex",
         fontFamily: "'Special Elite', monospace",
         zIndex: 10001,
+        color: "#ffd6ee",
+        overflow: "hidden",
       }}
     >
       <style>{`
         @keyframes bubbleRise {
           0% { transform: translateY(0) scale(0.8); opacity: 0; }
-          15% { opacity: 0.8; }
+          15% { opacity: 0.9; }
           100% { transform: translateY(-360px) scale(1.2); opacity: 0; }
+        }
+        @keyframes sparkleTwinkle {
+          0%, 100% { opacity: 0; transform: scale(0.4) rotate(0deg); }
+          50% { opacity: 1; transform: scale(1) rotate(180deg); }
+        }
+        @keyframes wiggle {
+          0%   { transform: translate(-50%, -50%) rotate(-14deg) scale(1.15); }
+          25%  { transform: translate(-50%, -50%) rotate(12deg) scale(1.18); }
+          50%  { transform: translate(-50%, -50%) rotate(-10deg) scale(1.12); }
+          75%  { transform: translate(-50%, -50%) rotate(14deg) scale(1.18); }
+          100% { transform: translate(-50%, -50%) rotate(-14deg) scale(1.15); }
+        }
+        @keyframes pinkGlow {
+          0%, 100% { box-shadow: 0 0 18px #ff2da5, 0 0 40px #ff2da5, inset 0 0 24px rgba(255,45,165,0.4); }
+          50% { box-shadow: 0 0 28px #ff79c8, 0 0 60px #ff2da5, inset 0 0 32px rgba(255,121,200,0.6); }
+        }
+        @keyframes scrollMarquee {
+          0% { transform: translateX(100%); }
+          100% { transform: translateX(-100%); }
+        }
+        .aq-sparkle {
+          position: absolute; pointer-events: none;
+          color: #ff8ed6;
+          text-shadow: 0 0 6px #ff2da5, 0 0 12px #ff2da5;
+          animation: sparkleTwinkle linear infinite;
+          font-family: serif;
         }
         .aq-bubble {
           position: absolute; bottom: 10px;
           width: 12px; height: 12px; border-radius: 50%;
-          background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.95), rgba(255,255,255,0.2) 60%, transparent 75%);
-          border: 1px solid rgba(255,255,255,0.5);
+          background: radial-gradient(circle at 35% 35%, rgba(255,180,230,0.95), rgba(255,45,165,0.25) 60%, transparent 75%);
+          border: 1px solid rgba(255,140,210,0.55);
           animation: bubbleRise 6s linear infinite;
           pointer-events: none;
         }
@@ -160,38 +197,75 @@ export function Aquarium() {
           user-select: none;
           cursor: grab;
           transform: translate(-50%, -50%);
-          filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+          filter: drop-shadow(0 0 8px #ff2da5) drop-shadow(0 4px 8px rgba(0,0,0,0.6));
           transition: filter 200ms ease;
         }
-        .aq-fish:hover { filter: drop-shadow(0 6px 12px rgba(0,0,0,0.45)) brightness(1.1); }
-        .aq-fish.dragging { cursor: grabbing; opacity: 0.9; }
-        .inspector-glow {
-          box-shadow: 0 0 0 3px rgba(255,180,40,0.8), 0 0 30px rgba(255,180,40,0.5) !important;
+        .aq-fish:hover { filter: drop-shadow(0 0 12px #ff79c8) drop-shadow(0 6px 12px rgba(0,0,0,0.7)) brightness(1.15); }
+        .aq-fish.dragging {
+          cursor: grabbing;
+          animation: wiggle 0.35s ease-in-out infinite;
+          filter: drop-shadow(0 0 18px #ff2da5) drop-shadow(0 0 30px #ff79c8) brightness(1.25);
+        }
+        .inspector-glow { animation: pinkGlow 1s ease-in-out infinite !important; }
+        .y2k-title {
+          font-family: 'Audiowide', sans-serif;
+          font-size: 32px;
+          margin: 0 0 16px;
+          background: linear-gradient(90deg, #ff2da5, #ff8fd4, #fff, #ff8fd4, #ff2da5);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+          letter-spacing: 0.08em;
+          text-shadow: 0 0 18px rgba(255,45,165,0.7);
+          filter: drop-shadow(0 2px 0 #000);
+        }
+        .y2k-marquee {
+          color: #ff8fd4;
+          font-size: 12px;
+          letter-spacing: 0.3em;
+          white-space: nowrap;
+          animation: scrollMarquee 18s linear infinite;
         }
         @keyframes popIn {
-          0% { transform: translate(-50%, -50%) scale(0.7); opacity: 0; }
-          100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+          0% { transform: scale(0.7); opacity: 0; }
+          100% { transform: scale(1); opacity: 1; }
         }
       `}</style>
 
-      {/* Aquarium - left side */}
-      <div style={{ flex: 1, padding: 32, display: "flex", flexDirection: "column" }}>
-        <h2 style={{ fontFamily: "'Audiowide', sans-serif", fontSize: 28, margin: "0 0 16px", color: "#1a3a5c" }}>
-          AQUARIUM
-        </h2>
+      {/* Background sparkles */}
+      {sparkles.current.map((s, i) => (
+        <span
+          key={i}
+          className="aq-sparkle"
+          style={{
+            left: `${s.left}%`,
+            top: `${s.top}%`,
+            fontSize: s.size,
+            animationDelay: `${s.delay}s`,
+            animationDuration: `${s.dur}s`,
+          }}
+        >
+          ✦
+        </span>
+      ))}
+
+      {/* Aquarium - left */}
+      <div style={{ flex: 1, padding: 32, display: "flex", flexDirection: "column", position: "relative", zIndex: 1 }}>
+        <h2 className="y2k-title">·:*¨ Experiences ¨*:·</h2>
         <div
           ref={tankRef}
           style={{
             flex: 1,
             position: "relative",
-            background: "linear-gradient(180deg, #4fb6e6 0%, #1a4a7a 100%)",
-            borderRadius: 12,
-            border: "8px solid #2c2c2c",
-            boxShadow: "inset 0 0 60px rgba(0,0,0,0.4), inset 0 0 0 2px rgba(255,255,255,0.2), 0 12px 32px rgba(0,0,0,0.3)",
+            background:
+              "linear-gradient(180deg, #5a0a3a 0%, #2a0418 60%, #0a0008 100%)",
+            borderRadius: 14,
+            border: "4px solid #ff2da5",
+            boxShadow:
+              "0 0 24px #ff2da5, 0 0 60px rgba(255,45,165,0.4), inset 0 0 60px rgba(255,45,165,0.25), inset 0 0 0 2px rgba(255,180,230,0.3)",
             overflow: "hidden",
           }}
         >
-          {/* Bubbles */}
           {Array.from({ length: 8 }).map((_, i) => (
             <div
               key={i}
@@ -203,34 +277,32 @@ export function Aquarium() {
               }}
             />
           ))}
-          {/* Sand */}
+          {/* Black sand */}
           <div
             style={{
               position: "absolute", left: 0, right: 0, bottom: 0, height: 40,
-              background: "linear-gradient(180deg, #d4b878 0%, #a88848 100%)",
-              borderTop: "2px solid rgba(0,0,0,0.2)",
+              background: "linear-gradient(180deg, #1a0010 0%, #000 100%)",
+              borderTop: "2px solid #ff2da5",
+              boxShadow: "0 -4px 16px rgba(255,45,165,0.5)",
             }}
           />
-          {/* Seaweed */}
+          {/* Pink seaweed */}
           {[15, 35, 70, 88].map((l, i) => (
             <div
               key={i}
               style={{
                 position: "absolute", bottom: 30, left: `${l}%`,
                 width: 8, height: 60 + (i % 2) * 30,
-                background: "linear-gradient(180deg, #2d8a3e 0%, #1a5a28 100%)",
+                background: "linear-gradient(180deg, #ff79c8 0%, #8a0040 100%)",
                 borderRadius: "50% 50% 4px 4px / 30% 30% 4px 4px",
-                transformOrigin: "bottom center",
-                animation: `bubbleRise 0s`,
+                boxShadow: "0 0 8px #ff2da5",
               }}
             />
           ))}
 
-          {/* Fishes */}
           {FISHES.map((f) => {
             const p = positions[f.id];
             const isDragging = dragging === f.id;
-            const tr = tankRef.current?.getBoundingClientRect();
             let style: React.CSSProperties;
             if (isDragging) {
               style = {
@@ -239,14 +311,27 @@ export function Aquarium() {
                 top: dragPos.current.y + dragOffset.current.dy,
                 zIndex: 99999,
               };
-            } else {
-              style = { left: `${p.x}%`, top: `${p.y}%` };
+              return (
+                <div
+                  key={f.id}
+                  className="aq-fish dragging"
+                  style={style}
+                  onMouseDown={(e) => startDrag(e, f.id)}
+                >
+                  {f.emoji}
+                </div>
+              );
             }
+            style = {
+              left: `${p.x}%`,
+              top: `${p.y}%`,
+              transform: `translate(-50%, -50%) scaleX(${p.vx < 0 ? -1 : 1})`,
+            };
             return (
               <div
                 key={f.id}
-                className={`aq-fish ${isDragging ? "dragging" : ""}`}
-                style={{ ...style, transform: `translate(-50%, -50%) scaleX(${p.vx < 0 ? -1 : 1})` }}
+                className="aq-fish"
+                style={style}
                 onMouseDown={(e) => startDrag(e, f.id)}
                 title={`Drag ${f.name} to inspect`}
               >
@@ -254,21 +339,25 @@ export function Aquarium() {
               </div>
             );
           })}
+
+          {/* marquee inside tank */}
+          <div style={{ position: "absolute", left: 0, right: 0, bottom: 4, overflow: "hidden", height: 16, pointerEvents: "none" }}>
+            <div className="y2k-marquee">★ welcome 2 my tank ★ drag a fishy ★ xoxo ★ ♡ ♡ ♡ ★ y2k 4eva ★</div>
+          </div>
         </div>
       </div>
 
-      {/* Inspector - right side */}
-      <div style={{ width: 380, padding: "32px 32px 32px 0", display: "flex", flexDirection: "column" }}>
-        <h2 style={{ fontFamily: "'Audiowide', sans-serif", fontSize: 28, margin: "0 0 16px", color: "#5c1a1a" }}>
-          INSPECTOR
-        </h2>
+      {/* Inspector - right */}
+      <div style={{ width: 380, padding: "32px 32px 32px 0", display: "flex", flexDirection: "column", position: "relative", zIndex: 1 }}>
+        <h2 className="y2k-title" style={{ fontSize: 26 }}>♡ Fish Inspector ♡</h2>
         <div
           ref={inspectorRef}
           className={hoverDrop ? "inspector-glow" : ""}
           style={{
             flex: 1,
-            background: "#fffdf5",
-            border: "2px dashed #8a6a3a",
+            background:
+              "linear-gradient(160deg, rgba(40,0,24,0.85) 0%, rgba(10,0,8,0.95) 100%)",
+            border: "2px dashed #ff79c8",
             borderRadius: 12,
             padding: 24,
             display: "flex",
@@ -276,37 +365,54 @@ export function Aquarium() {
             alignItems: "center",
             justifyContent: "center",
             textAlign: "center",
-            color: "#5a4a2a",
+            color: "#ffd6ee",
             position: "relative",
             transition: "box-shadow 200ms ease",
+            boxShadow: "0 0 14px rgba(255,45,165,0.5), inset 0 0 22px rgba(255,45,165,0.25)",
           }}
         >
           {!inspected ? (
             <>
-              <div style={{ fontSize: 64, opacity: 0.4, marginBottom: 12 }}>🔍</div>
-              <div style={{ fontSize: 16, opacity: 0.7 }}>
-                Drag a fish here to inspect it.
+              <div style={{ fontSize: 64, opacity: 0.7, marginBottom: 12, filter: "drop-shadow(0 0 10px #ff2da5)" }}>🔮</div>
+              <div style={{ fontSize: 14, opacity: 0.85, letterSpacing: "0.08em" }}>
+                ✧ drag a fishy here 2 inspect ✧
               </div>
             </>
           ) : (
-            <div style={{ width: "100%" }}>
-              <div style={{ fontSize: 80, marginBottom: 8 }}>{inspected.emoji}</div>
-              <h3 style={{ fontFamily: "'Audiowide', sans-serif", fontSize: 22, margin: "0 0 12px", color: inspected.color }}>
-                {inspected.name}
+            <div style={{ width: "100%", animation: "popIn 0.25s ease-out" }}>
+              <div style={{ fontSize: 80, marginBottom: 8, filter: "drop-shadow(0 0 14px #ff2da5)" }}>{inspected.emoji}</div>
+              <h3
+                style={{
+                  fontFamily: "'Audiowide', sans-serif",
+                  fontSize: 22,
+                  margin: "0 0 12px",
+                  color: inspected.color,
+                  textShadow: "0 0 10px #ff2da5, 0 0 20px #ff2da5",
+                  letterSpacing: "0.06em",
+                }}
+              >
+                ★ {inspected.name} ★
               </h3>
-              <p style={{ fontSize: 14, lineHeight: 1.6, color: "#3a2a1a" }}>
+              <p style={{ fontSize: 13, lineHeight: 1.6, color: "#ffe0f1" }}>
                 {inspected.description}
               </p>
               <button
                 onClick={() => setInspected(null)}
                 style={{
-                  marginTop: 20, padding: "8px 20px",
-                  background: "#5c1a1a", color: "#fff",
-                  border: "none", borderRadius: 6, cursor: "pointer",
-                  fontFamily: "inherit", letterSpacing: "0.1em",
+                  marginTop: 20,
+                  padding: "8px 22px",
+                  background: "linear-gradient(180deg, #ff2da5, #8a0050)",
+                  color: "#fff",
+                  border: "1px solid #ffb6e6",
+                  borderRadius: 6,
+                  cursor: "pointer",
+                  fontFamily: "inherit",
+                  letterSpacing: "0.16em",
+                  textShadow: "0 0 6px #fff",
+                  boxShadow: "0 0 10px #ff2da5",
                 }}
               >
-                CLEAR
+                ✗ CLEAR ✗
               </button>
             </div>
           )}
