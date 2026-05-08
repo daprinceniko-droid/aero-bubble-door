@@ -281,21 +281,19 @@ export function Aquarium() {
           <div
             style={{
               position: "absolute", left: 0, right: 0, bottom: 0, height: 40,
-              background: "linear-gradient(180deg, #1a0010 0%, #000 100%)",
-              borderTop: "2px solid #ff2da5",
-              boxShadow: "0 -4px 16px rgba(255,45,165,0.5)",
+              background: "linear-gradient(180deg, #d4b878 0%, #a88848 100%)",
+              borderTop: "2px solid rgba(0,0,0,0.25)",
             }}
           />
-          {/* Pink seaweed */}
+          {/* Seaweed */}
           {[15, 35, 70, 88].map((l, i) => (
             <div
               key={i}
               style={{
                 position: "absolute", bottom: 30, left: `${l}%`,
                 width: 8, height: 60 + (i % 2) * 30,
-                background: "linear-gradient(180deg, #ff79c8 0%, #8a0040 100%)",
+                background: "linear-gradient(180deg, #2d8a3e 0%, #1a5a28 100%)",
                 borderRadius: "50% 50% 4px 4px / 30% 30% 4px 4px",
-                boxShadow: "0 0 8px #ff2da5",
               }}
             />
           ))}
