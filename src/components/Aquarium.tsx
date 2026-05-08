@@ -258,11 +258,11 @@ export function Aquarium() {
             flex: 1,
             position: "relative",
             background:
-              "linear-gradient(180deg, #5a0a3a 0%, #2a0418 60%, #0a0008 100%)",
+              "linear-gradient(180deg, #4fb6e6 0%, #1a4a7a 100%)",
             borderRadius: 14,
             border: "4px solid #ff2da5",
             boxShadow:
-              "0 0 24px #ff2da5, 0 0 60px rgba(255,45,165,0.4), inset 0 0 60px rgba(255,45,165,0.25), inset 0 0 0 2px rgba(255,180,230,0.3)",
+              "0 0 24px #ff2da5, 0 0 60px rgba(255,45,165,0.4), inset 0 0 60px rgba(0,0,0,0.35), inset 0 0 0 2px rgba(255,180,230,0.3)",
             overflow: "hidden",
           }}
         >
