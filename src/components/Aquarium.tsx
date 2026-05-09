@@ -402,7 +402,7 @@ export function Aquarium() {
             />
           ))}
 
-          {/* Pellets */}
+          {/* Sparkle pellets */}
           {pellets.map((p) => (
             <div
               key={p.id}
@@ -410,13 +410,18 @@ export function Aquarium() {
                 position: "absolute",
                 left: `${p.x}%`,
                 top: `${p.y}%`,
-                width: 8, height: 8,
-                borderRadius: "50%",
-                background: "radial-gradient(circle at 35% 35%, #fff5c2, #d49a2a 70%, #8a5a10)",
+                fontSize: 18,
+                color: "#fff5c2",
+                textShadow: "0 0 8px #ffd166, 0 0 16px #ff8fd4, 0 0 22px #ff2da5",
                 animation: "pelletPulse 0.8s ease-in-out infinite",
                 pointerEvents: "none",
+                transform: "translate(-50%, -50%)",
+                fontFamily: "serif",
+                lineHeight: 1,
               }}
-            />
+            >
+              ✦
+            </div>
           ))}
 
           {FISHES.map((f) => {
