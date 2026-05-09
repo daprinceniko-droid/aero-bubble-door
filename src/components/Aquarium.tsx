@@ -46,7 +46,16 @@ const FISHES: Fish[] = [
 type Pos = { x: number; y: number; vx: number; vy: number };
 type Pellet = { id: number; x: number; y: number };
 
-const GLITTER_CURSOR = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><text x='2' y='22' font-size='22'>%E2%9C%A8</text></svg>") 14 14, auto`;
+const GLITTER_CURSOR = `url('/cursors/pink-glitter.ani') 2 2, url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><text x='2' y='22' font-size='22'>%E2%9C%A8</text></svg>") 14 14, auto`;
+
+// Random scattered kiss gif background positions (stable across renders)
+const KISS_BG = Array.from({ length: 14 }).map(() => ({
+  left: Math.random() * 92,
+  top: Math.random() * 92,
+  size: 70 + Math.random() * 70,
+  rot: Math.random() * 60 - 30,
+  opacity: 0.18 + Math.random() * 0.22,
+}));
 
 export function Aquarium() {
   const [positions, setPositions] = useState<Record<string, Pos>>(() => ({
