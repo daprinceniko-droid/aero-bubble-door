@@ -451,7 +451,7 @@ export function Aquarium() {
                 style={{
                   left: `${p.x}%`,
                   top: `${p.y}%`,
-                  transform: `translate(-50%, -50%) scaleX(${p.vx < 0 ? -1 : 1})`,
+                  transform: `translate(-50%, -50%) scaleX(${p.vx > 0 ? -1 : 1})`,
                 }}
                 onMouseDown={(e) => startDrag(e, f.id)}
                 title={`Drag ${f.name} to inspect`}
