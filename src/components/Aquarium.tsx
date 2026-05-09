@@ -312,24 +312,26 @@ export function Aquarium() {
         .feed-btn:hover { filter: brightness(1.15); }
       `}</style>
 
-      {/* Giant glitter background */}
-      <img
-        src="/glitter-kiss.gif"
-        alt=""
-        aria-hidden
-        style={{
-          position: "absolute",
-          left: "50%",
-          top: "50%",
-          width: 320,
-          transform: "translate(-50%, -50%) scale(3)",
-          opacity: 0.45,
-          pointerEvents: "none",
-          zIndex: 0,
-          filter: "drop-shadow(0 0 40px #ff2da5)",
-        }}
-      />
-
+      {/* Scattered glitter kiss background */}
+      {KISS_BG.map((k, i) => (
+        <img
+          key={i}
+          src="/glitter-kiss.gif"
+          alt=""
+          aria-hidden
+          style={{
+            position: "absolute",
+            left: `${k.left}%`,
+            top: `${k.top}%`,
+            width: k.size,
+            transform: `rotate(${k.rot}deg)`,
+            opacity: k.opacity,
+            pointerEvents: "none",
+            zIndex: 0,
+            filter: "drop-shadow(0 0 12px #ff2da5)",
+          }}
+        />
+      ))}
       {/* Background sparkles */}
       {sparkles.current.map((s, i) => (
         <span
