@@ -11,46 +11,63 @@ type Fish = {
 const FISHES: Fish[] = [
   {
     id: "blub",
-    name: "Sir Blubsworth",
+    name: "Marketing Intern",
     emoji: "🐠",
     color: "#ff4fb0",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sir Blubsworth glides through coral reefs with regal poise, nibbling on plankton and judging passersby with quiet dignity.",
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. The Marketing Intern glides through coral reefs with regal poise, nibbling on plankton and judging passersby with quiet dignity.",
   },
   {
     id: "gilly",
-    name: "Gilly the Swift",
+    name: "Event Organizer",
     emoji: "🐟",
     color: "#ff8fd4",
     description:
-      "Vivamus lacinia odio vitae vestibulum. Gilly is the fastest fin in the tank, known for darting between bubbles and stealing flakes before anyone else notices.",
+      "Vivamus lacinia odio vitae vestibulum. The Event Organizer is the fastest fin in the tank, known for darting between bubbles and stealing flakes before anyone else notices.",
   },
   {
     id: "puff",
-    name: "Captain Puffington",
+    name: "Video Editor",
     emoji: "🐡",
     color: "#ffb6e6",
     description:
-      "Sed do eiusmod tempor incididunt ut labore. Captain Puffington tells tall tales of deep-sea adventures, though he has never actually left the aquarium.",
+      "Sed do eiusmod tempor incididunt ut labore. The Video Editor tells tall tales of deep-sea adventures, though it has never actually left the aquarium.",
+  },
+  {
+    id: "coord",
+    name: "Marketing Coordinator",
+    emoji: "🐬",
+    color: "#ffa3d8",
+    description:
+      "Ut enim ad minim veniam, quis nostrud exercitation. The Marketing Coordinator orchestrates the entire reef, keeping every fin in sync and every bubble on schedule.",
   },
 ];
 
 type Pos = { x: number; y: number; vx: number; vy: number };
+type Pellet = { id: number; x: number; y: number };
+
+const GLITTER_CURSOR = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><text x='2' y='22' font-size='22'>%E2%9C%A8</text></svg>") 14 14, auto`;
 
 export function Aquarium() {
   const [positions, setPositions] = useState<Record<string, Pos>>(() => ({
     blub: { x: 20, y: 30, vx: 0.08, vy: 0.04 },
     gilly: { x: 60, y: 60, vx: -0.12, vy: -0.05 },
     puff: { x: 40, y: 75, vx: 0.06, vy: -0.03 },
+    coord: { x: 75, y: 25, vx: -0.09, vy: 0.05 },
   }));
   const [dragging, setDragging] = useState<string | null>(null);
   const [inspected, setInspected] = useState<Fish | null>(null);
   const [hoverDrop, setHoverDrop] = useState(false);
+  const [pellets, setPellets] = useState<Pellet[]>([]);
+  const pelletsRef = useRef<Pellet[]>([]);
+  const pelletId = useRef(0);
   const tankRef = useRef<HTMLDivElement>(null);
   const inspectorRef = useRef<HTMLDivElement>(null);
   const dragOffset = useRef<{ dx: number; dy: number }>({ dx: 0, dy: 0 });
   const dragPos = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const [, force] = useState(0);
+
+  useEffect(() => { pelletsRef.current = pellets; }, [pellets]);
 
   // Sparkles
   const sparkles = useRef(
@@ -63,26 +80,57 @@ export function Aquarium() {
     }))
   );
 
-  // Swim animation
+  // Swim animation — fish chase nearest pellet if any
   useEffect(() => {
     let raf = 0;
     const tick = () => {
       setPositions((prev) => {
         const next: Record<string, Pos> = { ...prev };
+        const ps = pelletsRef.current;
         for (const k of Object.keys(prev)) {
           if (dragging === k) continue;
           const p = prev[k];
           let { x, y, vx, vy } = p;
+
+          if (ps.length) {
+            // find nearest pellet
+            let best = ps[0];
+            let bd = Infinity;
+            for (const pel of ps) {
+              const d = (pel.x - x) ** 2 + (pel.y - y) ** 2;
+              if (d < bd) { bd = d; best = pel; }
+            }
+            const dx = best.x - x;
+            const dy = best.y - y;
+            const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+            const speed = 0.25;
+            vx = (dx / dist) * speed;
+            vy = (dy / dist) * speed;
+            // eat
+            if (dist < 3) {
+              setPellets((arr) => arr.filter((q) => q.id !== best.id));
+            }
+          } else {
+            vy += (Math.random() - 0.5) * 0.005;
+            vy = Math.max(-0.1, Math.min(0.1, vy));
+          }
+
           x += vx;
           y += vy;
-          if (x < 5 || x > 92) vx = -vx;
-          if (y < 10 || y > 88) vy = -vy;
-          vy += (Math.random() - 0.5) * 0.005;
-          vy = Math.max(-0.1, Math.min(0.1, vy));
+          if (x < 5) { x = 5; vx = Math.abs(vx); }
+          if (x > 92) { x = 92; vx = -Math.abs(vx); }
+          if (y < 10) { y = 10; vy = Math.abs(vy); }
+          if (y > 88) { y = 88; vy = -Math.abs(vy); }
           next[k] = { x, y, vx, vy };
         }
         return next;
       });
+
+      // pellets sink slowly
+      setPellets((arr) =>
+        arr.map((p) => ({ ...p, y: Math.min(86, p.y + 0.08) }))
+      );
+
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -137,6 +185,15 @@ export function Aquarium() {
     setDragging(id);
   };
 
+  const feed = () => {
+    const newOnes: Pellet[] = Array.from({ length: 8 }).map(() => ({
+      id: ++pelletId.current,
+      x: 15 + Math.random() * 70,
+      y: 12 + Math.random() * 10,
+    }));
+    setPellets((p) => [...p, ...newOnes]);
+  };
+
   return (
     <div
       style={{
@@ -149,9 +206,16 @@ export function Aquarium() {
         zIndex: 10001,
         color: "#ffd6ee",
         overflow: "hidden",
+        cursor: GLITTER_CURSOR,
+        animation: "aquariumFadeIn 900ms ease-out both",
       }}
     >
       <style>{`
+        .aq-root, .aq-root * { cursor: ${GLITTER_CURSOR}; }
+        @keyframes aquariumFadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
         @keyframes bubbleRise {
           0% { transform: translateY(0) scale(0.8); opacity: 0; }
           15% { opacity: 0.9; }
@@ -172,9 +236,9 @@ export function Aquarium() {
           0%, 100% { box-shadow: 0 0 18px #ff2da5, 0 0 40px #ff2da5, inset 0 0 24px rgba(255,45,165,0.4); }
           50% { box-shadow: 0 0 28px #ff79c8, 0 0 60px #ff2da5, inset 0 0 32px rgba(255,121,200,0.6); }
         }
-        @keyframes scrollMarquee {
-          0% { transform: translateX(100%); }
-          100% { transform: translateX(-100%); }
+        @keyframes pelletPulse {
+          0%, 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 6px #ffd166; }
+          50% { transform: translate(-50%, -50%) scale(1.25); box-shadow: 0 0 12px #ffe9a8; }
         }
         .aq-sparkle {
           position: absolute; pointer-events: none;
@@ -197,14 +261,14 @@ export function Aquarium() {
           user-select: none;
           cursor: grab;
           transform: translate(-50%, -50%);
-          filter: drop-shadow(0 0 8px #ff2da5) drop-shadow(0 4px 8px rgba(0,0,0,0.6));
+          filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
           transition: filter 200ms ease;
         }
-        .aq-fish:hover { filter: drop-shadow(0 0 12px #ff79c8) drop-shadow(0 6px 12px rgba(0,0,0,0.7)) brightness(1.15); }
+        .aq-fish:hover { filter: drop-shadow(0 6px 12px rgba(0,0,0,0.7)) brightness(1.1); }
         .aq-fish.dragging {
           cursor: grabbing;
           animation: wiggle 0.35s ease-in-out infinite;
-          filter: drop-shadow(0 0 18px #ff2da5) drop-shadow(0 0 30px #ff79c8) brightness(1.25);
+          filter: drop-shadow(0 6px 14px rgba(0,0,0,0.8)) brightness(1.1);
         }
         .inspector-glow { animation: pinkGlow 1s ease-in-out infinite !important; }
         .y2k-title {
@@ -219,18 +283,43 @@ export function Aquarium() {
           text-shadow: 0 0 18px rgba(255,45,165,0.7);
           filter: drop-shadow(0 2px 0 #000);
         }
-        .y2k-marquee {
-          color: #ff8fd4;
-          font-size: 12px;
-          letter-spacing: 0.3em;
-          white-space: nowrap;
-          animation: scrollMarquee 18s linear infinite;
-        }
         @keyframes popIn {
           0% { transform: scale(0.7); opacity: 0; }
           100% { transform: scale(1); opacity: 1; }
         }
+        .feed-btn {
+          position: absolute; top: 0; right: 0;
+          font-family: 'Audiowide', sans-serif;
+          padding: 8px 22px;
+          background: linear-gradient(180deg, #ff2da5, #8a0050);
+          color: #fff;
+          border: 2px solid #ffb6e6;
+          border-radius: 8px;
+          letter-spacing: 0.18em;
+          text-shadow: 0 0 6px #fff;
+          box-shadow: 0 0 12px #ff2da5;
+          cursor: pointer;
+        }
+        .feed-btn:hover { filter: brightness(1.15); }
       `}</style>
+
+      {/* Giant glitter background */}
+      <img
+        src="/glitter-kiss.gif"
+        alt=""
+        aria-hidden
+        style={{
+          position: "absolute",
+          left: "50%",
+          top: "50%",
+          width: 320,
+          transform: "translate(-50%, -50%) scale(3)",
+          opacity: 0.45,
+          pointerEvents: "none",
+          zIndex: 0,
+          filter: "drop-shadow(0 0 40px #ff2da5)",
+        }}
+      />
 
       {/* Background sparkles */}
       {sparkles.current.map((s, i) => (
@@ -243,6 +332,7 @@ export function Aquarium() {
             fontSize: s.size,
             animationDelay: `${s.delay}s`,
             animationDuration: `${s.dur}s`,
+            zIndex: 1,
           }}
         >
           ✦
@@ -250,8 +340,11 @@ export function Aquarium() {
       ))}
 
       {/* Aquarium - left */}
-      <div style={{ flex: 1, padding: 32, display: "flex", flexDirection: "column", position: "relative", zIndex: 1 }}>
-        <h2 className="y2k-title">·:*¨ Experiences ¨*:·</h2>
+      <div style={{ flex: 1, padding: 32, display: "flex", flexDirection: "column", position: "relative", zIndex: 2 }}>
+        <div style={{ position: "relative" }}>
+          <h2 className="y2k-title">·:*¨ Experiences ¨*:·</h2>
+          <button className="feed-btn" onClick={feed}>★ FEED ★</button>
+        </div>
         <div
           ref={tankRef}
           style={{
@@ -277,7 +370,7 @@ export function Aquarium() {
               }}
             />
           ))}
-          {/* Black sand */}
+          {/* Sand */}
           <div
             style={{
               position: "absolute", left: 0, right: 0, bottom: 0, height: 40,
@@ -298,38 +391,52 @@ export function Aquarium() {
             />
           ))}
 
+          {/* Pellets */}
+          {pellets.map((p) => (
+            <div
+              key={p.id}
+              style={{
+                position: "absolute",
+                left: `${p.x}%`,
+                top: `${p.y}%`,
+                width: 8, height: 8,
+                borderRadius: "50%",
+                background: "radial-gradient(circle at 35% 35%, #fff5c2, #d49a2a 70%, #8a5a10)",
+                animation: "pelletPulse 0.8s ease-in-out infinite",
+                pointerEvents: "none",
+              }}
+            />
+          ))}
+
           {FISHES.map((f) => {
             const p = positions[f.id];
             const isDragging = dragging === f.id;
-            let style: React.CSSProperties;
             if (isDragging) {
-              style = {
-                position: "fixed",
-                left: dragPos.current.x + dragOffset.current.dx,
-                top: dragPos.current.y + dragOffset.current.dy,
-                zIndex: 99999,
-              };
               return (
                 <div
                   key={f.id}
                   className="aq-fish dragging"
-                  style={style}
+                  style={{
+                    position: "fixed",
+                    left: dragPos.current.x + dragOffset.current.dx,
+                    top: dragPos.current.y + dragOffset.current.dy,
+                    zIndex: 99999,
+                  }}
                   onMouseDown={(e) => startDrag(e, f.id)}
                 >
                   {f.emoji}
                 </div>
               );
             }
-            style = {
-              left: `${p.x}%`,
-              top: `${p.y}%`,
-              transform: `translate(-50%, -50%) scaleX(${p.vx < 0 ? -1 : 1})`,
-            };
             return (
               <div
                 key={f.id}
                 className="aq-fish"
-                style={style}
+                style={{
+                  left: `${p.x}%`,
+                  top: `${p.y}%`,
+                  transform: `translate(-50%, -50%) scaleX(${p.vx < 0 ? -1 : 1})`,
+                }}
                 onMouseDown={(e) => startDrag(e, f.id)}
                 title={`Drag ${f.name} to inspect`}
               >
@@ -337,23 +444,11 @@ export function Aquarium() {
               </div>
             );
           })}
-
-          {/* marquee inside tank */}
-          <div style={{ position: "absolute", left: 0, right: 0, bottom: 4, overflow: "hidden", height: 16, pointerEvents: "none" }}>
-            <div className="y2k-marquee">★ welcome 2 my tank ★ drag a fishy ★ xoxo ★ ♡ ♡ ♡ ★ y2k 4eva ★</div>
-          </div>
         </div>
       </div>
 
       {/* Inspector - right */}
-      <div style={{ width: 380, padding: "32px 32px 32px 0", display: "flex", flexDirection: "column", position: "relative", zIndex: 1 }}>
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: 8 }}>
-          <img
-            src="/glitter-kiss.gif"
-            alt="kiss kiss"
-            style={{ height: 80, filter: "drop-shadow(0 0 12px #ff2da5)" }}
-          />
-        </div>
+      <div style={{ width: 380, padding: "32px 32px 32px 0", display: "flex", flexDirection: "column", position: "relative", zIndex: 2 }}>
         <h2 className="y2k-title" style={{ fontSize: 26 }}>♡ Fish Inspector ♡</h2>
         <div
           ref={inspectorRef}
