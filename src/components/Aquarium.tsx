@@ -46,7 +46,16 @@ const FISHES: Fish[] = [
 type Pos = { x: number; y: number; vx: number; vy: number };
 type Pellet = { id: number; x: number; y: number };
 
-const GLITTER_CURSOR = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><text x='2' y='22' font-size='22'>%E2%9C%A8</text></svg>") 14 14, auto`;
+const GLITTER_CURSOR = `url('/cursors/pink-glitter.ani') 2 2, url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><text x='2' y='22' font-size='22'>%E2%9C%A8</text></svg>") 14 14, auto`;
+
+// Random scattered kiss gif background positions (stable across renders)
+const KISS_BG = Array.from({ length: 14 }).map(() => ({
+  left: Math.random() * 92,
+  top: Math.random() * 92,
+  size: 70 + Math.random() * 70,
+  rot: Math.random() * 60 - 30,
+  opacity: 0.18 + Math.random() * 0.22,
+}));
 
 export function Aquarium() {
   const [positions, setPositions] = useState<Record<string, Pos>>(() => ({
@@ -303,24 +312,26 @@ export function Aquarium() {
         .feed-btn:hover { filter: brightness(1.15); }
       `}</style>
 
-      {/* Giant glitter background */}
-      <img
-        src="/glitter-kiss.gif"
-        alt=""
-        aria-hidden
-        style={{
-          position: "absolute",
-          left: "50%",
-          top: "50%",
-          width: 320,
-          transform: "translate(-50%, -50%) scale(3)",
-          opacity: 0.45,
-          pointerEvents: "none",
-          zIndex: 0,
-          filter: "drop-shadow(0 0 40px #ff2da5)",
-        }}
-      />
-
+      {/* Scattered glitter kiss background */}
+      {KISS_BG.map((k, i) => (
+        <img
+          key={i}
+          src="/glitter-kiss.gif"
+          alt=""
+          aria-hidden
+          style={{
+            position: "absolute",
+            left: `${k.left}%`,
+            top: `${k.top}%`,
+            width: k.size,
+            transform: `rotate(${k.rot}deg)`,
+            opacity: k.opacity,
+            pointerEvents: "none",
+            zIndex: 0,
+            filter: "drop-shadow(0 0 12px #ff2da5)",
+          }}
+        />
+      ))}
       {/* Background sparkles */}
       {sparkles.current.map((s, i) => (
         <span
@@ -391,7 +402,7 @@ export function Aquarium() {
             />
           ))}
 
-          {/* Pellets */}
+          {/* Sparkle pellets */}
           {pellets.map((p) => (
             <div
               key={p.id}
@@ -399,13 +410,18 @@ export function Aquarium() {
                 position: "absolute",
                 left: `${p.x}%`,
                 top: `${p.y}%`,
-                width: 8, height: 8,
-                borderRadius: "50%",
-                background: "radial-gradient(circle at 35% 35%, #fff5c2, #d49a2a 70%, #8a5a10)",
+                fontSize: 18,
+                color: "#fff5c2",
+                textShadow: "0 0 8px #ffd166, 0 0 16px #ff8fd4, 0 0 22px #ff2da5",
                 animation: "pelletPulse 0.8s ease-in-out infinite",
                 pointerEvents: "none",
+                transform: "translate(-50%, -50%)",
+                fontFamily: "serif",
+                lineHeight: 1,
               }}
-            />
+            >
+              ✦
+            </div>
           ))}
 
           {FISHES.map((f) => {
@@ -435,7 +451,7 @@ export function Aquarium() {
                 style={{
                   left: `${p.x}%`,
                   top: `${p.y}%`,
-                  transform: `translate(-50%, -50%) scaleX(${p.vx < 0 ? -1 : 1})`,
+                  transform: `translate(-50%, -50%) scaleX(${p.vx > 0 ? -1 : 1})`,
                 }}
                 onMouseDown={(e) => startDrag(e, f.id)}
                 title={`Drag ${f.name} to inspect`}
