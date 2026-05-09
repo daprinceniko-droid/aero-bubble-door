@@ -42,7 +42,7 @@ const projects: Project[] = [
 ];
 
 const cloister = `'Cloister Black', 'UnifrakturCook', 'Blackletter', serif`;
-const SA_CURSOR = `auto`;
+const SA_CURSOR = `url('/cursors/sa-pistol-sm.png') 2 2, auto`;
 
 // Layout: a strip of quadrilateral shards.
 // `cuts` are x-positions (% of strip width) for each vertical cut.
