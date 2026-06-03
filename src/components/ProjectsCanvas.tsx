@@ -182,6 +182,14 @@ export function ProjectsCanvas() {
     }
   }, [index, total, allRevealed, reachedLast]);
 
+  // Auto-advance: 0.5s after the shard reveal animation finishes, move to next slide.
+  useEffect(() => {
+    if (!allRevealed) return;
+    if (index >= total - 1) return;
+    const t = window.setTimeout(() => go(1), 500);
+    return () => window.clearTimeout(t);
+  }, [allRevealed, index, total]);
+
   // Loading sequence after CONTINUE
   useEffect(() => {
     if (phase === "fadeOut1") {
