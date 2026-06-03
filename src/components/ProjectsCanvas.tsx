@@ -182,6 +182,14 @@ export function ProjectsCanvas() {
     }
   }, [index, total, allRevealed, reachedLast]);
 
+  // Auto-advance: 0.5s after the shard reveal animation finishes, move to next slide.
+  useEffect(() => {
+    if (!allRevealed) return;
+    if (index >= total - 1) return;
+    const t = window.setTimeout(() => go(1), 500);
+    return () => window.clearTimeout(t);
+  }, [allRevealed, index, total]);
+
   // Loading sequence after CONTINUE
   useEffect(() => {
     if (phase === "fadeOut1") {
@@ -407,7 +415,7 @@ export function ProjectsCanvas() {
             linear-gradient(180deg, #ffe9a8 0%, #d49a2a 50%, #8a5a10 100%);
           background-size: 40px 100%, 100% 100%;
           animation: loadbarStripes 800ms linear infinite;
-          transition: width 450ms cubic-bezier(0.22, 1, 0.36, 1);
+          transition: width 2500ms linear;
           box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(0,0,0,0.4);
         }
         @keyframes continuePulse {
