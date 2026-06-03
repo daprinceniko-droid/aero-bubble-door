@@ -680,6 +680,27 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
 
       {/* Music toggle — hidden once loading video has completed */}
       {phase !== "final" && phase !== "fadeOut2" && (
+      <>
+      {onBack && (
+        <button
+          type="button"
+          onClick={onBack}
+          title="Back to about me"
+          aria-label="Back"
+          style={{
+            position: "fixed", right: 70, bottom: 18, zIndex: 10001,
+            width: 42, height: 42, borderRadius: "50%",
+            background: "rgba(0,0,0,0.55)", color: "#fff",
+            border: "1px solid rgba(255,255,255,0.4)",
+            fontSize: 22, lineHeight: 1, cursor: SA_CURSOR,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            backdropFilter: "blur(4px)",
+            fontFamily: cloister,
+          }}
+        >
+          ←
+        </button>
+      )}
       <button
         type="button"
         onClick={() => setMusicOn((v) => !v)}
@@ -696,6 +717,7 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
       >
         {musicOn ? "♪" : "𝄽"}
       </button>
+      </>
       )}
 
       {(phase === "fadeOut1") && <div className="phase-overlay" />}
