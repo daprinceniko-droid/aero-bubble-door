@@ -10,10 +10,10 @@ type Project = {
 
 const projects: Project[] = [
   {
-    title: "Project Alpha",
-    tagline: "The one that started it all",
-    image: "https://images.unsplash.com/photo-1502136969935-8d8eef54d77b?w=1600",
-    gif: "https://media.giphy.com/media/3o7TKsQ8Xb3Yh3cFGE/giphy.gif",
+    title: "Monster Teen",
+    tagline: "Two new Monster Energy flavors",
+    image: "/monster-teen.gif",
+    gif: "/monster-teen.gif",
   },
   {
     title: "Side Quest",
