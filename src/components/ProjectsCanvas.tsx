@@ -113,7 +113,7 @@ function shardClip(layout: Layout, i: number, gapPct: number): string {
 
 type Spark = { id: number; x: number; y: number };
 
-export function ProjectsCanvas() {
+export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
   const [index, setIndex] = useState(0);
   const [dir, setDir] = useState<1 | -1>(1);
   const [hoverActive, setHoverActive] = useState(false);
@@ -705,7 +705,7 @@ export function ProjectsCanvas() {
         </div>
       )}
       {phase === "fadeOut2" && <div className="phase-overlay" />}
-      {phase === "final" && <Aquarium />}
+      {phase === "final" && <Aquarium onBack={onBack} />}
     </div>
   );
 }
