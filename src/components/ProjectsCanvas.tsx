@@ -186,7 +186,7 @@ export function ProjectsCanvas() {
   useEffect(() => {
     if (!allRevealed) return;
     if (index >= total - 1) return;
-    const t = window.setTimeout(() => go(1), 500);
+    const t = window.setTimeout(() => go(1), 1000);
     return () => window.clearTimeout(t);
   }, [allRevealed, index, total]);
 
@@ -242,6 +242,11 @@ export function ProjectsCanvas() {
   const layout = layouts[index % layouts.length];
   const N = layout.top.length;
   const progressPct = ((index + 1) / total) * 100;
+  const [displayedProgress, setDisplayedProgress] = useState(0);
+  useEffect(() => {
+    const r = requestAnimationFrame(() => setDisplayedProgress(((index + 1) / total) * 100));
+    return () => cancelAnimationFrame(r);
+  }, [index, total]);
   const GAP = 1.2; // % of strip width — perpendicular gap between shards
 
 
@@ -415,7 +420,7 @@ export function ProjectsCanvas() {
             linear-gradient(180deg, #ffe9a8 0%, #d49a2a 50%, #8a5a10 100%);
           background-size: 40px 100%, 100% 100%;
           animation: loadbarStripes 800ms linear infinite;
-          transition: width 2500ms linear;
+          transition: width 3000ms linear;
           box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(0,0,0,0.4);
         }
         @keyframes continuePulse {
@@ -637,7 +642,7 @@ export function ProjectsCanvas() {
             </button>
           ) : (
             <div className="gta-loadbar" role="progressbar" aria-valuenow={progressPct} aria-valuemin={0} aria-valuemax={100}>
-              <div className="gta-loadbar-fill" style={{ width: `${progressPct}%` }} />
+              <div className="gta-loadbar-fill" style={{ width: `${displayedProgress}%` }} />
             </div>
           )}
         </div>
