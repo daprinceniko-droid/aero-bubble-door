@@ -57,7 +57,7 @@ const KISS_BG = Array.from({ length: 14 }).map(() => ({
   opacity: 0.18 + Math.random() * 0.22,
 }));
 
-export function Aquarium() {
+export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
   const [positions, setPositions] = useState<Record<string, Pos>>(() => ({
     blub: { x: 20, y: 30, vx: 0.08, vy: 0.04 },
     gilly: { x: 60, y: 60, vx: -0.12, vy: -0.05 },
@@ -310,6 +310,20 @@ export function Aquarium() {
           cursor: pointer;
         }
         .feed-btn:hover { filter: brightness(1.15); }
+        .back-btn {
+          position: absolute; top: 0; right: 150px;
+          font-family: 'Audiowide', sans-serif;
+          padding: 8px 16px;
+          background: linear-gradient(180deg, #ff2da5, #8a0050);
+          color: #fff;
+          border: 2px solid #ffb6e6;
+          border-radius: 8px;
+          letter-spacing: 0.18em;
+          text-shadow: 0 0 6px #fff;
+          box-shadow: 0 0 12px #ff2da5;
+          cursor: pointer;
+        }
+        .back-btn:hover { filter: brightness(1.15); }
       `}</style>
 
       {/* Scattered glitter kiss background */}
@@ -354,6 +368,7 @@ export function Aquarium() {
       <div style={{ flex: 1, padding: 32, display: "flex", flexDirection: "column", position: "relative", zIndex: 2 }}>
         <div style={{ position: "relative" }}>
           <h2 className="y2k-title">·:*¨ Experiences ¨*:·</h2>
+          {onBack && <button className="back-btn" onClick={onBack} aria-label="Back">← BACK</button>}
           <button className="feed-btn" onClick={feed}>★ FEED ★</button>
         </div>
         <div

@@ -64,7 +64,7 @@ function Index() {
 
   if (canvasFull) {
     // Everything from the previous screen has been unmounted to keep things light.
-    return <ProjectsCanvas />;
+    return <ProjectsCanvas onBack={() => setCanvasFull(false)} />;
   }
 
   return (
