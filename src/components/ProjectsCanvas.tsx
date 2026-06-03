@@ -147,10 +147,17 @@ export function ProjectsCanvas() {
     return () => window.removeEventListener("click", onClick);
   }, []);
 
-  // On slide change: hide all shards, then reveal them one by one in random order over ~2s.
+  const seenRef = useRef<Set<number>>(new Set());
+
+  // On slide change: if already seen, reveal instantly; otherwise reveal shards one by one over ~2s.
   useEffect(() => {
     const layout = layouts[index % layouts.length];
     const N = layout.top.length;
+    if (seenRef.current.has(index)) {
+      setRevealed(new Array(N).fill(true));
+      setAllRevealed(true);
+      return;
+    }
     setRevealed(new Array(N).fill(false));
     setAllRevealed(false);
     const order = Array.from({ length: N }, (_, i) => i).sort(() => Math.random() - 0.5);
@@ -164,7 +171,10 @@ export function ProjectsCanvas() {
           next[shardIdx] = true;
           return next;
         });
-        if (k === N - 1) setAllRevealed(true);
+        if (k === N - 1) {
+          setAllRevealed(true);
+          seenRef.current.add(index);
+        }
       }, step * (k + 1));
       timers.push(t);
     });
@@ -182,13 +192,15 @@ export function ProjectsCanvas() {
     }
   }, [index, total, allRevealed, reachedLast]);
 
-  // Auto-advance: 0.5s after the shard reveal animation finishes, move to next slide.
+  // Auto-advance: 1s after the shard reveal animation finishes, move to next slide.
+  // Stops once the user has reached the last slide so they can navigate freely.
   useEffect(() => {
+    if (reachedLast) return;
     if (!allRevealed) return;
     if (index >= total - 1) return;
     const t = window.setTimeout(() => go(1), 1000);
     return () => window.clearTimeout(t);
-  }, [allRevealed, index, total]);
+  }, [allRevealed, index, total, reachedLast]);
 
   // Loading sequence after CONTINUE
   useEffect(() => {
