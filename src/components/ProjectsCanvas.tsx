@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Aquarium } from "./Aquarium";
 import eventMarketingGif from "@/assets/event-marketing.gif.asset.json";
 import signifyVisualizerGif from "@/assets/signify-visualizer.gif.asset.json";
+import shortFormContentGif from "@/assets/short-form-content.gif.asset.json";
 
 
 type Project = {
@@ -32,10 +33,10 @@ const projects: Project[] = [
     gif: signifyVisualizerGif.url,
   },
   {
-    title: "Grove Street",
-    tagline: "Home, ese.",
-    image: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=1600",
-    gif: "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif",
+    title: "Short Form Content",
+    tagline: "Using AI, Premiere Pro, Capcut to craft unforgettable moments",
+    image: shortFormContentGif.url,
+    gif: shortFormContentGif.url,
   },
   {
     title: "Last Ride",
