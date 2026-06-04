@@ -818,6 +818,8 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
           <video src="/loading_screen.mp4" autoPlay muted playsInline />
         </div>
       )}
+      {phase !== "final" && <div className="crt-fx" aria-hidden />}
+
       {phase === "fadeOut2" && <div className="phase-overlay" />}
       {phase === "final" && <Aquarium onBack={onBack} />}
     </div>
