@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Aquarium } from "./Aquarium";
 import eventMarketingGif from "@/assets/event-marketing.gif.asset.json";
+import signifyVisualizerGif from "@/assets/signify-visualizer.gif.asset.json";
 
 
 type Project = {
@@ -19,16 +20,16 @@ const projects: Project[] = [
   },
   {
     title: "Event Marketing",
-    tagline: "Live activations that hit",
+    tagline: "Branding that grew a brand from zero to hero",
     image: eventMarketingGif.url,
     gif: eventMarketingGif.url,
   },
 
   {
-    title: "Night Drive",
-    tagline: "Neon, asphalt, infinity",
-    image: "https://images.unsplash.com/photo-1517511620798-cec17d428bc0?w=1600",
-    gif: "https://media.giphy.com/media/26tn33aiTi1jkl6H6/giphy.gif",
+    title: "Signify Visualizer",
+    tagline: "interactive web tool for Hue visualization",
+    image: signifyVisualizerGif.url,
+    gif: signifyVisualizerGif.url,
   },
   {
     title: "Grove Street",
