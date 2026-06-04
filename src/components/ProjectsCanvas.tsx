@@ -330,8 +330,29 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
           position: relative;
           overflow: hidden;
           visibility: hidden;
+          transition: transform 250ms ease, filter 250ms ease;
+          cursor: pointer;
         }
         .gta-shard.is-revealed { visibility: visible; }
+        .gta-shard.is-revealed:hover {
+          transform: translateY(-2px) scale(1.015);
+          filter: brightness(1.18) saturate(1.15) drop-shadow(0 0 14px rgba(255,220,140,0.55));
+          z-index: 6;
+        }
+        .gta-shard.is-revealed:hover .glass-spec {
+          transform: translate(4%, -3%);
+          opacity: 1;
+          background:
+            linear-gradient(115deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.0) 22%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.35) 68%, rgba(255,255,255,0) 88%),
+            linear-gradient(200deg, rgba(255,255,255,0.0) 55%, rgba(255,255,255,0.22) 75%, rgba(255,255,255,0) 92%);
+        }
+        .gta-shard.is-revealed:hover .glass-edge {
+          box-shadow:
+            inset 0 0 0 1px rgba(255,240,180,0.75),
+            inset 0 1px 0 rgba(255,255,255,0.85),
+            inset 0 -1px 0 rgba(0,0,0,0.6),
+            inset 0 0 18px rgba(255,210,120,0.35);
+        }
         .gta-shard .shard-img,
         .gta-shard .shard-gif {
           position: absolute; inset: 0;
@@ -339,6 +360,54 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
           transition: opacity 250ms ease;
         }
         .gta-shard .shard-gif { opacity: 0; }
+        .gta-shard .glass-spec { transition: transform 350ms ease, background 350ms ease, opacity 350ms ease; }
+        .gta-shard .glass-edge { transition: box-shadow 350ms ease; }
+
+        /* CRT + fisheye screen effect */
+        @keyframes crtFlicker {
+          0%, 100% { opacity: 0.18; }
+          50% { opacity: 0.22; }
+        }
+        @keyframes crtJitter {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-1px); }
+        }
+        .crt-fx {
+          position: fixed; inset: 0; pointer-events: none;
+          z-index: 9997;
+          border-radius: 6% / 9%;
+          box-shadow:
+            inset 0 0 120px 30px rgba(0,0,0,0.85),
+            inset 0 0 260px 80px rgba(0,0,0,0.55),
+            inset 0 0 0 2px rgba(0,0,0,0.9);
+        }
+        .crt-fx::before {
+          content: ""; position: absolute; inset: 0;
+          background: repeating-linear-gradient(
+            to bottom,
+            rgba(0,0,0,0.28) 0px,
+            rgba(0,0,0,0.28) 1px,
+            transparent 1px,
+            transparent 3px
+          );
+          mix-blend-mode: multiply;
+          animation: crtFlicker 110ms steps(2) infinite, crtJitter 7s ease-in-out infinite;
+          border-radius: inherit;
+        }
+        .crt-fx::after {
+          content: ""; position: absolute; inset: 0;
+          background:
+            radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.07), transparent 55%),
+            linear-gradient(90deg, rgba(255,0,80,0.05), transparent 20%, transparent 80%, rgba(0,180,255,0.05));
+          mix-blend-mode: screen;
+          border-radius: inherit;
+        }
+        .fisheye-stage {
+          position: absolute; inset: 0;
+          transform: perspective(900px) scale(1.04);
+          transform-origin: center center;
+        }
+
 
         .glass-spec {
           position: absolute; inset: 0; pointer-events: none;
