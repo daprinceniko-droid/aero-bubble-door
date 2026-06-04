@@ -638,9 +638,11 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
             })}
           </div>
 
-          <button className="gta-arrow" aria-label="Next" onClick={() => go(1)} style={{ position: "absolute", right: "3%" }}>
-            ›
-          </button>
+          {showContinue && (
+            <button className="gta-arrow" aria-label="Next" onClick={() => go(1)} style={{ position: "absolute", right: "3%" }}>
+              ›
+            </button>
+          )}
         </div>
 
         <div
