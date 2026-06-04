@@ -45,7 +45,10 @@ const projects: Project[] = [
 ];
 
 const cloister = `'Cloister Black', 'UnifrakturCook', 'Blackletter', serif`;
+const pricedown = `'Pricedown', 'Pricedown Bl', Impact, 'Arial Black', sans-serif`;
+const futura = `'Futura LT', 'Futura', 'Futura PT', 'Jost', 'Trebuchet MS', sans-serif`;
 const SA_CURSOR = `url('/cursors/sa-pistol-sm.png') 2 2, auto`;
+
 
 // Layout: a strip of quadrilateral shards.
 // `cuts` are x-positions (% of strip width) for each vertical cut.
