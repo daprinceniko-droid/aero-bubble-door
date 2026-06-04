@@ -645,15 +645,18 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
             textAlign: "center", zIndex: 10,
           }}
         >
-          <div className="gta-title" style={{ fontSize: 52 }}>{project.title}</div>
+          <div className="gta-title gta-project-title" style={{ fontSize: 52 }}>{project.title}</div>
           <div
+            className="gta-subtitle"
             style={{
               marginTop: 6, fontSize: 22, letterSpacing: "0.1em",
               color: "#f5e9c8",
+              textTransform: "uppercase",
             }}
           >
             {project.tagline}
           </div>
+
         </div>
 
         <div style={{ position: "absolute", bottom: 28, left: 0, right: 0, display: "flex", justifyContent: "center", zIndex: 10 }}>
