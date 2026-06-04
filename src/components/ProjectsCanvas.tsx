@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Aquarium } from "./Aquarium";
 import eventMarketingGif from "@/assets/event-marketing.gif.asset.json";
 import signifyVisualizerGif from "@/assets/signify-visualizer.gif.asset.json";
+import shortFormContentGif from "@/assets/short-form-content.gif.asset.json";
 
 
 type Project = {
