@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Aquarium } from "./Aquarium";
+import eventMarketingGif from "@/assets/event-marketing.gif.asset.json";
+
 
 type Project = {
   title: string;
@@ -16,11 +18,12 @@ const projects: Project[] = [
     gif: "/monster-teen.gif",
   },
   {
-    title: "Side Quest",
-    tagline: "Detour worth taking",
-    image: "https://images.unsplash.com/photo-1542435503-956c469947f6?w=1600",
-    gif: "https://media.giphy.com/media/l0HlNQ03J5JxX6lva/giphy.gif",
+    title: "Event Marketing",
+    tagline: "Live activations that hit",
+    image: eventMarketingGif.url,
+    gif: eventMarketingGif.url,
   },
+
   {
     title: "Night Drive",
     tagline: "Neon, asphalt, infinity",
@@ -42,7 +45,10 @@ const projects: Project[] = [
 ];
 
 const cloister = `'Cloister Black', 'UnifrakturCook', 'Blackletter', serif`;
+const pricedown = `'Pricedown', 'Pricedown Bl', Impact, 'Arial Black', sans-serif`;
+const futura = `'Futura LT', 'Futura', 'Futura PT', 'Jost', 'Trebuchet MS', sans-serif`;
 const SA_CURSOR = `url('/cursors/sa-pistol-sm.png') 2 2, auto`;
+
 
 // Layout: a strip of quadrilateral shards.
 // `cuts` are x-positions (% of strip width) for each vertical cut.
@@ -276,6 +282,8 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&family=UnifrakturMaguntia&display=swap');
+        @import url('https://fonts.cdnfonts.com/css/pricedown');
+        @import url('https://fonts.cdnfonts.com/css/futura-lt');
         @font-face {
           font-family: 'Cloister Black';
           src: local('Cloister Black'), local('CloisterBlack');
@@ -285,6 +293,10 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
           font-family: ${cloister} !important;
           cursor: ${SA_CURSOR};
         }
+        .gta-root .gta-title-projects { font-family: ${pricedown} !important; }
+        .gta-root .gta-project-title { font-family: ${cloister} !important; }
+        .gta-root .gta-subtitle { font-family: ${futura} !important; font-weight: 700; }
+
         button, a, [role="button"] { cursor: ${SA_CURSOR} !important; }
 
         @keyframes grain {
@@ -496,16 +508,18 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
         <div className="gta-grain" style={{ position: "absolute", inset: 0 }} />
 
         <div
-          className="gta-title gta-title-block"
+          className="gta-title gta-title-block gta-title-projects"
           style={{
             position: "absolute",
             top: 24, left: 0, right: 0,
-            fontSize: 88, zIndex: 10, textAlign: "center",
+            fontSize: 120, zIndex: 10, textAlign: "center",
             textTransform: "uppercase",
+            letterSpacing: "0.04em",
           }}
         >
           PROJECTS
         </div>
+
 
         <div
           style={{
@@ -631,15 +645,18 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
             textAlign: "center", zIndex: 10,
           }}
         >
-          <div className="gta-title" style={{ fontSize: 52 }}>{project.title}</div>
+          <div className="gta-title gta-project-title" style={{ fontSize: 52 }}>{project.title}</div>
           <div
+            className="gta-subtitle"
             style={{
               marginTop: 6, fontSize: 22, letterSpacing: "0.1em",
               color: "#f5e9c8",
+              textTransform: "uppercase",
             }}
           >
             {project.tagline}
           </div>
+
         </div>
 
         <div style={{ position: "absolute", bottom: 28, left: 0, right: 0, display: "flex", justifyContent: "center", zIndex: 10 }}>
