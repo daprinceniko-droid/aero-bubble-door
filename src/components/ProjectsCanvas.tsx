@@ -282,6 +282,8 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&family=UnifrakturMaguntia&display=swap');
+        @import url('https://fonts.cdnfonts.com/css/pricedown');
+        @import url('https://fonts.cdnfonts.com/css/futura-lt');
         @font-face {
           font-family: 'Cloister Black';
           src: local('Cloister Black'), local('CloisterBlack');
@@ -291,6 +293,10 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
           font-family: ${cloister} !important;
           cursor: ${SA_CURSOR};
         }
+        .gta-root .gta-title-projects { font-family: ${pricedown} !important; }
+        .gta-root .gta-project-title { font-family: ${cloister} !important; }
+        .gta-root .gta-subtitle { font-family: ${futura} !important; font-weight: 700; }
+
         button, a, [role="button"] { cursor: ${SA_CURSOR} !important; }
 
         @keyframes grain {
