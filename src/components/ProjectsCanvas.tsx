@@ -530,9 +530,11 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
             zIndex: 5,
           }}
         >
-          <button className="gta-arrow" aria-label="Previous" onClick={() => go(-1)} style={{ position: "absolute", left: "3%" }}>
-            ‹
-          </button>
+          {showContinue && (
+            <button className="gta-arrow" aria-label="Previous" onClick={() => go(-1)} style={{ position: "absolute", left: "3%" }}>
+              ‹
+            </button>
+          )}
 
           <div
             key={index}
