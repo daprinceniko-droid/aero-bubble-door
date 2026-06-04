@@ -18,11 +18,12 @@ const projects: Project[] = [
     gif: "/monster-teen.gif",
   },
   {
-    title: "Side Quest",
-    tagline: "Detour worth taking",
-    image: "https://images.unsplash.com/photo-1542435503-956c469947f6?w=1600",
-    gif: "https://media.giphy.com/media/l0HlNQ03J5JxX6lva/giphy.gif",
+    title: "Event Marketing",
+    tagline: "Live activations that hit",
+    image: eventMarketingGif.url,
+    gif: eventMarketingGif.url,
   },
+
   {
     title: "Night Drive",
     tagline: "Neon, asphalt, infinity",
