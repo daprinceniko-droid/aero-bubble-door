@@ -575,7 +575,7 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
         }
       `}</style>
 
-      <div className="gta-root" style={{ position: "absolute", inset: 0 }}>
+      <div className="gta-root fisheye-stage" style={{ position: "absolute", inset: 0 }}>
         <div className="gta-grain" style={{ position: "absolute", inset: 0 }} />
 
         <div
