@@ -508,16 +508,18 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
         <div className="gta-grain" style={{ position: "absolute", inset: 0 }} />
 
         <div
-          className="gta-title gta-title-block"
+          className="gta-title gta-title-block gta-title-projects"
           style={{
             position: "absolute",
             top: 24, left: 0, right: 0,
-            fontSize: 88, zIndex: 10, textAlign: "center",
+            fontSize: 120, zIndex: 10, textAlign: "center",
             textTransform: "uppercase",
+            letterSpacing: "0.04em",
           }}
         >
           PROJECTS
         </div>
+
 
         <div
           style={{
