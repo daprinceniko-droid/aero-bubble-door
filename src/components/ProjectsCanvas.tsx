@@ -402,19 +402,7 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
           mix-blend-mode: screen;
           border-radius: inherit;
         }
-        .fisheye-stage {
-          position: absolute; inset: 0;
-          transform: perspective(900px) translateZ(0) scale(1.05);
-          transform-origin: center center;
-        }
-        .fisheye-stage::after {
-          content: "";
-          position: absolute; inset: -2%;
-          pointer-events: none;
-          background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.55) 95%);
-          z-index: 9996;
-          border-radius: 8% / 12%;
-        }
+        .fisheye-stage { position: absolute; inset: 0; }
 
 
         .glass-spec {
