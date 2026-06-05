@@ -583,38 +583,6 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
         }
       `}</style>
 
-      <svg style={{ position: "absolute", width: 0, height: 0 }} aria-hidden="true">
-        <filter id="fisheye-distort" x="-5%" y="-5%" width="110%" height="110%">
-          <feImage
-            href={`data:image/svg+xml;utf8,${encodeURIComponent(
-              `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'>
-                <defs>
-                  <linearGradient id='hg' x1='0' y1='0' x2='1' y2='0'>
-                    <stop offset='0%' stop-color='rgb(255,0,0)'/>
-                    <stop offset='50%' stop-color='rgb(128,0,0)'/>
-                    <stop offset='100%' stop-color='rgb(0,0,0)'/>
-                  </linearGradient>
-                  <linearGradient id='vg' x1='0' y1='0' x2='0' y2='1'>
-                    <stop offset='0%' stop-color='rgb(0,255,0)'/>
-                    <stop offset='50%' stop-color='rgb(0,128,0)'/>
-                    <stop offset='100%' stop-color='rgb(0,0,0)'/>
-                  </linearGradient>
-                  <radialGradient id='rg' cx='50%' cy='50%' r='65%'>
-                    <stop offset='0%' stop-color='rgb(0,0,0)' stop-opacity='1'/>
-                    <stop offset='100%' stop-color='rgb(0,0,0)' stop-opacity='0'/>
-                  </radialGradient>
-                </defs>
-                <rect width='400' height='400' fill='rgb(0,0,0)'/>
-                <rect width='400' height='400' fill='url(#hg)'/>
-                <rect width='400' height='400' fill='url(#vg)' style='mix-blend-mode:screen'/>
-                <rect width='400' height='400' fill='url(#rg)' style='mix-blend-mode:multiply'/>
-              </svg>`
-            )}`}
-            x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" result="map"
-          />
-          <feDisplacementMap in="SourceGraphic" in2="map" scale="70" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-      </svg>
       <div className="gta-root fisheye-stage" style={{ position: "absolute", inset: 0 }}>
         <div className="gta-grain" style={{ position: "absolute", inset: 0 }} />
 
