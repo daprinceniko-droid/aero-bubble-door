@@ -323,8 +323,8 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
         }
         .gta-stage { filter: contrast(1.02); transition: filter 400ms ease; }
         .gta-stage.is-ready { filter: contrast(1); }
-        .gta-stage .shard-gif { opacity: 1; }
-        .gta-stage .shard-img { opacity: 0; }
+        .gta-stage.is-ready .shard-gif { opacity: 1; }
+        .gta-stage.is-ready .shard-img { opacity: 0; }
 
         .gta-shard {
           position: relative;
