@@ -321,10 +321,10 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
           0% { opacity: 0; transform: translate(var(--tx-from), var(--ty)) rotate(var(--rot-from)); }
           100% { opacity: 1; transform: translate(0, var(--ty)) rotate(var(--rot)); }
         }
-        .gta-stage { filter: grayscale(1) contrast(1.05); transition: filter 400ms ease; }
-        .gta-stage.is-ready { filter: grayscale(0) contrast(1); }
-        .gta-stage.is-ready .shard-gif { opacity: 1; }
-        .gta-stage.is-ready .shard-img { opacity: 0; }
+        .gta-stage { filter: contrast(1.02); transition: filter 400ms ease; }
+        .gta-stage.is-ready { filter: contrast(1); }
+        .gta-stage .shard-gif { opacity: 1; }
+        .gta-stage .shard-img { opacity: 0; }
 
         .gta-shard {
           position: relative;
