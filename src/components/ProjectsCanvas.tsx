@@ -577,6 +577,33 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
         }
       `}</style>
 
+      <svg style={{ position: "absolute", width: 0, height: 0 }} aria-hidden="true">
+        <filter id="fisheye-distort" x="-10%" y="-10%" width="120%" height="120%">
+          <feImage
+            href={`data:image/svg+xml;utf8,${encodeURIComponent(
+              `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'>
+                <defs>
+                  <radialGradient id='rx' cx='50%' cy='50%' r='50%'>
+                    <stop offset='0%' stop-color='rgb(128,128,0)'/>
+                    <stop offset='100%' stop-color='rgb(255,128,0)'/>
+                  </radialGradient>
+                  <radialGradient id='ry' cx='50%' cy='50%' r='50%'>
+                    <stop offset='0%' stop-color='rgb(0,128,0)'/>
+                    <stop offset='100%' stop-color='rgb(0,255,0)'/>
+                  </radialGradient>
+                </defs>
+                <rect width='400' height='400' fill='rgb(128,128,0)'/>
+                <g style='mix-blend-mode:screen'>
+                  <rect width='400' height='400' fill='url(#rx)'/>
+                  <rect width='400' height='400' fill='url(#ry)' style='mix-blend-mode:screen'/>
+                </g>
+              </svg>`
+            )}`}
+            x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" result="map"
+          />
+          <feDisplacementMap in="SourceGraphic" in2="map" scale="55" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </svg>
       <div className="gta-root fisheye-stage" style={{ position: "absolute", inset: 0 }}>
         <div className="gta-grain" style={{ position: "absolute", inset: 0 }} />
 
