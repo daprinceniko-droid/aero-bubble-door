@@ -404,8 +404,10 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
         }
         .fisheye-stage {
           position: absolute; inset: 0;
-          transform: perspective(900px) scale(1.04);
+          transform: perspective(520px) translateZ(0) scale(1.06);
           transform-origin: center center;
+          filter: url(#fisheye-distort);
+          will-change: transform, filter;
         }
 
 
