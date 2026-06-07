@@ -69,6 +69,7 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
   const [dragging, setDragging] = useState<string | null>(null);
   const [inspected, setInspected] = useState<Fish | null>(null);
   const [hoverDrop, setHoverDrop] = useState(false);
+  const [gulping, setGulping] = useState<Record<string, number>>({});
   const [pellets, setPellets] = useState<Pellet[]>([]);
   const pelletsRef = useRef<Pellet[]>([]);
   const pelletId = useRef(0);
