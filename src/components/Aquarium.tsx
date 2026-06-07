@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import videoEditorFish from "@/assets/video-editor-fish.webp.asset.json";
+
 
 type Fish = {
   id: string;
