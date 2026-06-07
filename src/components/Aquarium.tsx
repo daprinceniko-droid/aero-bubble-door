@@ -475,7 +475,7 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
                   onMouseDown={(e) => startDrag(e, f.id)}
                 >
                   {f.id === "puff" ? (
-                    <img src={videoEditorFish.url} alt={f.name} style={{ width: 64, height: 64, objectFit: "contain", pointerEvents: "none" }} draggable={false} />
+                    <img src={videoEditorFish.url} alt={f.name} style={{ width: 70, height: 70, objectFit: "contain", pointerEvents: "none" }} draggable={false} />
                   ) : f.emoji}
 
                 </div>
