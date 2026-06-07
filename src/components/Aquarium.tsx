@@ -69,6 +69,7 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
   const [dragging, setDragging] = useState<string | null>(null);
   const [inspected, setInspected] = useState<Fish | null>(null);
   const [hoverDrop, setHoverDrop] = useState(false);
+  const [gulping, setGulping] = useState<Record<string, number>>({});
   const [pellets, setPellets] = useState<Pellet[]>([]);
   const pelletsRef = useRef<Pellet[]>([]);
   const pelletId = useRef(0);
@@ -120,6 +121,15 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
             // eat
             if (dist < 3) {
               setPellets((arr) => arr.filter((q) => q.id !== best.id));
+              setGulping((g) => ({ ...g, [k]: (g[k] || 0) + 1 }));
+              setTimeout(() => {
+                setGulping((g) => {
+                  const n = { ...g };
+                  n[k] = Math.max(0, (n[k] || 1) - 1);
+                  if (!n[k]) delete n[k];
+                  return n;
+                });
+              }, 450);
             }
           } else {
             vy += (Math.random() - 0.5) * 0.005;
@@ -268,7 +278,7 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
         }
         .aq-fish {
           position: absolute;
-          font-size: 54px;
+          font-size: 60px;
           user-select: none;
           cursor: grab;
           transform: translate(-50%, -50%);
@@ -281,6 +291,13 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
           animation: wiggle 0.35s ease-in-out infinite;
           filter: drop-shadow(0 6px 14px rgba(0,0,0,0.8)) brightness(1.1);
         }
+        @keyframes gulp {
+          0%   { transform: translate(-50%, -50%) scaleX(var(--flip,1)) scale(1); }
+          25%  { transform: translate(-50%, -50%) scaleX(var(--flip,1)) scale(1.55) rotate(-6deg); }
+          55%  { transform: translate(-50%, -50%) scaleX(var(--flip,1)) scale(1.45) rotate(6deg); }
+          100% { transform: translate(-50%, -50%) scaleX(var(--flip,1)) scale(1); }
+        }
+        .aq-fish.gulping { animation: gulp 0.45s ease-in-out; }
         .inspector-glow { animation: pinkGlow 1s ease-in-out infinite !important; }
         .y2k-title {
           font-family: 'Audiowide', sans-serif;
@@ -458,26 +475,29 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
                   onMouseDown={(e) => startDrag(e, f.id)}
                 >
                   {f.id === "puff" ? (
-                    <img src={videoEditorFish.url} alt={f.name} style={{ width: 64, height: 64, objectFit: "contain", pointerEvents: "none" }} draggable={false} />
+                    <img src={videoEditorFish.url} alt={f.name} style={{ width: 70, height: 70, objectFit: "contain", pointerEvents: "none" }} draggable={false} />
                   ) : f.emoji}
 
                 </div>
               );
             }
+            const isGulping = !!gulping[f.id];
+            const flip = p.vx > 0 ? -1 : 1;
             return (
               <div
                 key={f.id}
-                className="aq-fish"
+                className={`aq-fish${isGulping ? " gulping" : ""}`}
                 style={{
                   left: `${p.x}%`,
                   top: `${p.y}%`,
-                  transform: `translate(-50%, -50%) scaleX(${p.vx > 0 ? -1 : 1})`,
+                  transform: `translate(-50%, -50%) scaleX(${flip})`,
+                  ["--flip" as any]: flip,
                 }}
                 onMouseDown={(e) => startDrag(e, f.id)}
                 title={`Drag ${f.name} to inspect`}
               >
                 {f.id === "puff" ? (
-                  <img src={videoEditorFish.url} alt={f.name} style={{ width: 64, height: 64, objectFit: "contain", pointerEvents: "none" }} draggable={false} />
+                  <img src={videoEditorFish.url} alt={f.name} style={{ width: 70, height: 70, objectFit: "contain", pointerEvents: "none" }} draggable={false} />
                 ) : f.emoji}
 
               </div>
@@ -519,7 +539,11 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
             </>
           ) : (
             <div style={{ width: "100%", animation: "popIn 0.25s ease-out" }}>
-              <div style={{ fontSize: 80, marginBottom: 8, filter: "drop-shadow(0 0 14px #ff2da5)" }}>{inspected.emoji}</div>
+              <div style={{ fontSize: 80, marginBottom: 8, filter: "drop-shadow(0 0 14px #ff2da5)", display: "flex", justifyContent: "center" }}>
+                {inspected.id === "puff" ? (
+                  <img src={videoEditorFish.url} alt={inspected.name} style={{ width: 96, height: 96, objectFit: "contain" }} draggable={false} />
+                ) : inspected.emoji}
+              </div>
               <h3
                 style={{
                   fontFamily: "'Audiowide', sans-serif",
