@@ -481,20 +481,23 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
                 </div>
               );
             }
+            const isGulping = !!gulping[f.id];
+            const flip = p.vx > 0 ? -1 : 1;
             return (
               <div
                 key={f.id}
-                className="aq-fish"
+                className={`aq-fish${isGulping ? " gulping" : ""}`}
                 style={{
                   left: `${p.x}%`,
                   top: `${p.y}%`,
-                  transform: `translate(-50%, -50%) scaleX(${p.vx > 0 ? -1 : 1})`,
+                  transform: `translate(-50%, -50%) scaleX(${flip})`,
+                  ["--flip" as any]: flip,
                 }}
                 onMouseDown={(e) => startDrag(e, f.id)}
                 title={`Drag ${f.name} to inspect`}
               >
                 {f.id === "puff" ? (
-                  <img src={videoEditorFish.url} alt={f.name} style={{ width: 64, height: 64, objectFit: "contain", pointerEvents: "none" }} draggable={false} />
+                  <img src={videoEditorFish.url} alt={f.name} style={{ width: 70, height: 70, objectFit: "contain", pointerEvents: "none" }} draggable={false} />
                 ) : f.emoji}
 
               </div>
