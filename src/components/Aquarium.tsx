@@ -129,7 +129,7 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
                   if (!n[k]) delete n[k];
                   return n;
                 });
-              }, 450);
+              }, 220);
             }
           } else {
             vy += (Math.random() - 0.5) * 0.005;
