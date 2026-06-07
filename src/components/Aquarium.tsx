@@ -539,7 +539,11 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
             </>
           ) : (
             <div style={{ width: "100%", animation: "popIn 0.25s ease-out" }}>
-              <div style={{ fontSize: 80, marginBottom: 8, filter: "drop-shadow(0 0 14px #ff2da5)" }}>{inspected.emoji}</div>
+              <div style={{ fontSize: 80, marginBottom: 8, filter: "drop-shadow(0 0 14px #ff2da5)", display: "flex", justifyContent: "center" }}>
+                {inspected.id === "puff" ? (
+                  <img src={videoEditorFish.url} alt={inspected.name} style={{ width: 96, height: 96, objectFit: "contain" }} draggable={false} />
+                ) : inspected.emoji}
+              </div>
               <h3
                 style={{
                   fontFamily: "'Audiowide', sans-serif",
