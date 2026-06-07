@@ -457,7 +457,10 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
                   }}
                   onMouseDown={(e) => startDrag(e, f.id)}
                 >
-                  {f.emoji}
+                  {f.id === "puff" ? (
+                    <img src={videoEditorFish.url} alt={f.name} style={{ width: 64, height: 64, objectFit: "contain", pointerEvents: "none" }} draggable={false} />
+                  ) : f.emoji}
+
                 </div>
               );
             }
@@ -473,7 +476,10 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
                 onMouseDown={(e) => startDrag(e, f.id)}
                 title={`Drag ${f.name} to inspect`}
               >
-                {f.emoji}
+                {f.id === "puff" ? (
+                  <img src={videoEditorFish.url} alt={f.name} style={{ width: 64, height: 64, objectFit: "contain", pointerEvents: "none" }} draggable={false} />
+                ) : f.emoji}
+
               </div>
             );
           })}
