@@ -3,6 +3,7 @@ import { Aquarium } from "./Aquarium";
 import eventMarketingGif from "@/assets/event-marketing.gif.asset.json";
 import signifyVisualizerGif from "@/assets/signify-visualizer.gif.asset.json";
 import shortFormContentGif from "@/assets/short-form-content.gif.asset.json";
+import webDevBrandingGif from "@/assets/web-dev-branding.gif.asset.json";
 
 
 type Project = {
@@ -39,10 +40,10 @@ const projects: Project[] = [
     gif: shortFormContentGif.url,
   },
   {
-    title: "Last Ride",
-    tagline: "Final cut, no encores",
-    image: "https://images.unsplash.com/photo-1494797262163-102fae527c62?w=1600",
-    gif: "https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif",
+    title: "Web Dev & Branding",
+    tagline: "Handcrafted NFT website and branding",
+    image: webDevBrandingGif.url,
+    gif: webDevBrandingGif.url,
   },
 ];
 
@@ -363,24 +364,39 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
         .gta-shard .glass-spec { transition: transform 350ms ease, background 350ms ease, opacity 350ms ease; }
         .gta-shard .glass-edge { transition: box-shadow 350ms ease; }
 
-        /* CRT screen effect (static, GPU-cheap) */
+        /* CRT screen effect (static, GPU-cheap) — RGB sub-pixel grid + scanlines + vignette */
         .crt-fx {
           position: fixed; inset: 0; pointer-events: none;
           z-index: 9997;
           box-shadow:
-            inset 0 0 120px 30px rgba(0,0,0,0.7),
-            inset 0 0 260px 80px rgba(0,0,0,0.35);
+            inset 0 0 120px 30px rgba(0,0,0,0.55),
+            inset 0 0 260px 80px rgba(0,0,0,0.3);
+          background-image:
+            repeating-linear-gradient(
+              to right,
+              rgba(255, 0, 0, 0.18) 0px,
+              rgba(255, 0, 0, 0.18) 1px,
+              rgba(0, 255, 0, 0.18) 1px,
+              rgba(0, 255, 0, 0.18) 2px,
+              rgba(0, 0, 255, 0.18) 2px,
+              rgba(0, 0, 255, 0.18) 3px
+            );
+          mix-blend-mode: screen;
         }
         .crt-fx::before {
           content: ""; position: absolute; inset: 0;
           background: repeating-linear-gradient(
             to bottom,
-            rgba(0,0,0,0.22) 0px,
-            rgba(0,0,0,0.22) 1px,
+            rgba(0,0,0,0.35) 0px,
+            rgba(0,0,0,0.35) 1px,
             transparent 1px,
             transparent 3px
           );
-          opacity: 0.5;
+          opacity: 0.55;
+        }
+        .crt-fx::after {
+          content: ""; position: absolute; inset: 0;
+          background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.55) 100%);
         }
         .fisheye-stage { position: absolute; inset: 0; }
 
