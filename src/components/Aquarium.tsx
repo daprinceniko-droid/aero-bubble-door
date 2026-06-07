@@ -278,7 +278,7 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
         }
         .aq-fish {
           position: absolute;
-          font-size: 54px;
+          font-size: 60px;
           user-select: none;
           cursor: grab;
           transform: translate(-50%, -50%);
@@ -291,6 +291,13 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
           animation: wiggle 0.35s ease-in-out infinite;
           filter: drop-shadow(0 6px 14px rgba(0,0,0,0.8)) brightness(1.1);
         }
+        @keyframes gulp {
+          0%   { transform: translate(-50%, -50%) scaleX(var(--flip,1)) scale(1); }
+          25%  { transform: translate(-50%, -50%) scaleX(var(--flip,1)) scale(1.55) rotate(-6deg); }
+          55%  { transform: translate(-50%, -50%) scaleX(var(--flip,1)) scale(1.45) rotate(6deg); }
+          100% { transform: translate(-50%, -50%) scaleX(var(--flip,1)) scale(1); }
+        }
+        .aq-fish.gulping { animation: gulp 0.45s ease-in-out; }
         .inspector-glow { animation: pinkGlow 1s ease-in-out infinite !important; }
         .y2k-title {
           font-family: 'Audiowide', sans-serif;
