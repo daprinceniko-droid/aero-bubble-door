@@ -121,6 +121,15 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
             // eat
             if (dist < 3) {
               setPellets((arr) => arr.filter((q) => q.id !== best.id));
+              setGulping((g) => ({ ...g, [k]: (g[k] || 0) + 1 }));
+              setTimeout(() => {
+                setGulping((g) => {
+                  const n = { ...g };
+                  n[k] = Math.max(0, (n[k] || 1) - 1);
+                  if (!n[k]) delete n[k];
+                  return n;
+                });
+              }, 450);
             }
           } else {
             vy += (Math.random() - 0.5) * 0.005;
