@@ -297,7 +297,7 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
           55%  { transform: translate(-50%, -50%) scaleX(var(--flip,1)) scale(1.45) rotate(6deg); }
           100% { transform: translate(-50%, -50%) scaleX(var(--flip,1)) scale(1); }
         }
-        .aq-fish.gulping { animation: gulp 0.45s ease-in-out; }
+        .aq-fish.gulping { animation: gulp 0.22s ease-in-out; }
         .inspector-glow { animation: pinkGlow 1s ease-in-out infinite !important; }
         .y2k-title {
           font-family: 'Audiowide', sans-serif;
