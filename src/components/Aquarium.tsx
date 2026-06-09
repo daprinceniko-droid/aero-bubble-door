@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import videoEditorFish from "@/assets/video-editor-fish.webp.asset.json";
+import fishIntern from "@/assets/fish-glitter.png.asset.json";
+import fishEvent from "@/assets/fish-takeover.png.asset.json";
+import fishVideo from "@/assets/fish-r.png.asset.json";
+import fishCoord from "@/assets/fish-signify.png.asset.json";
 
 
 type Fish = {
   id: string;
   name: string;
-  emoji: string;
+  image: string;
   color: string;
   description: string;
 };
@@ -14,7 +17,7 @@ const FISHES: Fish[] = [
   {
     id: "blub",
     name: "Marketing Intern",
-    emoji: "🐠",
+    image: fishIntern.url,
     color: "#ff4fb0",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. The Marketing Intern glides through coral reefs with regal poise, nibbling on plankton and judging passersby with quiet dignity.",
@@ -22,7 +25,7 @@ const FISHES: Fish[] = [
   {
     id: "gilly",
     name: "Event Organizer",
-    emoji: "🐟",
+    image: fishEvent.url,
     color: "#ff8fd4",
     description:
       "Vivamus lacinia odio vitae vestibulum. The Event Organizer is the fastest fin in the tank, known for darting between bubbles and stealing flakes before anyone else notices.",
@@ -30,7 +33,7 @@ const FISHES: Fish[] = [
   {
     id: "puff",
     name: "Video Editor",
-    emoji: "🐡",
+    image: fishVideo.url,
     color: "#ffb6e6",
     description:
       "Sed do eiusmod tempor incididunt ut labore. The Video Editor tells tall tales of deep-sea adventures, though it has never actually left the aquarium.",
@@ -38,7 +41,7 @@ const FISHES: Fish[] = [
   {
     id: "coord",
     name: "Marketing Coordinator",
-    emoji: "🐬",
+    image: fishCoord.url,
     color: "#ffa3d8",
     description:
       "Ut enim ad minim veniam, quis nostrud exercitation. The Marketing Coordinator orchestrates the entire reef, keeping every fin in sync and every bubble on schedule.",
