@@ -464,6 +464,7 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
           {FISHES.map((f) => {
             const p = positions[f.id];
             const isDragging = dragging === f.id;
+            if (inspected?.id === f.id) return null;
             if (isDragging) {
               return (
                 <div
@@ -477,10 +478,7 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
                   }}
                   onMouseDown={(e) => startDrag(e, f.id)}
                 >
-                  {f.id === "puff" ? (
-                    <img src={videoEditorFish.url} alt={f.name} style={{ width: 70, height: 70, objectFit: "contain", pointerEvents: "none" }} draggable={false} />
-                  ) : f.emoji}
-
+                  <img src={f.image} alt={f.name} style={{ width: 110, height: "auto", objectFit: "contain", pointerEvents: "none" }} draggable={false} />
                 </div>
               );
             }
@@ -499,10 +497,7 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
                 onMouseDown={(e) => startDrag(e, f.id)}
                 title={`Drag ${f.name} to inspect`}
               >
-                {f.id === "puff" ? (
-                  <img src={videoEditorFish.url} alt={f.name} style={{ width: 70, height: 70, objectFit: "contain", pointerEvents: "none" }} draggable={false} />
-                ) : f.emoji}
-
+                <img src={f.image} alt={f.name} style={{ width: 110, height: "auto", objectFit: "contain", pointerEvents: "none" }} draggable={false} />
               </div>
             );
           })}
