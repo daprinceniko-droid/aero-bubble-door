@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import videoEditorFish from "@/assets/video-editor-fish.webp.asset.json";
+import fishIntern from "@/assets/fish-glitter.png.asset.json";
+import fishEvent from "@/assets/fish-takeover.png.asset.json";
+import fishVideo from "@/assets/fish-r.png.asset.json";
+import fishCoord from "@/assets/fish-signify.png.asset.json";
 
 
 type Fish = {
   id: string;
   name: string;
-  emoji: string;
+  image: string;
   color: string;
   description: string;
 };
@@ -14,7 +17,7 @@ const FISHES: Fish[] = [
   {
     id: "blub",
     name: "Marketing Intern",
-    emoji: "🐠",
+    image: fishIntern.url,
     color: "#ff4fb0",
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. The Marketing Intern glides through coral reefs with regal poise, nibbling on plankton and judging passersby with quiet dignity.",
@@ -22,7 +25,7 @@ const FISHES: Fish[] = [
   {
     id: "gilly",
     name: "Event Organizer",
-    emoji: "🐟",
+    image: fishEvent.url,
     color: "#ff8fd4",
     description:
       "Vivamus lacinia odio vitae vestibulum. The Event Organizer is the fastest fin in the tank, known for darting between bubbles and stealing flakes before anyone else notices.",
@@ -30,7 +33,7 @@ const FISHES: Fish[] = [
   {
     id: "puff",
     name: "Video Editor",
-    emoji: "🐡",
+    image: fishVideo.url,
     color: "#ffb6e6",
     description:
       "Sed do eiusmod tempor incididunt ut labore. The Video Editor tells tall tales of deep-sea adventures, though it has never actually left the aquarium.",
@@ -38,7 +41,7 @@ const FISHES: Fish[] = [
   {
     id: "coord",
     name: "Marketing Coordinator",
-    emoji: "🐬",
+    image: fishCoord.url,
     color: "#ffa3d8",
     description:
       "Ut enim ad minim veniam, quis nostrud exercitation. The Marketing Coordinator orchestrates the entire reef, keeping every fin in sync and every bubble on schedule.",
@@ -316,7 +319,6 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
           100% { transform: scale(1); opacity: 1; }
         }
         .feed-btn {
-          position: absolute; top: 0; right: 0;
           font-family: 'Audiowide', sans-serif;
           padding: 8px 22px;
           background: linear-gradient(180deg, #ff2da5, #8a0050);
@@ -330,7 +332,6 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
         }
         .feed-btn:hover { filter: brightness(1.15); }
         .back-btn {
-          position: absolute; top: 0; right: 150px;
           font-family: 'Audiowide', sans-serif;
           padding: 8px 16px;
           background: linear-gradient(180deg, #ff2da5, #8a0050);
@@ -385,10 +386,12 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
 
       {/* Aquarium - left */}
       <div style={{ flex: 1, padding: 32, display: "flex", flexDirection: "column", position: "relative", zIndex: 2 }}>
-        <div style={{ position: "relative" }}>
-          <h2 className="y2k-title">·:*¨ Experiences ¨*:·</h2>
-          {onBack && <button className="back-btn" onClick={onBack} aria-label="Back">← BACK</button>}
-          <button className="feed-btn" onClick={feed}>★ FEED ★</button>
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
+          <h2 className="y2k-title" style={{ margin: 0 }}>·:*¨ Experiences ¨*:·</h2>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            {onBack && <button className="back-btn" onClick={onBack} aria-label="Back">← BACK</button>}
+            <button className="feed-btn" onClick={feed}>★ FEED ★</button>
+          </div>
         </div>
         <div
           ref={tankRef}
@@ -461,6 +464,7 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
           {FISHES.map((f) => {
             const p = positions[f.id];
             const isDragging = dragging === f.id;
+            if (inspected?.id === f.id) return null;
             if (isDragging) {
               return (
                 <div
@@ -474,10 +478,7 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
                   }}
                   onMouseDown={(e) => startDrag(e, f.id)}
                 >
-                  {f.id === "puff" ? (
-                    <img src={videoEditorFish.url} alt={f.name} style={{ width: 70, height: 70, objectFit: "contain", pointerEvents: "none" }} draggable={false} />
-                  ) : f.emoji}
-
+                  <img src={f.image} alt={f.name} style={{ width: 110, height: "auto", objectFit: "contain", pointerEvents: "none" }} draggable={false} />
                 </div>
               );
             }
@@ -496,10 +497,7 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
                 onMouseDown={(e) => startDrag(e, f.id)}
                 title={`Drag ${f.name} to inspect`}
               >
-                {f.id === "puff" ? (
-                  <img src={videoEditorFish.url} alt={f.name} style={{ width: 70, height: 70, objectFit: "contain", pointerEvents: "none" }} draggable={false} />
-                ) : f.emoji}
-
+                <img src={f.image} alt={f.name} style={{ width: 110, height: "auto", objectFit: "contain", pointerEvents: "none" }} draggable={false} />
               </div>
             );
           })}
@@ -539,10 +537,8 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
             </>
           ) : (
             <div style={{ width: "100%", animation: "popIn 0.25s ease-out" }}>
-              <div style={{ fontSize: 80, marginBottom: 8, filter: "drop-shadow(0 0 14px #ff2da5)", display: "flex", justifyContent: "center" }}>
-                {inspected.id === "puff" ? (
-                  <img src={videoEditorFish.url} alt={inspected.name} style={{ width: 96, height: 96, objectFit: "contain" }} draggable={false} />
-                ) : inspected.emoji}
+            <div style={{ marginBottom: 8, filter: "drop-shadow(0 0 14px #ff2da5)", display: "flex", justifyContent: "center" }}>
+                <img src={inspected.image} alt={inspected.name} style={{ width: 160, height: "auto", objectFit: "contain" }} draggable={false} />
               </div>
               <h3
                 style={{
