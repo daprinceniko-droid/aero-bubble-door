@@ -388,10 +388,12 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
 
       {/* Aquarium - left */}
       <div style={{ flex: 1, padding: 32, display: "flex", flexDirection: "column", position: "relative", zIndex: 2 }}>
-        <div style={{ position: "relative" }}>
-          <h2 className="y2k-title">·:*¨ Experiences ¨*:·</h2>
-          {onBack && <button className="back-btn" onClick={onBack} aria-label="Back">← BACK</button>}
-          <button className="feed-btn" onClick={feed}>★ FEED ★</button>
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
+          <h2 className="y2k-title" style={{ margin: 0 }}>·:*¨ Experiences ¨*:·</h2>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            {onBack && <button className="back-btn" onClick={onBack} aria-label="Back">← BACK</button>}
+            <button className="feed-btn" onClick={feed}>★ FEED ★</button>
+          </div>
         </div>
         <div
           ref={tankRef}
