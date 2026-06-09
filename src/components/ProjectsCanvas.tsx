@@ -704,6 +704,27 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
               ›
             </button>
           )}
+          <button
+            aria-label="Skip"
+            onClick={() => setPhase("loading")}
+            style={{
+              position: "absolute", right: "3%", bottom: -56,
+              fontFamily: "'Audiowide', sans-serif",
+              padding: "6px 18px",
+              background: "linear-gradient(180deg, #ff2da5, #8a0050)",
+              color: "#fff",
+              border: "2px solid #ffb6e6",
+              borderRadius: 8,
+              letterSpacing: "0.18em",
+              textShadow: "0 0 6px #fff",
+              boxShadow: "0 0 12px #ff2da5",
+              cursor: "pointer",
+              fontSize: 13,
+              zIndex: 20,
+            }}
+          >
+            SKIP »
+          </button>
         </div>
 
         <div
