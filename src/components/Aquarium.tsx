@@ -319,7 +319,6 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
           100% { transform: scale(1); opacity: 1; }
         }
         .feed-btn {
-          position: absolute; top: 0; right: 0;
           font-family: 'Audiowide', sans-serif;
           padding: 8px 22px;
           background: linear-gradient(180deg, #ff2da5, #8a0050);
@@ -333,7 +332,6 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
         }
         .feed-btn:hover { filter: brightness(1.15); }
         .back-btn {
-          position: absolute; top: 0; right: 150px;
           font-family: 'Audiowide', sans-serif;
           padding: 8px 16px;
           background: linear-gradient(180deg, #ff2da5, #8a0050);
