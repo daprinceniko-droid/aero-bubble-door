@@ -483,7 +483,7 @@ export function Aquarium({ onBack }: { onBack?: () => void } = {}) {
               );
             }
             const isGulping = !!gulping[f.id];
-            const flip = p.vx > 0 ? -1 : 1;
+            const flip = p.vx > 0 ? 1 : -1;
             return (
               <div
                 key={f.id}
