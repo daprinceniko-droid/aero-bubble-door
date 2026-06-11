@@ -708,9 +708,9 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
             aria-label="Skip"
             onClick={() => setPhase("loading")}
             style={{
-              position: "absolute", right: "3%", bottom: -56,
+              position: "absolute", right: "calc(3% + 70px)", bottom: 8,
               fontFamily: "'Audiowide', sans-serif",
-              padding: "6px 18px",
+              padding: "8px 18px",
               background: "linear-gradient(180deg, #ff2da5, #8a0050)",
               color: "#fff",
               border: "2px solid #ffb6e6",
@@ -720,7 +720,7 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
               boxShadow: "0 0 12px #ff2da5",
               cursor: "pointer",
               fontSize: 13,
-              zIndex: 20,
+              zIndex: 30,
             }}
           >
             SKIP »
