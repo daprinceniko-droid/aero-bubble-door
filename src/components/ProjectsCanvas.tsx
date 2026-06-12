@@ -706,25 +706,29 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
           )}
           <button
             aria-label="Skip"
+            title="Skip"
             onClick={() => setPhase("loading")}
             style={{
-              position: "absolute", right: "calc(3% + 70px)", bottom: 8,
+              position: "absolute", left: "calc(3% + 80px)", top: "50%",
+              transform: "translateY(-50%)",
+              width: 36, height: 36, borderRadius: "50%",
               fontFamily: "'Audiowide', sans-serif",
-              padding: "8px 18px",
               background: "linear-gradient(180deg, #ff2da5, #8a0050)",
               color: "#fff",
               border: "2px solid #ffb6e6",
-              borderRadius: 8,
-              letterSpacing: "0.18em",
-              textShadow: "0 0 6px #fff",
-              boxShadow: "0 0 12px #ff2da5",
+              letterSpacing: "0.08em",
+              textShadow: "0 0 4px #fff",
+              boxShadow: "0 0 10px #ff2da5",
               cursor: "pointer",
-              fontSize: 13,
+              fontSize: 9,
               zIndex: 30,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              padding: 0,
             }}
           >
-            SKIP »
+            SKIP
           </button>
+
         </div>
 
         <div
