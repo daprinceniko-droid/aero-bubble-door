@@ -114,7 +114,7 @@ function Index() {
 
         {/* BACK - Y2K grunge placeholder */}
         <div className="flip-face flip-face--back">
-          <Y2KPlaceholder started={flipped} onCanvasFull={() => setCanvasFull(true)} />
+          <Y2KPlaceholder started={flipped} onCanvasFull={(target) => setCanvasFull(target ?? "projects")} />
         </div>
       </div>
 
