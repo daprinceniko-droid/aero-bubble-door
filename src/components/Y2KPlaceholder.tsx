@@ -360,7 +360,6 @@ export function Y2KPlaceholder({ onCanvasFull, started = true }: { onCanvasFull?
           <span className="rc-dossier__granted">Access Granted</span>
         </div>
         </div>
-        </div>
         <div className="rc-door__leaf rc-door__leaf--left" aria-hidden />
         <div className="rc-door__leaf rc-door__leaf--right" aria-hidden />
       </div>
