@@ -37,7 +37,7 @@ function Index() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [flipped, setFlipped] = useState(false);
   const [showFlash, setShowFlash] = useState(false);
-  const [canvasFull, setCanvasFull] = useState(false);
+  const [canvasFull, setCanvasFull] = useState<false | "projects" | "final">(false);
 
   useEffect(() => {
     const v = videoRef.current;
@@ -63,8 +63,7 @@ function Index() {
   };
 
   if (canvasFull) {
-    // Everything from the previous screen has been unmounted to keep things light.
-    return <ProjectsCanvas onBack={() => setCanvasFull(false)} />;
+    return <ProjectsCanvas onBack={() => setCanvasFull(false)} initialPhase={canvasFull} />;
   }
 
   return (
@@ -115,7 +114,7 @@ function Index() {
 
         {/* BACK - Y2K grunge placeholder */}
         <div className="flip-face flip-face--back">
-          <Y2KPlaceholder started={flipped} onCanvasFull={() => setCanvasFull(true)} />
+          <Y2KPlaceholder started={flipped} onCanvasFull={(target) => setCanvasFull(target ?? "projects")} />
         </div>
       </div>
 

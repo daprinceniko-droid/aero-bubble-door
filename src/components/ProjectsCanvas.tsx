@@ -122,7 +122,7 @@ function shardClip(layout: Layout, i: number, gapPct: number): string {
 
 type Spark = { id: number; x: number; y: number };
 
-export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
+export function ProjectsCanvas({ onBack, initialPhase = "projects" }: { onBack?: () => void; initialPhase?: "projects" | "final" } = {}) {
   const [index, setIndex] = useState(0);
   const [dir, setDir] = useState<1 | -1>(1);
   const [hoverActive, setHoverActive] = useState(false);
@@ -130,7 +130,7 @@ export function ProjectsCanvas({ onBack }: { onBack?: () => void } = {}) {
   const [holes, setHoles] = useState<Spark[]>([]);
   const [reachedLast, setReachedLast] = useState(false);
   const [showContinue, setShowContinue] = useState(false);
-  const [phase, setPhase] = useState<"projects" | "fadeOut1" | "loading" | "fadeOut2" | "final">("projects");
+  const [phase, setPhase] = useState<"projects" | "fadeOut1" | "loading" | "fadeOut2" | "final">(initialPhase);
   const [revealed, setRevealed] = useState<boolean[]>([]);
   const [allRevealed, setAllRevealed] = useState(false);
   const [musicOn, setMusicOn] = useState(true);

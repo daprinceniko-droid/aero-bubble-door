@@ -26,7 +26,7 @@ const fmt = (s: number) => {
   return `${m.toString().padStart(2, "0")}:${sec.toString().padStart(2, "0")}`;
 };
 
-export function Y2KPlaceholder({ onCanvasFull, started = true }: { onCanvasFull?: () => void; started?: boolean } = {}) {
+export function Y2KPlaceholder({ onCanvasFull, started = true }: { onCanvasFull?: (target?: "projects" | "final") => void; started?: boolean } = {}) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<any>(null);
   const ytContainerRef = useRef<HTMLDivElement>(null);
@@ -82,6 +82,11 @@ export function Y2KPlaceholder({ onCanvasFull, started = true }: { onCanvasFull?
             if (e.data === YT.PlayerState.PLAYING) {
               setDuration(e.target.getDuration() || 0);
             }
+          },
+          onError: (_e: any) => {
+            // Invalid/unavailable video — skip to next track
+            setPlaying(false);
+            setTrackIdx((i) => (i + 1) % TRACKS.length);
           },
         },
       });
@@ -299,19 +304,22 @@ export function Y2KPlaceholder({ onCanvasFull, started = true }: { onCanvasFull?
         <div className="rc-dossier__subtitle">Operative Dossier · Briefing 01</div>
         <div className="rc-dossier__body">
           <p>
-            <span className="drop">L</span>orem ipsum dolor sit amet, consectetur adipiscing elit.
-            Chaos has erupted throughout the network. As leader of an elite squad of pixel
-            commandos, your mission is to infiltrate, dominate, and ultimately annihilate
-            the boredom. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            <span className="drop">S</span>uppose that you were sitting down at this table.
+            The napkins are in front of you, which napkin would you take? The one on your
+            'left'? Or the one on your 'right'? The one on your left side? Or the one on
+            your right side? Usually you would take the one on your left side. That is
+            'correct' too. But in a larger sense on society, that is wrong.
           </p>
           <p>
-            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-            voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+            Perhaps I could even substitute 'society' with the 'Universe'. The correct
+            answer is that 'It is determined by the one who takes his or her own napkin
+            first.' …Yes? If the first one takes the napkin to their right, then there's
+            no choice but for others to also take the 'right' napkin. The same goes for
+            the left.
           </p>
           <p>
-            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-            deserunt mollit anim id est laborum — they are your weapon.
+            Everyone else will take the napkin to their left, because they have no other
+            option. This is 'society'…
           </p>
         </div>
         <div className="rc-dossier__access">
@@ -326,11 +334,28 @@ export function Y2KPlaceholder({ onCanvasFull, started = true }: { onCanvasFull?
               window.setTimeout(() => setDoorPhase("zoom"), 900);
               window.setTimeout(() => {
                 setDoorPhase("full");
-                onCanvasFull?.();
+                onCanvasFull?.("projects");
               }, 1900);
             }}
           >
-            ▶ Proceed
+            ▶ Projects
+          </button>
+          <button
+            type="button"
+            className="rc-dossier__proceed"
+            onClick={() => {
+              if (doorPhase !== "idle") return;
+              setEasterEgg(false);
+              try { playerRef.current?.stopVideo?.(); } catch { /* noop */ }
+              setDoorPhase("opening");
+              window.setTimeout(() => setDoorPhase("zoom"), 900);
+              window.setTimeout(() => {
+                setDoorPhase("full");
+                onCanvasFull?.("final");
+              }, 1900);
+            }}
+          >
+            ▶ Experience
           </button>
           <span className="rc-dossier__granted">Access Granted</span>
         </div>
