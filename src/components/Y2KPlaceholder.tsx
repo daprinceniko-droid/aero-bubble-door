@@ -83,6 +83,11 @@ export function Y2KPlaceholder({ onCanvasFull, started = true }: { onCanvasFull?
               setDuration(e.target.getDuration() || 0);
             }
           },
+          onError: (_e: any) => {
+            // Invalid/unavailable video — skip to next track
+            setPlaying(false);
+            setTrackIdx((i) => (i + 1) % TRACKS.length);
+          },
         },
       });
     };
