@@ -37,7 +37,7 @@ function Index() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [flipped, setFlipped] = useState(false);
   const [showFlash, setShowFlash] = useState(false);
-  const [canvasFull, setCanvasFull] = useState(false);
+  const [canvasFull, setCanvasFull] = useState<false | "projects" | "final">(false);
 
   useEffect(() => {
     const v = videoRef.current;
